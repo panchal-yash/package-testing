@@ -50,4 +50,4 @@
     shell: /package-testing/client_check.sh {{ client }} &> client-check.log
 
   - name: Log check for warnings in the previos stage
-    shell: /package-testing/log-warning-check.sh client-check.log
+    shell: /package-testing/scripts/log-warning-check.sh client-check.log
