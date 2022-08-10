@@ -150,7 +150,7 @@
     with_items:
     - rm -rf /package-testing
     - rm -f master.zip
-    - wget --no-check-certificate -O master.zip https://github.com/Percona-QA/package-testing/archive/PS-8347-add-check-for-warnings-PS-test.zip
+    - wget --no-check-certificate -O master.zip https://github.com/panchal-yash/package-testing/archive/PS-8347-add-check-for-warnings-PS-test.zip
     - unzip master.zip
     - rm -f master.zip
     - mv package-testing-PS-8347-add-check-for-warnings-PS-test /package-testing
