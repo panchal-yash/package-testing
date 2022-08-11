@@ -2,8 +2,9 @@
 
 set -e
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
   echo "This script requires product parameter: ps56, ps57, ps80, pxc56, pxc57 or pxc80 !"
+  echo "Second parameter needs to be a yes/no for mysql shell installation"
   echo "Usage: ./client_check.sh <prod>"
   exit 1
 fi
