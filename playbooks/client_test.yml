@@ -7,6 +7,7 @@
   become_method: sudo
   vars:
     client: "{{ lookup('env', 'client_to_test') }}"
+    install_mysql_shell: "{{ lookup('env', 'install_mysql_shell') }}"
 
   tasks:
   - name: include tasks for test env setup
@@ -47,7 +48,7 @@
     when: ansible_os_family == "RedHat"
 
   - name: install PS/PXC client and run the check
-    shell: /package-testing/client_check.sh {{ client }} &> client-check.log
+    shell: /package-testing/client_check.sh {{ client }} {{ install_mysql_shell }} &> client-check.log
 
   - name: Log check for warnings in the previos stage
     command: /package-testing/scripts/log-warning-check.sh client-check.log

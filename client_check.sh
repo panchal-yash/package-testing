@@ -2,10 +2,6 @@
 
 set -e
 
-echo "Heelo"
-echo "${product}"
-echo "${install_mysql_shell}"
-echo "these are vars"
 if [ "$#" -ne 1 ]; then
   echo "This script requires product parameter: ps56, ps57, ps80, pxc56, pxc57 or pxc80 !"
   echo "Usage: ./client_check.sh <prod>"
@@ -41,6 +37,10 @@ else
 fi
 
 product=$1
+install_mysql_shell=$2
+
+echo "${product} and ${install_mysql_shell}"
+
 log="/tmp/${product}_client_check.log"
 echo -n > "${log}"
 
