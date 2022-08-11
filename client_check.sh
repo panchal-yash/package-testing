@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Heelo"
+
 if [ "$#" -ne 1 ]; then
   echo "This script requires product parameter: ps56, ps57, ps80, pxc56, pxc57 or pxc80 !"
   echo "Usage: ./client_check.sh <prod>"
