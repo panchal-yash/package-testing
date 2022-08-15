@@ -113,7 +113,6 @@
   - name: Log check for warnings in the previos stage
     command: /package-testing/scripts/log-warning-check.sh version-check.log
     when: (lookup('env', 'check_warnings') == "yes")
-    ignore_errors: yes 
 
   - name: check that Percona Server package versions are correct
     command: /package-testing/package_check.sh ps80
