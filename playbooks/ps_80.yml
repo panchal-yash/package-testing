@@ -10,7 +10,6 @@
 - hosts: all
   become: true
   become_method: sudo
-    client: "{{ lookup('env', 'client_to_test') }}"
     install_mysql_shell: "{{ lookup('env', 'install_mysql_shell') }}"
   environment:
     install_mysql_shell: '{{ install_mysql_shell }}'
