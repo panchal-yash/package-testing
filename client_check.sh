@@ -48,7 +48,7 @@ echo -n > "${log}"
 if [ -f /etc/redhat-release ] || [ -f /etc/system-release ]; then
   if [ "${product}" = "ps56" ] || [ "${product}" = "ps57" ]; then
     yum install -y Percona-Server-client${rpm_version}
-  elif [ "${product}" = "ps80" ] && [ "${install_mysql_shell}" = "yes" ]; then
+  elif [ -z ${product} ] || [ "${product}" = "ps80" -a "${install_mysql_shell}" = "yes" ]; then
     echo "Here"
     yum install -y percona-server-client percona-mysql-router percona-mysql-shell
   elif [ "${product}" = "ps80" ] && [ "${install_mysql_shell}" = "no" ]; then
