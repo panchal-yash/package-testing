@@ -12,10 +12,8 @@
   become_method: sudo
   vars:
     install_mysql_shell: "{{ lookup('env', 'install_mysql_shell') }}"
-    check_mysql_shell: "{{ lookup('env', 'check_mysql_shell') }}"
   environment:
     install_mysql_shell: '{{ install_mysql_shell }}'
-    check_mysql_shell: '{{ check_mysql_shell }}'
   tasks:
   - name: include tasks for test env setup
     include_tasks: ../tasks/test_prep.yml
