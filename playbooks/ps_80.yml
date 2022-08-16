@@ -105,13 +105,24 @@
     include_tasks: ../tasks/install_pshell.yml
     when: (lookup('env', 'install_mysql_shell') == "yes") 
 
-  - name: check that Percona Server version is correct
-    shell: /package-testing/version_check.sh ps80 &> version-check.log
+  - name: Handle check that Percona Server version is correct
+    block: 
+      - name: Run the version_check.sh script
+        shell: /package-testing/version_check.sh ps80 &> version-check.log
 
-  - name: Log check for warnings in the previos stage
-    command: /package-testing/scripts/log-warning-check.sh version-check.log
-    when: (lookup('env', 'check_warnings') == "yes")
+      - name: Log check for warnings in the previos stage
+        command: /package-testing/scripts/log-warning-check.sh version-check.log
+        when: (lookup('env', 'check_warnings') == "yes")
 
+    rescue:
+      - name: Print the output of the version_check.sh logfile on the script failure
+        command: cat "version-check.log"
+        register: version-check-output
+
+      - name: Print the output
+        debug:
+          msg: "Ansible Version: {{ version-check-output.stdout }}"
+          
   - name: check that Percona Server package versions are correct
     command: /package-testing/package_check.sh ps80
 
