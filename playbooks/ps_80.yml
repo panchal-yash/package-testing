@@ -117,11 +117,11 @@
     rescue:
       - name: Print the output of the version_check.sh logfile on the script failure
         command: cat "version-check.log"
-        register: version-check-output
+        register: versioncheckoutput
 
       - name: Print the output
         debug:
-          msg: "Ansible Version: {{ version-check-output.stdout }}"
+          msg: "Version check output: {{ versioncheckoutput.stdout }}"
           
   - name: check that Percona Server package versions are correct
     command: /package-testing/package_check.sh ps80
