@@ -120,11 +120,8 @@
         register: versioncheckoutput
       
       - name: Display the fetched output of the version_check.log logfile 
-        debug: versioncheckoutput
-
-      - name:   
-        ansible.builtin.fail:
-          msg: Failing the further tasks due to issues in the previous task.
+        debug:
+          msg: "Version check output: {{ versioncheckoutput.stdout }}"
          
   - name: check that Percona Server package versions are correct
     command: /package-testing/package_check.sh ps80
