@@ -78,27 +78,34 @@ else
 fi
 
 if [ "${product}" = "ps80" ]; then
- echo "checking client version"
- if [ "$(mysql --version | grep -c "$version")" == 1 ]; then
+  echo "checking client version"
+  if [ "$(mysql --version | grep -c "$version")" == 1 ]; then
      echo "mysql client version is correct"
    else
      echo "ERROR: mysql-client version is incorrect "
      exit 1
- fi
- echo "checking shell version"
- if [ "$(mysqlsh --version | grep -c "$version")" == 1 ]; then
-     echo "mysql shell version is correct"
-   else
-     echo "ERROR: mysql-shell version is incorrect "
-     exit 1
- fi
- echo "checking router version"
- if [ "$(mysqlrouter --version | grep -c "$version")" == 1 ]; then
+  fi
+  if [ -z ${install_mysql_shell} ] || [ ${install_mysql_shell} = "yes" ] ; then
+    echo "checking shell version"
+    if [ "$(mysqlsh --version | grep -c "$version")" == 1 ]; then
+        echo "mysql shell version is correct"
+    else
+        echo "ERROR: mysql-shell version is incorrect "
+        exit 1
+    fi
+  elif [ ${install_mysql_shell} = "no" ]; then
+    echo "MYSQL Shell check is disabled.." >> "${log}"
+  else
+    echo "Invalid input in ${install_mysql_shell} variable"
+  fi
+
+  echo "checking router version"
+  if [ "$(mysqlrouter --version | grep -c "$version")" == 1 ]; then
      echo "mysql router version is correct"
-   else
+  else
      echo "ERROR: mysqlrouter version is incorrect "
      exit 1
- fi
+  fi
 fi
 
 mysql --help
