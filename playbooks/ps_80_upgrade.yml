@@ -212,7 +212,7 @@
     include_tasks: ../tasks/list_installed_packages.yml
 
   - name: check that Percona Server version is correct
-    command: /package-testing/version_check.sh ps80 > version-check-ps80.log 2>&1
+    shell: /package-testing/version_check.sh ps80 > version-check-ps80.log 2>&1
 
   - name: check that Percona Server package versions are correct
     command: /package-testing/package_check.sh ps80
@@ -236,7 +236,7 @@
     command: /package-testing/scripts/ps_keyring_plugins_test/ps_keyring_plugins_test.sh ps80
 
   - name: check that Percona XtraBackup version is correct
-    command: /package-testing/version_check.sh pxb80 > version-check-pxb80.log 2>&1
+    shell: /package-testing/version_check.sh pxb80 > version-check-pxb80.log 2>&1
 
   - name: run bats unit tests for ps-admin script
     command: /usr/local/bin/bats /package-testing/bats/ps-admin_unit.bats
