@@ -207,7 +207,8 @@
 
   - name: install percona-mysql-shell package
     include_tasks: ../tasks/install_pshell.yml
-
+    when: (lookup('env', 'install_mysql_shell') == "yes") 
+    
   - name: list installed packages
     include_tasks: ../tasks/list_installed_packages.yml
 
