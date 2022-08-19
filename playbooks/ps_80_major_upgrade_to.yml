@@ -105,8 +105,8 @@
     service: name=mysql state=restarted
 
   - name: check that Percona Server version is correct
-    command: /package-testing/version_check.sh ps57
-
+    command: /package-testing/version_check.sh ps57 > version-check-ps57.log 2>&1
+ 
   - name: check that Percona Server package versions are correct
     command: /package-testing/package_check.sh ps57
     environment:
@@ -121,7 +121,7 @@
 #   when: lookup('env', 'install_repo') != "experimental"
 
   - name: check that Percona XtraBackup version is correct
-    command: /package-testing/version_check.sh pxb24
+    command: /package-testing/version_check.sh pxb24 > version-check-pxb24.log 2>&1
     when: lookup('env', 'install_repo') != "experimental"
 
   - name: check that Percona XtraBackup package versions are correct
@@ -223,7 +223,7 @@
     when: (lookup('env', 'install_mysql_shell') == "yes") 
 
   - name: check that Percona XtraBackup version is correct
-    command: /package-testing/version_check.sh pxb80
+    command: /package-testing/version_check.sh pxb80 > version-check-pxb80.log 2>&1
     when: lookup('env', 'install_repo') != "experimental"
 
   - name: list installed packages
@@ -233,7 +233,7 @@
     service: name=mysql state=started
 
   - name: check that Percona Server version is correct
-    command: /package-testing/version_check.sh ps80
+    command: /package-testing/version_check.sh ps80 > version-check-ps80.log 2>&1
 
   - name: check that Percona Server package versions are correct
     command: /package-testing/package_check.sh ps80
