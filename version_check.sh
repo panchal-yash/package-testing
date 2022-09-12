@@ -85,7 +85,7 @@ log="/tmp/${product}_version_check.log"
 echo -n >> "${log}"
 
 
-echo "mysql shell button: ${install_mysql_shell}" >> version-check.log
+echo "mysql shell button: ${install_mysql_shell}" > test.log
 
 if [ "${product}" = "ps56" -o "${product}" = "ps57" -o "${product}" = "ps80" ]; then
   for i in @@INNODB_VERSION @@VERSION; do
