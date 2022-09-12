@@ -82,7 +82,9 @@ fi
 
 product=$1
 log="/tmp/${product}_version_check.log"
-echo -n > "${log}"
+echo -n >> "${log}"
+
+echo ${install_mysql_shell} > "${log}"
 
 if [ "${product}" = "ps56" -o "${product}" = "ps57" -o "${product}" = "ps80" ]; then
   for i in @@INNODB_VERSION @@VERSION; do
