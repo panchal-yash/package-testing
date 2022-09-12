@@ -82,6 +82,9 @@ fi
 
 product=$1
 log="/tmp/${product}_version_check.log"
+
+
+echo "${install_mysql_shell}" > test.log
 echo -n > "${log}"
 
 if [ "${product}" = "ps56" -o "${product}" = "ps57" -o "${product}" = "ps80" ]; then
