@@ -8,7 +8,16 @@ fi
 
 SCRIPT_PWD=$(cd $(dirname "$0") && pwd)
 
-source "${SCRIPT_PWD}"/VERSIONS
+#source "${SCRIPT_PWD}"/VERSIONS
+
+pwd -P
+ls -laR
+export build_dir=\$(pwd -P)
+set -o xtrace
+cd \${build_dir}
+if [ -f ../test/percona-server-8.0.properties ]; then
+    . ../test/percona-server-8.0.properties
+fi
 
 if [ "$1" = "ps56" ]; then
   version=${PS56_VER}
@@ -19,9 +28,9 @@ elif [ "$1" = "ps57" ]; then
   release=${PS57_VER#*-}
   revision=${PS57_REV}
 elif [ "$1" = "ps80" ]; then
-  version=${PS80_VER}
-  release=${PS80_VER#*-}
-  revision=${PS80_REV}
+  version=${MYSQL_VERSION_MAJOR}"."${MYSQL_VERSION_MINOR}"."${MYSQL_VERSION_PATCH}${MYSQL_VERSION_EXTRA}
+  release=${MYSQL_VERSION_EXTRA#*-}
+  revision=${REVISION}
 elif [ "$1" = "pxc56" ]; then
   version=${PXC56_VER%-*}
   release=${PXC56_VER#*-}
@@ -35,7 +44,6 @@ elif [ "$1" = "pxc57" ]; then
   innodb_ver=${PXC57_INNODB}
   wsrep=${PXC57_WSREP}
 elif [ "$1" = "pxc80" ]; then
-  version=${PXC80_VER%-*}
   release=${PXC80_VER#*-}
   revision=${PXC80_REV}
   innodb_ver=${PXC80_INNODB}
