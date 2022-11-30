@@ -20,11 +20,7 @@
     when: lookup('env', 'upgrade_repo') == "experimental"
 
 # restart the bootstrapped node before upgrading
- 
-  - name: restart the service
-    command: service mysql restart
-    when: ansible_os_family == "Debian"
-
+  
   - name: restart the service
     command: service mysql restart
     when: ansible_os_family == "Debian"

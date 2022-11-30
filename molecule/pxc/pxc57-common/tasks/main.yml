@@ -114,3 +114,142 @@
   - name: start mysql service
     service: name=mysql state=started
     throttle: 1
+
+## UPGRADE
+
+  - name: include tasks for enabling test repo
+    include_tasks: ../../../../tasks/enable_pxc57_testing_repo.yml
+    when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "testing" or lookup('env', 'upgrade_repo') == "")
+
+  - name: include tasks for enabling main repo
+    include_tasks: ../../../../tasks/enable_pxc57_main_repo.yml
+    when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "main")
+
+  - name: include tasks for enabling experimental repo
+    include_tasks: ../../../../tasks/enable_pxc57_experimental_repo.yml
+    when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "experimental")
+
+# restart the bootstrapped node before upgrading
+ 
+  - name: restart the service
+    command: service mysql restart
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "Debian")
+
+  - name: stop the service on CentOS 8
+    command: mysqladmin shutdown
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
+
+  - name: upgrade PXC 5.7 to new deb packages
+    apt:
+      name: "{{ packages }}"
+      update_cache: yes
+      state: latest
+    vars:
+      packages:
+      - percona-xtradb-cluster-full-57
+      - percona-xtradb-cluster-test-5.7
+      - percona-xtradb-cluster-source-5.7
+      - percona-xtradb-cluster-server-debug-5.7
+      - percona-xtradb-cluster-server-5.7
+      - percona-xtradb-cluster-common-5.7
+      - percona-xtradb-cluster-5.7-dbg
+      - percona-xtradb-cluster-client-5.7
+      - percona-xtradb-cluster-57
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "Debian")
+
+  - name: upgrade PXC 5.7 to new rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - Percona-XtraDB-Cluster-full-57
+      - Percona-XtraDB-Cluster-test-57
+      - Percona-XtraDB-Cluster-shared-57
+      - Percona-XtraDB-Cluster-server-57
+      - Percona-XtraDB-Cluster-garbd-57
+      - Percona-XtraDB-Cluster-devel-57
+      - Percona-XtraDB-Cluster-client-57
+      - Percona-XtraDB-Cluster-57-debuginfo
+      - Percona-XtraDB-Cluster-57
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat")
+
+  - name: install Percona Server new rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+       - Percona-XtraDB-Cluster-shared-compat-57
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+
+# PXC-2317 workaround
+  - name: start mysql service
+    service: name=mysql state=started
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat" and ansible_distribution_major_version == "6")
+# PXC-2317 workaround
+
+# PXC-3203 workaround
+  - name: restart the service
+    command: service mysql restart
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
+# PXC-3203 workaround
+
+  - name: run mysql_upgrade
+    command: /usr/bin/mysql_upgrade
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: Wait for 30 seconds before restarting mysql service
+    command: sleep 30
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: Check status of mysql service status
+    service_facts:
+    register: service_state
+    
+  - debug:
+      var: service_state.ansible_facts.services["mysql.service"].state
+
+  - name: restart the service
+    service: name=mysql state=restarted
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: check that PXC version is correct
+    command: /package-testing/version_check.sh pxc57
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: check that PXC package versions are correct
+    command: /package-testing/package_check.sh pxc57
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: run bats tests for mysql init scripts
+    command: /usr/local/bin/bats /package-testing/bats/pxc-init-scripts.bats
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: start mysql service
+    service: name=mysql state=started
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: remove PXC deb packages
+    apt:
+      name: "{{ packages }}"
+      update_cache: no
+      state: absent
+    vars:
+      packages:
+      - percona-xtradb-cluster-server-5.7
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "Debian")
+
+  - name: remove PXC rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: absent
+    vars:
+      packages:
+      - Percona-XtraDB-Cluster-server-57
+      - percona-xtrabackup-24
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat")
+
+  - name: check if process is stopped after package removal
+    command: /package-testing/check_running.sh mysql stopped
+    when: lookup('env', 'test_type') == "upgrade"

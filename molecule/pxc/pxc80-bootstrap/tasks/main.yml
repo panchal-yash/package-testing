@@ -19,15 +19,15 @@
     - wget --no-check-certificate -P /package-testing https://raw.githubusercontent.com/Percona-QA/percona-qa/master/sample_db/world.sql
 
   - name: include tasks for enabling test repo
-    include_tasks: ../../../../tasks/enable_pxc80_testing_repo.yml
+    include_tasks: ../../../tasks/enable_pxc80_testing_repo.yml
     when: lookup('env', 'install_repo') == "testing" 
 
   - name: include tasks for enabling main repo
-    include_tasks: ../../../../tasks/enable_pxc80_main_repo.yml
+    include_tasks: ../../../tasks/enable_pxc80_main_repo.yml
     when: lookup('env', 'install_repo') == "main" or lookup('env', 'install_repo') == ""
 
   - name: include tasks for enabling experimental repo
-    include_tasks: ../../../../tasks/enable_pxc80_experimental_repo.yml
+    include_tasks: ../../../tasks/enable_pxc80_experimental_repo.yml
     when: lookup('env', 'install_repo') == "experimental"
 
   - name: install python3-libselinux 
@@ -74,16 +74,16 @@
     command: service mysql stop
 
   - name: copy pxc config on centos
-    template: src=../../../../templates/my_rpm_80.j2 dest=/etc/my.cnf
+    template: src=../../../templates/my_rpm_80.j2 dest=/etc/my.cnf
     when: ansible_os_family == "RedHat"
 
   - name: copy pxc certs
     copy:
-      src: ../../../../support-files/certs/
+      src: ../../../support-files/certs/
       dest: /etc/mysql/certs/
 
   - name: configure PXC on debian/ubuntu
-    template: src=../../../../templates/my_8.j2
+    template: src=../../../templates/my_8.j2
               dest=/etc/mysql/my.cnf
               mode=0640 owner=mysql group=root
     when: ansible_os_family == "Debian"
@@ -98,7 +98,7 @@
     when: ansible_os_family == "RedHat"
 
   - name: copy .my.cnf with credentials on centos
-    template: src=../../../../templates/my_57.j2
+    template: src=../../../templates/my_57.j2
               dest=/root/.my.cnf
               mode=0640 owner=root group=root
     when: ansible_os_family == "RedHat"
@@ -122,3 +122,104 @@
       
   - name: Sleep 60 seconds
     command: sleep 60
+
+## UPDATE
+
+  - name: include tasks for enabling test repo
+    include_tasks: ../tasks/enable_pxc80_testing_repo.yml
+    when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "testing" or lookup('env', 'upgrade_repo') == "")
+
+  - name: include tasks for enabling main repo
+    include_tasks: ../tasks/enable_pxc80_main_repo.yml
+    when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "main")
+
+  - name: include tasks for enabling experimental repo
+    include_tasks: ../tasks/enable_pxc80_experimental_repo.yml
+    when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "experimental")
+
+  - name: upgrade PXC 8.0 to new deb packages
+    apt:
+      name: "{{ packages }}"
+      update_cache: yes
+      state: latest
+    vars:
+      packages:
+      - percona-xtradb-cluster-full
+      - percona-xtradb-cluster-test
+      - percona-xtradb-cluster-source
+      - percona-xtradb-cluster-server-debug
+      - percona-xtradb-cluster-server
+      - percona-xtradb-cluster-common
+      - percona-xtradb-cluster-dbg
+      - percona-xtradb-cluster-client
+      - percona-xtradb-cluster
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "Debian")
+
+  - name: upgrade PXC 8.0 to new rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - percona-xtradb-cluster-shared
+      - percona-xtradb-cluster-garbd
+      - percona-xtradb-cluster-test
+      - percona-xtradb-cluster-devel
+      - percona-xtradb-cluster-debuginfo
+      - percona-xtradb-cluster-server
+      - percona-xtradb-cluster-full
+      - percona-xtradb-cluster-client
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat")
+
+  - name: install Percona Server new rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+       - percona-xtradb-cluster-shared-compat
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+
+# - name: restart the service
+#   command: service mysql restart
+
+  - name: install plugins
+    command: /package-testing/plugins_test_80.sh pxc
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: check that PXC version is correct
+    command: /package-testing/version_check.sh pxc80
+    when: lookup('env', 'test_type') == "upgrade"
+
+  - name: check that PXC package versions are correct
+    command: /package-testing/package_check.sh pxc80
+    when: lookup('env', 'test_type') == "upgrade"
+
+# - name: run bats tests for mysql init scripts
+#   command: /usr/local/bin/bats /package-testing/bats/pxc-init-scripts.bats
+
+# - name: start mysql service
+#   service: name=mysql state=started
+
+  - name: remove PXC deb packages
+    apt:
+      name: "{{ packages }}"
+      update_cache: no
+      state: absent
+    vars:
+      packages:
+      - percona-xtradb-cluster-server
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "Debian")
+
+  - name: remove PXC rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: absent
+    vars:
+      packages:
+      - percona-xtradb-cluster-server
+    when: (lookup('env', 'test_type') == "upgrade") and (ansible_os_family == "RedHat")
+
+  - name: check if process is stopped after package removal
+    command: /package-testing/check_running.sh mysql stopped
+    when: lookup('env', 'test_type') == "upgrade"
