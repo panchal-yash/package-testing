@@ -74,16 +74,16 @@
     command: service mysql stop
 
   - name: copy pxc config on centos
-    template: src=../../../templates/my_rpm_80.j2 dest=/etc/my.cnf
+    template: src=../../../../templates/my_rpm_80.j2 dest=/etc/my.cnf
     when: ansible_os_family == "RedHat"
 
   - name: copy pxc certs
     copy:
-      src: ../../../support-files/certs/
+      src: ../../../../support-files/certs/
       dest: /etc/mysql/certs/
 
   - name: configure PXC on debian/ubuntu
-    template: src=../../../templates/my_8.j2
+    template: src=../../../../templates/my_8.j2
               dest=/etc/mysql/my.cnf
               mode=0640 owner=mysql group=root
     when: ansible_os_family == "Debian"
@@ -98,7 +98,7 @@
     when: ansible_os_family == "RedHat"
 
   - name: copy .my.cnf with credentials on centos
-    template: src=../../../templates/my_57.j2
+    template: src=../../../../templates/my_57.j2
               dest=/root/.my.cnf
               mode=0640 owner=root group=root
     when: ansible_os_family == "RedHat"
