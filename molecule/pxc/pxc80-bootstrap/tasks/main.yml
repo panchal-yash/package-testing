@@ -19,15 +19,15 @@
     - wget --no-check-certificate -P /package-testing https://raw.githubusercontent.com/Percona-QA/percona-qa/master/sample_db/world.sql
 
   - name: include tasks for enabling test repo
-    include_tasks: ../../../tasks/enable_pxc80_testing_repo.yml
+    include_tasks: ../../../../tasks/enable_pxc80_testing_repo.yml
     when: lookup('env', 'install_repo') == "testing" 
 
   - name: include tasks for enabling main repo
-    include_tasks: ../../../tasks/enable_pxc80_main_repo.yml
+    include_tasks: ../../../../tasks/enable_pxc80_main_repo.yml
     when: lookup('env', 'install_repo') == "main" or lookup('env', 'install_repo') == ""
 
   - name: include tasks for enabling experimental repo
-    include_tasks: ../../../tasks/enable_pxc80_experimental_repo.yml
+    include_tasks: ../../../../tasks/enable_pxc80_experimental_repo.yml
     when: lookup('env', 'install_repo') == "experimental"
 
   - name: install python3-libselinux 
@@ -126,15 +126,15 @@
 ## UPDATE
 
   - name: include tasks for enabling test repo
-    include_tasks: ../tasks/enable_pxc80_testing_repo.yml
+    include_tasks: ../../../../tasks/enable_pxc80_testing_repo.yml
     when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "testing" or lookup('env', 'upgrade_repo') == "")
 
   - name: include tasks for enabling main repo
-    include_tasks: ../tasks/enable_pxc80_main_repo.yml
+    include_tasks: ../../../../tasks/enable_pxc80_main_repo.yml
     when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "main")
 
   - name: include tasks for enabling experimental repo
-    include_tasks: ../tasks/enable_pxc80_experimental_repo.yml
+    include_tasks: ../../../../tasks/enable_pxc80_experimental_repo.yml
     when: (lookup('env', 'test_type') == "upgrade") and (lookup('env', 'upgrade_repo') == "experimental")
 
   - name: upgrade PXC 8.0 to new deb packages
