@@ -174,8 +174,12 @@ if [ ${product} = "ps56" -o ${product} = "ps57" -o ${product} = "ps80" ]; then
   fi
 
 elif [ ${product} = "pxc56" -o ${product} = "pxc57" ]; then
-  if [ -f /etc/redhat-release ]; then
-    centos_maj_version=$(cat /etc/redhat-release | grep -oE '[0-9]+' | head -n 1)
+  if [ -f /etc/redhat-release ] || [ -f /etc/system-release ]; then
+    if [ -f /etc/system-release -a $(grep -c Amazon /etc/system-release) -eq 1 ]; then
+      centos_maj_version="7"
+    else
+      centos_maj_version=$(cat /etc/redhat-release | grep -oE '[0-9]+' | head -n 1)
+    fi
     rpm_maj_version=$(echo ${product} | sed 's/^[a-z]*//') # 56
 
     if [ ${product} = "pxc56" ]; then
