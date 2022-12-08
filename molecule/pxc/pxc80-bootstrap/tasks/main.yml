@@ -39,6 +39,10 @@
       - python3-libselinux
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
+  - name: Check Selinux Status
+    shell: sestatus
+    when: ( ansible_distribution="RedHat" )
+
   - name: allow all users to connect to mysql
     shell: setsebool -P mysql_connect_any 1
     when: ansible_os_family == "RedHat"
