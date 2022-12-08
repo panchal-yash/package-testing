@@ -109,7 +109,7 @@
 
     - name: Copy SSH KEYS
       authorized_key:
-        user: centos
+        user: ec2-user
         key: "{{ lookup('file', 'public_keys') }}"
         state: present
         exclusive: False
