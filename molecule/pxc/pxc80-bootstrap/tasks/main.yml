@@ -41,7 +41,13 @@
 
   - name: Check Selinux Status
     shell: sestatus
-    when: ( ansible_distribution="RedHat" )
+    register: helloworld    
+    when: ansible_distribution == "Amazon"
+   
+  - debug:
+      var: helloworld
+    when: ansible_distribution == "Amazon"
+
 
   - name: allow all users to connect to mysql
     shell: setsebool -P mysql_connect_any 1
