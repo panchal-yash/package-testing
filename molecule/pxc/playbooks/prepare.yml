@@ -106,3 +106,11 @@
         state: stopped
       when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "8"
 
+
+    - name: Copy SSH KEYS
+      authorized_key:
+        user: centos
+        key: "{{ lookup('file', 'public_keys') }}"
+        state: present
+        exclusive: False
+      when: lookup('env', 'DESTROY_ENV') == "no"
