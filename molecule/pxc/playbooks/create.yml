@@ -45,6 +45,26 @@
         subnet_dict: "{{ subnet_dict|default({}) | combine({ item.subnets[0].id: item.subnets[0].vpc_id }) }}"
       with_items: "{{ subnet_facts.results }}"
 
+    - name: Populate subnet vpc only one
+      debug:
+        var: subnet_dict
+
+    - name: Populate subnet vpc only one shell
+      shell: echo "{{ subnet_dict|default({}) }}" | item[0]
+      register: subnet_variable_value
+
+    - name: check the variable
+      debug:
+        var: subnet_variable_value.stdout_lines
+
+    - name: set the variable set only stdout
+      set_fact:
+        subnet_variable_value_stdout: "{{ subnet_variable_value.stdout_lines[0] }} "
+
+    - name: check the variable non regexed
+      debug:
+        msg: "{{ subnet_variable_value_stdout | type_debug }}"
+
     - name: Create security group
       ec2_group:
         name: "{{ security_group_name }}"
@@ -64,34 +84,26 @@
       with_items: "{{ molecule_yml.platforms }}"
 
     - name: Create molecule instance(s)
-      ec2:
-        key_name: "{{ keypair_name }}"
-        image: "{{ item.image }}"
-        instance_type: "{{ item.instance_type }}"
-        vpc_subnet_id: "{{ item.vpc_subnet_id }}"
-        group: "{{ security_group_name }}"
-        instance_tags: "{{
-            item.instance_tags | combine({
-              'Name': item.name,
-              'ssh_user': item.ssh_user|default(ssh_user)
-            })
-            if item.instance_tags is defined
-            else {
-                'Name': item.name,
-                'ssh_user': item.ssh_user|default(ssh_user)
-            }
-        }}"
-        wait: true
-        assign_public_ip: true
-        exact_count: 1
-        count_tag:
-          Name: "{{ item.name }}"
+      amazon.aws.ec2_spot_instance:
+        spot_type: "one-time"
+        spot_price: "0.0100"
+        count: 1
         region: "{{ item.region|default(default_region) }}"
-        volumes:
-          - device_name: "{{ item.root_device_name }}"
-            volume_type: gp2
-            volume_size: 30
-            delete_on_termination: true
+        launch_specification:
+          key_name: "{{ keypair_name }}"
+          image_id: "{{ item.image }}"
+          instance_type: "{{ item.instance_type }}"
+          network_interfaces:
+            - subnet_id: "{{ subnet_variable_value_stdout[0] }}"
+              associate_public_ip_address: True
+              delete_on_termination: True
+              device_index: 0
+          block_device_mappings:
+            - device_name: "{{ item.root_device_name }}"
+              ebs:
+                delete_on_termination: True
+                volume_type: gp2
+                volume_size: 30
       register: server
       loop: "{{ molecule_yml.platforms }}"
       loop_control:

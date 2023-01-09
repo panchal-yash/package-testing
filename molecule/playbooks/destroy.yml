@@ -17,9 +17,9 @@
             skip_instances: true
 
     - name: Destroy molecule instance(s)
-      ec2:
+      amazon.aws.ec2_spot_instance:
         state: absent
-        instance_ids: "{{ item.instance_id }}"
+        spot_instance_request_ids: "{{ item.instance_id }}"
         region: "{{ item.region }}"
       register: server
       with_items: "{{ instance_conf }}"
