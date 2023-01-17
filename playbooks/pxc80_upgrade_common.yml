@@ -71,11 +71,9 @@
   - name: register PXC version Side Effect
     shell: mysqld --version
     register: pxc_version
-    when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
   - name: print PXC version Side Effect
     debug: var=pxc_version
-    when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
   - name: check that PXC version is correct Side Effect
     command: /package-testing/version_check.sh pxc80

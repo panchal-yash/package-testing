@@ -81,20 +81,18 @@
     service: name=mysql state=started
     throttle: 1
     
-  - name: register PXC version
+  - name: register PXC version Molecule
     shell: mysqld --version
     register: pxc_version
-    when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
-  - name: print PXC version
+  - name: print PXC version Molecule
     debug: var=pxc_version
-    when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
-  - name: check that PXC version is correct
+  - name: check that PXC version is correct Molecule
     command: /package-testing/version_check.sh pxc80
     when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
 
-  - name: check that PXC package versions are correct
+  - name: check that PXC package versions are correct Molecule
     command: /package-testing/package_check.sh pxc80
     when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
 

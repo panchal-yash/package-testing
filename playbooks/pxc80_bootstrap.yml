@@ -119,11 +119,9 @@
   - name: register PXC version Install
     shell: mysqld --version
     register: pxc_version
-    when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
   - name: print PXC version Install
     debug: var=pxc_version
-    when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
   - name: check that PXC version is correct Install
     command: /package-testing/version_check.sh pxc80
