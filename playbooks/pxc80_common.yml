@@ -96,20 +96,20 @@
   - name: start mysql service
     service: name=mysql state=started
 
-  - name: register PXC version
+  - name: register PXC version Install
     shell: mysqld --version
     register: pxc_version
     when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
-  - name: print PXC version
+  - name: print PXC version Install
     debug: var=pxc_version
     when: lookup('env', 'check_version') != "yes" and lookup('env', 'check_version') != ""
 
-  - name: check that PXC version is correct
+  - name: check that PXC version is correct Install
     command: /package-testing/version_check.sh pxc80
     when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
 
-  - name: check that PXC package versions are correct
+  - name: check that PXC package versions are correct Install
     command: /package-testing/package_check.sh pxc80
     when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
 
