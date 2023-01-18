@@ -82,7 +82,7 @@
   - name: stop mysql service with service command
     command: service mysql stop
 
-  - name: copy pxc config on centos
+  - name: copy pxc config on Redhat
     template: src=../templates/my_rpm_80.j2 dest=/etc/my.cnf
     when: ansible_os_family == "RedHat"
 
@@ -98,15 +98,15 @@
     when: ansible_os_family == "Debian"
 
   # bootstrap the cluster
-  - name: bootstrap cluster on CentOS
+  - name: bootstrap cluster
     command: systemctl start mysql@bootstrap.service
 
-  # set root password on centos
-  - name: set root password on centos
+  # set root password on Redhat
+  - name: set root password on Redhat
     command: /package-testing/setpass_57.sh
     when: ansible_os_family == "RedHat"
 
-  - name: copy .my.cnf with credentials on centos
+  - name: copy .my.cnf with credentials on Redhat
     template: src=../templates/my_57.j2
               dest=/root/.my.cnf
               mode=0640 owner=root group=root
