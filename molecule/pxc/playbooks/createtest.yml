@@ -33,9 +33,13 @@
 
   tasks:
     - name: TESTING_CHECK
-      ansible.builtin.shell: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
-      register: HELLOS
+      ansible.builtin.shell: . ./${{ MOLECULE_ENV_FILE }} && env
+      register: env_file_result
 
-    - name: CHECK
-      debug:
-        var: HELLOS
+    - name: Parse environment
+      set_fact:
+        env_vars: "{{ ('{' + env_file_result.stdout_lines | map('regex_replace', '([^=]*)=(.*)', '\"\\1\": \"\\2\"') | join(',') + '}') | from_json }}"
+
+    - name: Display environment variables
+      command: env
+      environment: "{{ env_vars }}"

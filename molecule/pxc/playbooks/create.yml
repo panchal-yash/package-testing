@@ -33,8 +33,8 @@
 
   tasks:
     - name: TESTING_CHECK
-      ansible.builtin.shell: echo "{{ HELLOS }}"
-      register: HELLOS1
+      ansible.builtin.shell: source ${{ MOLECULE_ENV_FILE }}
+      register: ENV
 
     - name: CHECK
       debug:
