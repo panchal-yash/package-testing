@@ -33,7 +33,7 @@
 
   tasks:
     - name: TESTING_CHECK
-      ansible.builtin.shell: source ${{ MOLECULE_ENV_FILE }} && env
+      ansible.builtin.shell: source "${{ MOLECULE_ENV_FILE }}" && env
       register: env_file_result
 
     - name: Parse environment
