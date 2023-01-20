@@ -33,12 +33,12 @@
 
   tasks:
     - name: TESTING_CHECK
-      ansible.builtin.shell: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
-      register: HELLOS
+      ansible.builtin.shell: echo "{{ lookup('env', 'HELLOS') }}"
+      register: HELLOS1
 
     - name: CHECK
       debug:
-        var: HELLOS
+        var: HELLOS1
 
     - name: Check subnet
       ec2_vpc_subnet_info:
