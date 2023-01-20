@@ -23,7 +23,7 @@ provisioner:
     name: ansible-lint
   log: true
   playbooks:
-    create: ../../../playbooks/create.yml
+    create: ../../../playbooks/createtest.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../playbooks/prepare.yml
     converge: ../../playbooks/playbook.yml
