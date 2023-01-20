@@ -30,6 +30,7 @@
         cidr_ip: '0.0.0.0/0'
     keypair_name: "molecule-pkg-tests"
     keypair_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/ssh_key"
+    ENV_VAR_PATH: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
 
   tasks:
     - name: TESTING_CHECK
