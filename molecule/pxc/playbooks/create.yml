@@ -42,7 +42,7 @@
         var: env_file_result_out
 
     - name: TESTING_CHECK
-      ansible.builtin.shell: . ./"{{ ENV_VAR_PATH }}" && env
+      ansible.builtin.shell: source "{{ ENV_VAR_PATH }}" && env
       register: env_file_result
 
     - name: Parse environment
