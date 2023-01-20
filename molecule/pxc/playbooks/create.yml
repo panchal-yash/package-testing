@@ -30,13 +30,12 @@
         cidr_ip: '0.0.0.0/0'
     keypair_name: "molecule-pkg-tests"
     keypair_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/ssh_key"
-    
 
   tasks:
     - name: TESTING_CHECK
       ansible.builtin.shell: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
       register: HELLOS
-      
+
     - name: CHECK
       debug:
         var: HELLOS
