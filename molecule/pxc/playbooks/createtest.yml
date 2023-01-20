@@ -1,4 +1,5 @@
 ---
-  tasks:
-  - name: TESTING
-    ansible.builtin.shell: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
+  - name: CHECK
+    tasks:
+    - name: TESTING
+      ansible.builtin.shell: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
