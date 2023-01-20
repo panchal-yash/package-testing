@@ -33,7 +33,7 @@
 
   tasks:
     - name: TESTING_CHECK
-      ansible.builtin.shell: echo "{{ lookup('env', 'HELLOS') }}"
+      ansible.builtin.shell: echo "{{ HELLOS }}"
       register: HELLOS1
 
     - name: CHECK
