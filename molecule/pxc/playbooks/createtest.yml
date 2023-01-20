@@ -1,5 +1,8 @@
 ---
   - name: CHECK
+    hosts: localhost
+    connection: local
+    gather_facts: false
     tasks:
     - name: TESTING
       ansible.builtin.shell: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
