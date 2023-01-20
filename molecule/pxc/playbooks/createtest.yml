@@ -1,0 +1,3 @@
+---
+- name: TESTING
+  command: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"

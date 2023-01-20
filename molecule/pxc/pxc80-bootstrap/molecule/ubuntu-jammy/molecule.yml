@@ -21,6 +21,7 @@ provisioner:
   name: ansible
   lint:
     name: ansible-lint
+  log: true
   playbooks:
     create: ../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
@@ -30,4 +31,4 @@ provisioner:
   inventory:
     host_vars:
       pxc1-80-bootstrap-ubuntu-jammy:
-        ip_env: PXC1_IP
+        ip_env: "{{ lookup('file', 'pxc1' ) }}"

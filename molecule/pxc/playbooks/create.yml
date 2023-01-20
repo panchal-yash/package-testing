@@ -1,4 +1,5 @@
 ---
+
 - name: Create
   hosts: localhost
   connection: local
@@ -30,6 +31,7 @@
         cidr_ip: '0.0.0.0/0'
     keypair_name: "molecule-pkg-tests"
     keypair_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/ssh_key"
+
 
   tasks:
     - name: Check subnet
