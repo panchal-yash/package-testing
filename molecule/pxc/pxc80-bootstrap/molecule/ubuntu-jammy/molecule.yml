@@ -29,6 +29,7 @@ provisioner:
     converge: ../../playbooks/playbook.yml
     side_effect: ../../../../../playbooks/pxc80_upgrade_bootstrap.yml
   inventory:
+    ENV_VAR_PATH: "{{ MOLECULE_ENV_FILE }}"
     host_vars:
       pxc1-80-bootstrap-ubuntu-jammy:
         ip_env: "{{ lookup('file', 'pxc1' ) }}"
