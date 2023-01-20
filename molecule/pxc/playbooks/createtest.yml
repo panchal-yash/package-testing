@@ -6,3 +6,7 @@
     tasks:
     - name: TESTING
       ansible.builtin.shell: echo "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
+      register: HELLOS
+    - name: CHECK
+      debug:
+        var: HELLOS
