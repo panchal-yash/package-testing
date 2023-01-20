@@ -34,7 +34,7 @@
 
   tasks:
     - name: TESTING_CHECK cjec
-      ansible.builtin.shell: cat "${{ ENV_VAR_PATH }}" 
+      ansible.builtin.shell: cat "{{ ENV_VAR_PATH }}" 
       register: env_file_result_out
 
     - name: TESTING_CHECK cjec debug
@@ -42,7 +42,7 @@
         var: env_file_result_out
 
     - name: TESTING_CHECK
-      ansible.builtin.shell: . ./"${{ ENV_VAR_PATH }}" && env
+      ansible.builtin.shell: . ./"{{ ENV_VAR_PATH }}" && env
       register: env_file_result
 
     - name: Parse environment
