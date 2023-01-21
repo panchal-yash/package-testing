@@ -1,4 +1,5 @@
 ---
+
   - name: Check IP MAIN
     shell: ifconfig
     register: check_main
@@ -7,7 +8,7 @@
 
   - set_fact:
       man_ip: "{{ lookup('env', ip_env) }}"
- 
+
   - debug: var=man_ip
 
   - name: include tasks for test env setup

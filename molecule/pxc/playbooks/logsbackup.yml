@@ -4,6 +4,8 @@
   become: true
   become_method: sudo
   gather_facts: true
+  vars:
+      ENV_VAR_PATH: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
   tasks:
 
     - set_fact:
