@@ -149,20 +149,20 @@
     - name: Dump instance private IPs
       copy:
         content: "{{ instance_priv_ip | to_json }}"
-        dest: "{{ lookup('env', 'INSTANCE_PRIVATE_IP') }}"
+        dest: "{{ INSTANCE_PRIVATE_IP }}"
 
     - name: Dump instance public IPs
       copy:
         content: "{{ instance_public_ip | to_json }}"
-        dest: "{{ lookup('env', 'INSTANCE_PUBLIC_IP') }}"
+        dest: "{{ INSTANCE_PUBLIC_IP }}"
 
     - name: Print instance private IPs
       debug:
-        msg: "{{ lookup('file', lookup('env', 'INSTANCE_PRIVATE_IP')) }}"
+        msg: "{{ lookup('file', 'INSTANCE_PRIVATE_IP') }}"
 
     - name: Print instance public IPs
       debug:
-        msg: "{{ lookup('file', lookup('env', 'INSTANCE_PUBLIC_IP')) }}"
+        msg: "{{ lookup('file', 'INSTANCE_PUBLIC_IP') }}"
 
     # Mandatory configuration for Molecule to function.
 
