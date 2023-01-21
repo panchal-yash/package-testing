@@ -34,8 +34,13 @@
 
   tasks:
     - name: TESTING_CHECK cjec
-      ansible.builtin.shell: cat "{{ ENV_VAR_PATH }}" 
+      ansible.builtin.shell: |
+        cat "{{ ENV_VAR_PATH }}" | sed 's/: /=/g'
       register: env_file_result_out
+
+    - name: TESTING_CHECK sedit
+      ansible.builtin.shell: |
+        sed 's/: /=/g' -i "{{ ENV_VAR_PATH }}"
 
     - name: TESTING_CHECK cjec debug
       debug:
