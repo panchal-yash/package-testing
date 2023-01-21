@@ -34,30 +34,17 @@
     ENV_VAR_PATH: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
 
   tasks:
-    - name: TESTING_CHECK cjec
-      ansible.builtin.shell: |
-        cat "{{ ENV_VAR_PATH }}" | sed 's/: /=/g'
-      register: env_file_result_out
+      
+     - name: Fetch the vars from file
+       ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
-    - name: TESTING_CHECK sedit
-      ansible.builtin.shell: |
-        sed 's/: /=/g' -i "{{ ENV_VAR_PATH }}"
+     - name: cout
+       shell: echo "{{ INSTANCE_PRIVATE_IP }}"
+       register: INSTANCE_PRIVATE_IP
 
-    - name: TESTING_CHECK cjec debug
-      debug:
-        var: env_file_result_out
-
-    - name: TESTING_CHECK
-      ansible.builtin.shell: source "{{ ENV_VAR_PATH }}" && env
-      register: env_file_result
-
-    - name: Parse environment
-      set_fact:
-        env_vars: "{{ ('{' + env_file_result.stdout_lines | map('regex_replace', '([^=]*)=(.*)', '\"\\1\": \"\\2\"') | join(',') + '}') | from_json }}"
-
-    - name: Display environment variables
-      command: env
-      environment: "{{ env_vars }}"
+     - name: debugas
+       debug:
+         var: INSTANCE_PRIVATE_IP
 
     - name: Check subnet
       ec2_vpc_subnet_info:
