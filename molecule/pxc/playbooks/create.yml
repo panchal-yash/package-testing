@@ -37,14 +37,6 @@
     - name: Fetch the vars from file
       ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
-    - name: cout
-      shell: echo "{{ INSTANCE_PRIVATE_IP }}"
-      register: INSTANCE_PRIVATE_IP
-
-    - name: debugas
-      debug:
-        var: INSTANCE_PRIVATE_IP
-
     - name: Check subnet
       ec2_vpc_subnet_info:
         region: "{{ item.region|default(default_region) }}"
