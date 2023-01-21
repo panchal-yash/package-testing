@@ -34,7 +34,6 @@
     ENV_VAR_PATH: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
 
   tasks:
-      
     - name: Fetch the vars from file
       ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
