@@ -150,11 +150,11 @@
 
     - name: Print instance private IPs
       debug:
-        msg: "{{ lookup('file', 'INSTANCE_PRIVATE_IP') }}"
+        msg: "{{ lookup('file', INSTANCE_PRIVATE_IP) }}"
 
     - name: Print instance public IPs
       debug:
-        msg: "{{ lookup('file', 'INSTANCE_PUBLIC_IP') }}"
+        msg: "{{ lookup('file', INSTANCE_PUBLIC_IP) }}"
 
     # Mandatory configuration for Molecule to function.
 
