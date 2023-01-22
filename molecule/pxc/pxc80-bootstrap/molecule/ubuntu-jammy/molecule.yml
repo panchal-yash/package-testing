@@ -31,4 +31,4 @@ provisioner:
   inventory:
     host_vars:
       pxc1-80-bootstrap-ubuntu-jammy:
-        ip_env: "{{ lookup('file', './install/PXC1' ) }}"
+        ip_env: "{{ lookup('file', 'install/PXC1' ) }}"
