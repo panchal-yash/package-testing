@@ -2,6 +2,10 @@
   - name: Fetch the vars from file
     ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
+  - name: debgu
+    debug:
+      var: hostvars[inventory_hostname]
+
   - name: Check IP MAIN
     shell: ifconfig
     register: check_main
