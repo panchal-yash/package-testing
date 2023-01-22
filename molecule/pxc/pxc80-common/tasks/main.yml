@@ -1,6 +1,19 @@
 ---
+
+  - name: Fetch the vars from file
+    ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
+
+  - name: debgu
+    shell: echo "{{ inventory_hostname }}"
+
   - set_fact:
-      man_ip={{ lookup('env', ip_env) }}
+      man_ip={{ PXC2 }}
+    when: inventory_hostname  == "pxc2-80-common-ubuntu-jammy"
+
+  - set_fact:
+      man_ip={{ PXC3 }}
+    when: inventory_hostname  == "pxc3-80-common-ubuntu-jammy"
+
   - debug: var=man_ip
 
   - name: include tasks for test env setup

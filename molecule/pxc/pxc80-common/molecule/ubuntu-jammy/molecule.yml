@@ -42,5 +42,5 @@ provisioner:
       pxc2-80-common-ubuntu-jammy:
         ip_env: "{{ PXC2 }}"
       pxc3-80-common-ubuntu-jammy:
-        ip_env: "{{ PXC3 ) }}"
+        ip_env: "{{ PXC3 }}"
         sleep_before_tests: 40
