@@ -3,8 +3,7 @@
     ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
   - name: debgu
-    debug:
-      var: "{{ inventory_hostname }}"
+    shell: echo "{{ inventory_hostname }}"
 
   - name: Check IP MAIN
     shell: ifconfig
@@ -13,7 +12,7 @@
   - debug: var=check_main
 
   - set_fact:
-      man_ip: "{{ lookup('env', ip_env) }}"
+      man_ip: "{{ PXC1 }}"
 
   - debug: var=man_ip
 
