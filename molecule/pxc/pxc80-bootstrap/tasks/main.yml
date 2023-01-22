@@ -1,4 +1,6 @@
 ---
+  - name: Fetch the vars from file
+    ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
   - name: Check IP MAIN
     shell: ifconfig
