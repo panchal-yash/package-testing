@@ -7,15 +7,12 @@
   vars:
       ENV_VAR_PATH: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
   tasks:
+    - name: Fetch the vars from file
+      ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
     - set_fact:
         man_ip={{ip_env}}
     - debug: var=man_ip
-
-    - set_fact:
-        jenkinsworkspace={{ lookup('ansible.builtin.env', 'JENWORKSPACE') }}
-        test_phase={{ lookup('ansible.builtin.env', 'test_phase') }}
-      delegate_to: localhost
 
     - name: Zip the logs
       community.general.archive:
@@ -26,7 +23,7 @@
       become: true
       ansible.builtin.fetch:
         src: /var/log/{{test_phase}}_{{man_ip}}_logs.tar.gz
-        dest: "{{jenkinsworkspace}}/PXC/{{test_phase}}_{{man_ip}}/"
+        dest: "{{JENWORKSPACE}}/PXC/{{test_phase}}_{{man_ip}}/"
 
 
 
