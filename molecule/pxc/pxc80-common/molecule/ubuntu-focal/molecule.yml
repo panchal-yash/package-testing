@@ -30,6 +30,7 @@ provisioner:
   name: ansible
   lint:
     name: ansible-lint
+  log: true
   playbooks:
     create: ../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
@@ -39,7 +40,7 @@ provisioner:
   inventory:
     host_vars:
       pxc2-80-common-ubuntu-focal:
-        ip_env: PXC2_IP
+        ip_env: "{{ PXC2 }}"
       pxc3-80-common-ubuntu-focal:
-        ip_env: PXC3_IP
+        ip_env: "{{ PXC3 }}"
         sleep_before_tests: 40

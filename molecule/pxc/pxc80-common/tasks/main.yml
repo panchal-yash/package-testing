@@ -8,11 +8,11 @@
 
   - set_fact:
       man_ip={{ PXC2 }}
-    when: inventory_hostname  == "pxc2-80-common-ubuntu-jammy"
+    when:  '"pxc2" in inventory_hostname'
 
   - set_fact:
       man_ip={{ PXC3 }}
-    when: inventory_hostname  == "pxc3-80-common-ubuntu-jammy"
+    when: '"pxc3" in inventory_hostname'
 
   - debug: var=man_ip
 
