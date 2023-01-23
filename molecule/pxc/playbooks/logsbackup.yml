@@ -10,20 +10,31 @@
     - name: Fetch the vars from file
       ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
+    - name: debgu
+      shell: echo "{{ inventory_hostname }}"
+
     - set_fact:
-        man_ip={{ip_env}}
-    - debug: var=man_ip
+        man_ip={{ PXC2 }}
+      when:  '"pxc1" in inventory_hostname'
+
+    - set_fact:
+        man_ip={{ PXC2 }}
+      when:  '"pxc2" in inventory_hostname'
+
+    - set_fact:
+        man_ip={{ PXC3 }}
+      when: '"pxc3" in inventory_hostname'
 
     - name: Zip the logs
       community.general.archive:
         path: /var/log
-        dest: /var/log/{{test_phase}}_{{man_ip}}_logs.tar.gz
+        dest: /var/log/{{ test_phase }}_{{ man_ip }}_logs.tar.gz
 
     - name: Fetch the log zip to the main node
       become: true
       ansible.builtin.fetch:
-        src: /var/log/{{test_phase}}_{{man_ip}}_logs.tar.gz
-        dest: "{{JENWORKSPACE}}/PXC/{{test_phase}}_{{man_ip}}/"
+        src: /var/log/{{ test_phase }}_{{ man_ip }}_logs.tar.gz
+        dest: "{{ JENWORKSPACE }}/PXC/{{ test_phase }}_{{ man_ip }}/"
 
 
 
