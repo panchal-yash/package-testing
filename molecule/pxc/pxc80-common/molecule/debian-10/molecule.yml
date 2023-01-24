@@ -39,7 +39,7 @@ provisioner:
   inventory:
     host_vars:
       pxc2-80-common-debian-10:
-        ip_env: PXC2_IP
+        ip_env: "{{ PXC2 }}"
       pxc3-80-common-debian-10:
-        ip_env: PXC3_IP
+        ip_env: "{{ PXC3 }}"
         sleep_before_tests: 40

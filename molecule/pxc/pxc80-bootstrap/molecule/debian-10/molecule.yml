@@ -30,4 +30,4 @@ provisioner:
   inventory:
     host_vars:
       pxc1-80-bootstrap-debian-10:
-        ip_env: PXC1_IP
+        ip_env: "{{ PXC1 }}"
