@@ -8,7 +8,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: pxc2-80-common-ol-8
+  - name: pxc2-80-common-ol-8-${test_type}
     region: us-west-2
     image: ami-000b99c02c2b64925
     vpc_subnet_id: subnet-0430e63d7cdbcd237
@@ -17,7 +17,7 @@ platforms:
     root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
-  - name: pxc3-80-common-ol-8
+  - name: pxc3-80-common-ol-8-${test_type}
     region: us-west-2
     image: ami-000b99c02c2b64925
     vpc_subnet_id: subnet-0430e63d7cdbcd237
@@ -38,8 +38,8 @@ provisioner:
     side_effect: ../../../../../playbooks/pxc80_upgrade_common.yml
   inventory:
     host_vars:
-      pxc2-80-common-ol-8:
+      pxc2-80-common-ol-8-${test_type}:
         ip_env: PXC2_IP
-      pxc3-80-common-ol-8:
+      pxc3-80-common-ol-8-${test_type}:
         ip_env: PXC3_IP
         sleep_before_tests: 40

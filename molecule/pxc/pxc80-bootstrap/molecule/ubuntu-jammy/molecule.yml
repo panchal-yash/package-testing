@@ -8,7 +8,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: pxc1-80-bootstrap-ubuntu-jammy
+  - name: pxc1-80-bootstrap-ubuntu-jammy-${test_type}
     region: us-west-2
     image: ami-0ee8244746ec5d6d4
     vpc_subnet_id: subnet-0430e63d7cdbcd237
@@ -29,5 +29,5 @@ provisioner:
     side_effect: ../../../../../playbooks/pxc80_upgrade_bootstrap.yml
   inventory:
     host_vars:
-      pxc1-80-bootstrap-ubuntu-jammy:
+      pxc1-80-bootstrap-ubuntu-jammy-${test_type}:
         ip_env: PXC1_IP

@@ -8,7 +8,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: pxc2-80-common-debian-11
+  - name: pxc2-80-common-debian-11-${test_type}
     region: us-west-2
     image: ami-0d0f7602aa5c2425d
     vpc_subnet_id: subnet-0430e63d7cdbcd237
@@ -17,7 +17,7 @@ platforms:
     root_device_name: /dev/xvda
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
-  - name: pxc3-80-common-debian-11
+  - name: pxc3-80-common-debian-11-${test_type}
     region: us-west-2
     image: ami-0d0f7602aa5c2425d
     vpc_subnet_id: subnet-0430e63d7cdbcd237
@@ -38,8 +38,8 @@ provisioner:
     side_effect: ../../../../../playbooks/pxc80_upgrade_common.yml
   inventory:
     host_vars:
-      pxc2-80-common-debian-11:
+      pxc2-80-common-debian-11-${test_type}:
         ip_env: PXC2_IP
-      pxc3-80-common-debian-11:
+      pxc3-80-common-debian-11-${test_type}:
         ip_env: PXC3_IP
         sleep_before_tests: 40
