@@ -9,15 +9,15 @@
       shell: echo "{{ inventory_hostname }}"
 
     - set_fact:
-        man_ip={{ PXC2 }}
+        man_ip={{ lookup('ansible.builtin.env', 'PXC1') }}
       when:  '"pxc1" in inventory_hostname'
 
     - set_fact:
-        man_ip={{ PXC2 }}
+        man_ip={{ lookup('ansible.builtin.env', 'PXC2') }}
       when:  '"pxc2" in inventory_hostname'
 
     - set_fact:
-        man_ip={{ PXC3 }}
+        man_ip={{ lookup('ansible.builtin.env', 'PXC3') }}
       when: '"pxc3" in inventory_hostname'
 
     - name: Zip the logs
