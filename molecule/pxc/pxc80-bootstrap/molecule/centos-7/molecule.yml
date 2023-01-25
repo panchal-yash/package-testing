@@ -5,8 +5,6 @@ dependency:
   name: galaxy
 driver:
   name: ec2
-lint:
-  name: yamllint
 platforms:
   - name: pxc1-80-bootstrap-centos-7-${test_type}
     region: us-west-2
@@ -19,8 +17,6 @@ platforms:
       iit-billing-tag: jenkins-pxc-worker
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
   playbooks:
     create: ../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
