@@ -143,7 +143,7 @@
       register: creates
 
     - set_fact:
-        creates: "{{ creates }}"
+        creates: "{{ creates.stdout_lines }}"
 
     - name: debuging created
       debug:
