@@ -29,7 +29,7 @@
       msg: "{{ msg.split('\n') }}"       
     tags: debug_info
 
-  - name: Check IP MAIN
+  - name: Check IP MAIN Bootstrap
     shell: ifconfig
     register: check_main
 
@@ -37,7 +37,7 @@
 
 
   - set_fact:
-      man_ip: "{{ PXC1 }}"
+      man_ip: "{{ ip_env }}"
 
   - debug: var=man_ip
 
