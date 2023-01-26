@@ -138,7 +138,7 @@
 
 
     - name: debgu create
-      shell: echo "item.instance_tags.name"
+      shell: echo "{{ item.name }}"
       with_items: "{{ molecule_yml.platforms }}"
       register: creates
 
