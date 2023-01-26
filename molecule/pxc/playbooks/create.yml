@@ -140,15 +140,15 @@
     - name: debgu create
       shell: echo "{{ item.name }}"
       with_items: "{{ molecule_yml.platforms }}"
-      register: creates
+      register: creates1
 
     - name: yekki
-      shell: echo "{{ creates }}"
-      register: yekki_out
+      shell: echo "{{ creates1 }}"
+      register: creates
 
     - name: debuging created
       debug:
-        var: yekki_out.stdout_lines
+        var: creates.stdout
 #------------------------------------- INSTALL
 
     - name: Dump instance private IPs install and bootstrap instance
@@ -156,17 +156,17 @@
         content: "{{ instance_priv_ip | to_json }}"
         dest: "{{ lookup('env', 'INSTALL_BOOTSTRAP_INSTANCE_PRIVATE_IP') }}"
       when: 
-        - '"install" in creates'
-        - '"bootstrap" in creates'
-        - '"pxc1" in creates'
+        - "'install' in creates.stdout"
+        - "'bootstrap' in creates.stdout"
+        - "'pxc1' in creates.stdout"
 
     - name: Dump instance private IPs install and common instance
       copy:
         content: "{{ instance_priv_ip | to_json }}"
         dest: "{{ lookup('env', 'INSTALL_COMMON_INSTANCE_PRIVATE_IP') }}"
       when: 
-        - '"install" in creates'
-        - '"common" in creates'
+        - "'install' in creates"
+        - "'common' in creates"
 
 
     - name: Dump instance public IPs install and bootstrap instance
