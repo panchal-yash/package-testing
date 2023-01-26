@@ -142,12 +142,14 @@
       with_items: "{{ molecule_yml.platforms }}"
       register: creates
 
-    - set_fact:
-        creates: "{{ creates.stdout }}"
+    - name: yekki
+      shell: echo "{{ creates.stdout }}"
+      register: yekki_out
+
 
     - name: debuging created
       debug:
-        var: creates
+        var: yekki_out
 #------------------------------------- INSTALL
 
     - name: Dump instance private IPs install and bootstrap instance
