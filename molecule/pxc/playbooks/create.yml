@@ -143,9 +143,8 @@
       register: creates
 
     - name: yekki
-      shell: echo "{{ creates.stdout }}"
+      shell: echo "{{ creates }}"
       register: yekki_out
-
 
     - name: debuging created
       debug:
