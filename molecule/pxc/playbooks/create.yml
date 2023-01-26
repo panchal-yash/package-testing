@@ -146,19 +146,21 @@
       copy:
         content: "{{ instance_priv_ip | to_json }}"
         dest: "{{ lookup('env', 'INSTALL_BOOTSTRAP_INSTANCE_PRIVATE_IP') }}"
-      when: ('"install" in inventory_hostname') and ('"bootstrap" in inventory_hostname')
-
-    - name: Dump instance public IPs install and bootstrap instance
-      copy:
-        content: "{{ instance_public_ip | to_json }}"
-        dest: "{{ lookup('env', 'INSTALL_BOOTSTRAP_INSTANCE_PUBLIC_IP') }}"
-      when: ('"install" in inventory_hostname') and ('"bootstrap" in inventory_hostname')
+      when: ('"install" in inventory_hostname') and ('"bootstrap" in inventory_hostname') and ('"pxc1" in inventory_hostname')
 
     - name: Dump instance private IPs install and common instance
       copy:
         content: "{{ instance_priv_ip | to_json }}"
         dest: "{{ lookup('env', 'INSTALL_COMMON_INSTANCE_PRIVATE_IP') }}"
       when: ('"install" in inventory_hostname') and ('"common" in inventory_hostname')
+
+
+    - name: Dump instance public IPs install and bootstrap instance
+      copy:
+        content: "{{ instance_public_ip | to_json }}"
+        dest: "{{ lookup('env', 'INSTALL_BOOTSTRAP_INSTANCE_PUBLIC_IP') }}"
+      when: ('"install" in inventory_hostname') and ('"bootstrap" in inventory_hostname') and ('"pxc1" in inventory_hostname')
+
 
     - name: Dump instance public IPs install and common instance
       copy:
@@ -172,13 +174,13 @@
       copy:
         content: "{{ instance_priv_ip | to_json }}"
         dest: "{{ lookup('env', 'UPGRADE_BOOTSTRAP_INSTANCE_PRIVATE_IP') }}"
-      when: ('"upgrade" in inventory_hostname') and ('"bootstrap" in inventory_hostname')
+      when: ('"upgrade" in inventory_hostname') and ('"bootstrap" in inventory_hostname') and ('"pxc1" in inventory_hostname')
 
     - name: Dump instance public IPs upgrade and bootstrap instance
       copy:
         content: "{{ instance_public_ip | to_json }}"
         dest: "{{ lookup('env', 'UPGRADE_BOOTSTRAP_INSTANCE_PUBLIC_IP') }}"
-      when: ('"upgrade" in inventory_hostname') and ('"bootstrap" in inventory_hostname')
+      when: ('"upgrade" in inventory_hostname') and ('"bootstrap" in inventory_hostname') and ('"pxc1" in inventory_hostname')
 
     - name: Dump instance private IPs upgrade and common instance
       copy:
