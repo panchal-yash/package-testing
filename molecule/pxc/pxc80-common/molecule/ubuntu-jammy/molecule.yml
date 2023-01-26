@@ -35,7 +35,7 @@ provisioner:
   inventory:
     host_vars:
       pxc2-80-common-ubuntu-jammy-${test_type}:
-        ip_env: "{{ PXC2 }}"
+        ip_env: "{{ ansible_host }}"
       pxc3-80-common-ubuntu-jammy-${test_type}:
-        ip_env: "{{ PXC3 }}"
+        ip_env: "{{ ansible_host }}"
         sleep_before_tests: 40

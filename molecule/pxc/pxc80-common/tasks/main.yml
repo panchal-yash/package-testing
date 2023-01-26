@@ -6,7 +6,7 @@
     shell: echo "{{ inventory_hostname }}"
 
   - set_fact:
-      man_ip: "{{ PXC1 }}"
+      man_ip: "{{ ip_env }}"
 
   - name: include tasks for test env setup
     include: ../../../../tasks/test_prep.yml
