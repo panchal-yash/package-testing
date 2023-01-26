@@ -4,12 +4,16 @@
 
   - name: debgu
     shell: echo "{{ inventory_hostname }}"
+    register: asdas
+
+  - debug: var=asdas
 
   - name: Check IP MAIN
     shell: ifconfig
     register: check_main
 
   - debug: var=check_main
+
 
   - set_fact:
       man_ip: "{{ PXC1 }}"
