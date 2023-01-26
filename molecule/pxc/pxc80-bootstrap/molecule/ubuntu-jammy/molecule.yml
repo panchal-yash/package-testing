@@ -26,4 +26,4 @@ provisioner:
   inventory:
     host_vars:
       pxc1-80-bootstrap-ubuntu-jammy-${test_type}:
-        ip_env: "{{ PXC1 }}"
+        ip_env: "{{ ansible_host }}"
