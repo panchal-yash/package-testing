@@ -138,7 +138,7 @@
 
 
     - name: debgu create
-      shell: echo "{{ inventory_hostname }}"
+      shell: echo "{{ molecule_yml.platforms.name }}"
       register: creates
 
     - name: debuging created
