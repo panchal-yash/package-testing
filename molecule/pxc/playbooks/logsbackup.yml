@@ -5,10 +5,6 @@
   become_method: sudo
   gather_facts: true
   tasks:
-
-    - name: Fetch the vars from file
-      ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
-
     - name: debgu
       shell: echo "{{ inventory_hostname }}"
 
