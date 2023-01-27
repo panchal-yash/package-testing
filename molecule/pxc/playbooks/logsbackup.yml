@@ -9,20 +9,9 @@
       shell: echo "{{ inventory_hostname }}"
 
     - set_fact:
-        man_ip={{ lookup('ansible.builtin.env', 'PXC1') }}
-      when:  '"pxc1" in inventory_hostname'
-
-    - set_fact:
-        man_ip={{ lookup('ansible.builtin.env', 'PXC2') }}
-      when:  '"pxc2" in inventory_hostname'
-
-    - set_fact:
-        man_ip={{ lookup('ansible.builtin.env', 'PXC3') }}
-      when: '"pxc3" in inventory_hostname'
-
-    - set_fact:
         jenkinsworkspace={{ lookup('ansible.builtin.env', 'JENWORKSPACE') }}
         test_phase={{ lookup('ansible.builtin.env', 'test_type') }}
+        man_ip={{ ip_env }}
       delegate_to: localhost
 
     - name: Zip the logs
