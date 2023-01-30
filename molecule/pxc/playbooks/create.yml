@@ -215,7 +215,6 @@
       when: 
         - "'install' in creates.stdout"
         - "'bootstrap' in creates.stdout"
-        - "'pxc1' in creates.stdout"
 
     - name: Dump instance private IPs install and common instance
       copy:
@@ -225,7 +224,6 @@
         - "'install' in creates.stdout"
         - "'common' in creates.stdout"
 
-
     - name: Dump instance public IPs install and bootstrap instance
       copy:
         content: "{{ instance_public_ip | to_json }}"
@@ -233,7 +231,6 @@
       when: 
         - "'install' in creates.stdout"
         - "'bootstrap' in creates.stdout"
-        - "'pxc1' in creates.stdout"
 
     - name: Dump instance public IPs install and common instance
       copy:
@@ -252,7 +249,6 @@
       when: 
         - "'upgrade' in creates.stdout"
         - "'bootstrap' in creates.stdout"
-        - "'pxc1' in creates.stdout"
 
     - name: Dump instance public IPs upgrade and bootstrap instance
       copy:
@@ -261,7 +257,6 @@
       when: 
         - "'upgrade' in creates.stdout"
         - "'bootstrap' in creates.stdout"
-        - "'pxc1' in creates.stdout"
 
     - name: Dump instance private IPs upgrade and common instance
       copy:
@@ -278,15 +273,6 @@
       when:
         - "'upgrade' in creates.stdout"
         - "'common' in creates.stdout"
-
-
-#    - name: Print instance private IPs
-#      debug:
-#        msg: "{{ lookup('file', lookup('env', 'INSTANCE_PRIVATE_IP')) }}"
-
-#    - name: Print instance public IPs
-#      debug:
-#        msg: "{{ lookup('file', lookup('env', 'INSTANCE_PUBLIC_IP')) }}"
 
     # Mandatory configuration for Molecule to function.
 
