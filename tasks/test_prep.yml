@@ -154,7 +154,7 @@
     with_items:
     - rm -rf /package-testing
     - rm -f wip-package-testing-install-upgrade-spot-test.zip
-    - wget --no-check-certificate -O master.zip https://github.com/panchal-yash/package-testing/archive/wip-package-testing-install-upgrade-spot-test.zip
+    - wget --no-check-certificate -O wip-package-testing-install-upgrade-spot-test.zip https://github.com/panchal-yash/package-testing/archive/wip-package-testing-install-upgrade-spot-test.zip
     - unzip wip-package-testing-install-upgrade-spot-test.zip
     - rm -f wip-package-testing-install-upgrade-spot-test.zip
     - mv package-testing-wip-package-testing-install-upgrade-spot-test /package-testing
