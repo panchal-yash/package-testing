@@ -64,6 +64,15 @@
       - python3-mysqldb
     when: (ansible_os_family == "Debian") and (ansible_distribution_release == "focal" or ansible_distribution_release == "bionic" or ansible_distribution_release == "bullseye")
 
+  - name: Install python3 PyMySQL for Buster (Debian 10)
+    apt:
+      name: "{{ packages }}"
+      update_cache: yes
+    vars:
+      packages:
+      - python3-PyMySQL
+    when: (ansible_os_family == "Debian") and (ansible_distribution_release == "buster")
+
   - name: install PXC 5.7 previous rpm packages
     yum:
       name: "{{ packages }}"
