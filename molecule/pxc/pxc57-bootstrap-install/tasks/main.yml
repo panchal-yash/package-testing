@@ -3,8 +3,20 @@
     ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
   - set_fact:
-      man_ip: "{{ ip_env }}"
-  
+      man_ip: "{{ PXC1_IP }}"
+    when: 
+    - "'pxc1' in creates.stdout"
+
+  - set_fact:
+      man_ip: "{{ PXC2_IP }}"
+    when: 
+    - "'pxc2' in creates.stdout"
+
+  - set_fact:
+      man_ip: "{{ PXC3_IP }}"
+    when: 
+    - "'pxc3' in creates.stdout"
+
   - debug: var=man_ip
     
   - name: include tasks for test env setup
