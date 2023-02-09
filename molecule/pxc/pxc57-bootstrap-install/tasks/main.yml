@@ -147,8 +147,7 @@
 
   - name: create backup user on debian/ubuntu
     mysql_user:
-      login_user: root
-      login_password: dummypassword
+      login_unix_socket: /var/run/mysqld/mysqld.sock
       name: sstuser 
       password: s3cretPass 
       priv: "*.*:RELOAD,PROCESS,LOCK TABLES,REPLICATION CLIENT" 
