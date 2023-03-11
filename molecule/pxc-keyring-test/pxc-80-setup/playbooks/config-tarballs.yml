@@ -13,3 +13,9 @@
     copy:
       src: ~/pxc80-28-build-install.tar.gz
       dest: ~/
+
+  - name: Unarchive the Tar
+    unarchive:
+      src: ~/pxc80-28-build-install.tar.gz
+      dest: ~/
+
