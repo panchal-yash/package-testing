@@ -9,13 +9,46 @@
   - name: Fetch the vars from file
     shell: echo "No further things are needed..."
 
+  - name: Create mysql user
+    ansible.builtin.user:
+      name: mysql
+      comment: Mysql User
+      group: sudo
+  
+  - name: Create a 2048-bit SSH key for user mysql in ~jsmith/.ssh/id_rsa
+    ansible.builtin.user:
+      name: mysql
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa
+
+  - name: fetch all public ssh keys
+    shell: cat ~/.ssh/id_rsa.pub
+    register: ssh_keys
+    tags:
+      - ssh
+    delegate_to: localhost
+
+  - name: check keys
+    debug: msg="{{ ssh_keys.stdout }}"
+    tags:
+      - ssh
+
+  - name: deploy keys on all servers
+    authorized_key:
+      user: mysql
+      key: "{{ ssh_keys.stdout }}"
+      state: present    
+
   - name: Copy the tar.gz to the 3 remote servers
     copy:
       src: ~/pxc80-28-build-install.tar.gz
-      dest: ~/
+      dest: /home/mysql/
 
   - name: Unarchive the Tar
     unarchive:
-      src: ~/pxc80-28-build-install.tar.gz
-      dest: ~/
+      src: /home/mysql/pxc80-28-build-install.tar.gz
+      dest: /home/mysql
+
+
 
