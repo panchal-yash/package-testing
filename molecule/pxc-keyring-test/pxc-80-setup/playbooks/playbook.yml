@@ -4,7 +4,7 @@
   become: true
   become_method: sudo
   vars:
-      ENV_VAR_PATH: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
+      KEY: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
   roles:
     - role: pxc-80-setup
     

@@ -4,7 +4,7 @@
   become: true
   become_method: sudo
   vars:
-      ENV_VAR_PATH: "{{ lookup('env', 'MOLECULE_ENV_FILE') }}"
+      KEY: "{{ lookup('env', 'KEY') }}"
   tasks:
   - name: Fetch the vars from file
     shell: echo "No further things are needed..."
@@ -22,23 +22,11 @@
       ssh_key_bits: 2048
       ssh_key_file: .ssh/id_rsa
 
-  - name: fetch all public ssh keys
-    shell: cat ~/.ssh/id_rsa.pub
-    register: ssh_keys
-    tags:
-      - ssh
-    delegate_to: localhost
-
-  - name: check keys
-    debug: msg="{{ ssh_keys.stdout }}"
-    tags:
-      - ssh
-
   - name: deploy keys on all servers
     authorized_key:
       user: mysql
-      key: "{{ ssh_keys.stdout }}"
-      state: present    
+      key: "{{ KEY }}"
+      state: present
 
   - name: Copy the tar.gz to the 3 remote servers
     copy:
