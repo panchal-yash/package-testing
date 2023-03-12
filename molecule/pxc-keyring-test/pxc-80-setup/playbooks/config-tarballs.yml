@@ -36,7 +36,7 @@
   - name: Unarchive the Tar
     unarchive:
       src: /home/mysql/pxc80-28-build-install.tar.gz
-      dest: /home/mysql
-
+      dest: /home/mysql/
+      remote_src: true
 
 
