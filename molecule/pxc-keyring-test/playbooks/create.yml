@@ -92,7 +92,7 @@
             volumes:
               - device_name: "{{ item.root_device_name }}"
                 volume_type: gp2
-                volume_size: 30
+                volume_size: 100
                 delete_on_termination: true
             instance_initiated_shutdown_behavior: "terminate"
           register: server
@@ -142,7 +142,7 @@
             volumes:
               - device_name: "{{ item.root_device_name }}"
                 volume_type: gp2
-                volume_size: 30
+                volume_size: 100
                 delete_on_termination: true
           register: server
           loop: "{{ molecule_yml.platforms }}"
