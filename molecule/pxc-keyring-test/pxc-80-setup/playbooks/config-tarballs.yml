@@ -42,7 +42,7 @@
   - name: Clone the PXC-XTRADB-Cluster Repository
     ansible.builtin.git:
       repo: https://github.com/percona/percona-xtradb-cluster.git
-      dest: /root/percona-xtradb-cluster
+      dest: /home/mysql/percona-xtradb-cluster
       depth: 1
     tags: git
 
@@ -50,5 +50,5 @@
     shell: mv /home/mysql/pxc80-28-build-install/install /home/mysql/percona-xtradb-cluster/install_build
 
   - name: Git commands to enable sub modules
-    shell: cd /root/percona-xtradb-cluster && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive
+    shell: cd /home/mysql/percona-xtradb-cluster && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive
     tags: git
