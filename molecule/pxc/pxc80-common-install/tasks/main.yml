@@ -91,6 +91,9 @@
       src: ../../../../support-files/certs/
       dest: /etc/mysql/certs/
 
+  - name: Sleep for 60 seconds
+    shell: sleep 60
+
   - name: start mysql service
     service: name=mysql state=started
     throttle: 1

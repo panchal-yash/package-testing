@@ -95,6 +95,9 @@
               mode=0640 owner=mysql group=root
     when: ansible_os_family == "Debian"
 
+  - name: Sleep for 60 seconds
+    shell: sleep 60
+
   # bootstrap the cluster
   - name: bootstrap cluster on CentOS
     command: systemctl start mysql@bootstrap.service
