@@ -17,27 +17,27 @@ VAULT_PLUGIN=0
 
 PXC_START_TIMEOUT=600
 
-ssh mysql@DB1 """echo "BaseDir1 has been set to: $BASEDIR1";"""
+ssh mysql@DB1_PUB """echo "BaseDir1 has been set to: $BASEDIR1";"""
 
-ssh mysql@DB2 """echo "BaseDir2 has been set to: $BASEDIR2";"""
+ssh mysql@DB2_PUB """echo "BaseDir2 has been set to: $BASEDIR2";"""
 
-ssh mysql@DB3 """echo "BaseDir3 has been set to: $BASEDIR3";"""
+ssh mysql@DB3_PUB """echo "BaseDir3 has been set to: $BASEDIR3";"""
 
 remove_workdir() {
 
-ssh mysql@DB1 """
+ssh mysql@DB1_PUB """
 if [ -d $BASEDIR1/pxc-node ]; then
   echo "Removing existing PXC nodes."
   rm -rf $BASEDIR1/pxc-node
 fi
 """
-ssh mysql@DB2 """
+ssh mysql@DB2_PUB """
 if [ -d $BASEDIR2/pxc-node ]; then
   echo "Removing existing PXC nodes."
   rm -rf $BASEDIR2/pxc-node
 fi
 """
-ssh mysql@DB3 """
+ssh mysql@DB3_PUB """
 if [ -d $BASEDIR3/pxc-node ]; then
   echo "Removing existing PXC nodes."
   rm -rf $BASEDIR3/pxc-node
@@ -59,17 +59,17 @@ WORKDIR1=$BASEDIR1/pxc-node
 WORKDIR2=$BASEDIR2/pxc-node
 WORKDIR3=$BASEDIR3/pxc-node
 
-ssh mysql@DB1 """
+ssh mysql@DB1_PUB """
 mkdir -p $WORKDIR1
 mkdir -p $WORKDIR1/cert
 """
 
-ssh mysql@DB2 """
+ssh mysql@DB2_PUB """
 mkdir -p $WORKDIR2
 mkdir -p $WORKDIR2/cert
 """
 
-ssh mysql@DB3 """
+ssh mysql@DB3_PUB """
 mkdir -p $WORKDIR3
 mkdir -p $WORKDIR3/cert
 """
@@ -92,7 +92,7 @@ ERR_FILE3=$BASEDIR3/pxc-node/node3.err
 start_vault_server() {
   #Start vault server for testing
   
-  ssh root@DB1 """
+  ssh mysql@DB1_PUB """
   echo "Setting up vault server"
   rm -rf $HOME/vault; mkdir $HOME/vault
   rm -rf get_download_link.sh 
@@ -112,7 +112,7 @@ start_vault_server() {
 
 sysbench_run() {
 
-ssh mysql@DB1 """  
+ssh mysql@DB1_PUB """  
   echo "printing BASEDIR1 value $BASEDIR1"
   echo "printing SOCKET1 value $SOCKET1"
 
@@ -142,9 +142,9 @@ ssh mysql@DB1 """
     RAND=$[$RANDOM%50 + 1 ]
   # -N suppresses column names and -s is silent mode
     
-    count_1=$(ssh mysql@DB1 """$BASEDIR1/bin/mysql -uroot -S$SOCKET1 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
-    count_2=$(ssh mysql@DB2 """$BASEDIR2/bin/mysql -uroot -S$SOCKET2 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
-    count_3=$(ssh mysql@DB3 """$BASEDIR3/bin/mysql -uroot -S$SOCKET3 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_1=$(ssh mysql@DB1_PUB """$BASEDIR1/bin/mysql -uroot -S$SOCKET1 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_2=$(ssh mysql@DB2_PUB """$BASEDIR2/bin/mysql -uroot -S$SOCKET2 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_3=$(ssh mysql@DB3_PUB """$BASEDIR3/bin/mysql -uroot -S$SOCKET3 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
 
   if [ $count_1 -eq $count_2 ]; then
    if [ $count_2 -eq $count_3 ]; then
@@ -165,21 +165,21 @@ cleanup() {
   echo "Deleting global & local manifest files from all 3 nodes"
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
-      ssh mysql@DB1 """
+      ssh mysql@DB1_PUB """
         BASEDIR=$BASEDIR1
         WORKDIR=$WORKDIR1
         rm -rf $BASEDIR/bin/mysqld.my || true
         rm -rf $WORKDIR/dn$i/mysqld.my || true
       """
     elif [ $i -eq 2 ]; then
-      ssh mysql@DB2 """
+      ssh mysql@DB2_PUB """
         BASEDIR=$BASEDIR2
         WORKDIR=$WORKDIR2
         rm -rf $BASEDIR/bin/mysqld.my || true
         rm -rf $WORKDIR/dn$i/mysqld.my || true
       """
     elif [ $i -eq 3 ]; then
-      ssh mysql@DB3 """
+      ssh mysql@DB3_PUB """
         BASEDIR=$BASEDIR3
         WORKDIR=$WORKDIR3
         rm -rf $BASEDIR/bin/mysqld.my || true
@@ -191,21 +191,21 @@ cleanup() {
   echo "Deleting global & local config files from all 3 nodes"
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
-      ssh mysql@DB1 """
+      ssh mysql@DB1_PUB """
         BASEDIR=$BASEDIR1
         WORKDIR=$WORKDIR1
         rm -rf $BASEDIR/lib/plugin/component_$component_name.cnf || true
         rm -rf $WORKDIR/dn$i/component_$component_name.cnf || true
       """
     elif [ $i -eq 2 ]; then
-      ssh mysql@DB2 """
+      ssh mysql@DB2_PUB """
         BASEDIR=$BASEDIR2
         WORKDIR=$WORKDIR2
         rm -rf $BASEDIR/lib/plugin/component_$component_name.cnf || true
         rm -rf $WORKDIR/dn$i/component_$component_name.cnf || true
       """
     elif [ $i -eq 3 ]; then
-      ssh mysql@DB3 """
+      ssh mysql@DB3_PUB """
         BASEDIR=$BASEDIR3
         WORKDIR=$WORKDIR3
         rm -rf $BASEDIR/lib/plugin/component_$component_name.cnf || true
@@ -230,7 +230,7 @@ create_global_manifest() {
 
   if [ $node -eq 1 ]; then
     BASEDIR=$BASEDIR1
-    ssh mysql@DB1 """
+    ssh mysql@DB1_PUB """
   set -xe
 
 
@@ -243,7 +243,7 @@ EOF
     """  
   elif [ $node -eq 2 ]; then
     BASEDIR=$BASEDIR2
-    ssh mysql@DB2 """
+    ssh mysql@DB2_PUB """
   set -xe
 
 
@@ -257,7 +257,7 @@ EOF
     """
   elif [ $node -eq 3 ]; then
     BASEDIR=$BASEDIR3
-    ssh mysql@DB3 """
+    ssh mysql@DB3_PUB """
   set -xe
 
 
@@ -285,7 +285,7 @@ create_local_manifest() {
   fi
 
   if [ $node -eq 1 ]; then
-ssh mysql@DB1 """
+ssh mysql@DB1_PUB """
   set -xe
 
     BASEDIR=$BASEDIR1
@@ -294,7 +294,7 @@ ssh mysql@DB1 """
     cat << EOF >${BASEDIR}/bin/mysqld.my
 {
 \"read_local_manifest\":true
-}
+}component_keyring_file
 EOF
 
     cat << EOF >${WORKDIR}/dn$node/mysqld.my
@@ -305,7 +305,7 @@ EOF
 
 """
   elif [ $node -eq 2 ]; then
-ssh mysql@DB2 """
+ssh mysql@DB2_PUB """
   set -xe
 
     BASEDIR=$BASEDIR2
@@ -325,7 +325,7 @@ EOF
 
 """
   elif [ $node -eq 3 ]; then
-ssh mysql@DB3 """
+ssh mysql@DB3_PUB """
   set -xe
 
 
@@ -357,7 +357,7 @@ create_global_config() {
   if [ $node -eq 1 ]; then
     BASEDIR=$BASEDIR1
     WORKDIR=$WORKDIR1
-ssh mysql@DB1 """
+ssh mysql@DB1_PUB """
 
   set -xe
 
@@ -379,7 +379,7 @@ EOF
   elif [ $node -eq 2 ]; then
     BASEDIR=$BASEDIR2
     WORKDIR=$WORKDIR2
-ssh mysql@DB2 """
+ssh mysql@DB2_PUB """
   set -xe
 
   echo "Node$node: Creating global configuration file for component: $component_name"
@@ -400,7 +400,7 @@ EOF
   elif [ $node -eq 3 ]; then
     BASEDIR=$BASEDIR3
     WORKDIR=$WORKDIR3
-ssh mysql@DB3 """
+ssh mysql@DB3_PUB """
   set -xe
 
   echo "Node$node: Creating global configuration file for component: $component_name"
@@ -427,7 +427,7 @@ create_local_config() {
   if [ $node -eq 1 ]; then
     BASEDIR=$BASEDIR1
     WORKDIR=$WORKDIR1
-ssh mysql@DB1 """
+ssh mysql@DB1_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
     cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
@@ -465,7 +465,7 @@ EOF
   elif [ $node -eq 2 ]; then
     BASEDIR=$BASEDIR2
     WORKDIR=$WORKDIR2
-ssh mysql@DB2 """
+ssh mysql@DB2_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
     cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
@@ -503,7 +503,7 @@ EOF
   elif [ $node -eq 3 ]; then
     BASEDIR=$BASEDIR3
     WORKDIR=$WORKDIR3
-ssh mysql@DB3 """
+ssh mysql@DB3_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
     cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
@@ -551,7 +551,7 @@ if [ $node -eq 1 ]; then
 
 echo "Creating n1.cnf"
 
-ssh mysql@DB1 """
+ssh mysql@DB1_PUB """
 
 set -xe
 
@@ -592,13 +592,13 @@ binlog_encryption=ON
 pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
-wsrep_cluster_address='gcomm://DB2:6030,DB3:6030'
+wsrep_cluster_address='gcomm://DB2_PRIV:6030,DB3_PRIV:6030'
 wsrep_provider=$BASEDIR1/lib/libgalera_smm.so
-wsrep_sst_receive_address=DB1:6020
-wsrep_node_incoming_address=DB1
+wsrep_sst_receive_address=DB1_PRIV:6020
+wsrep_node_incoming_address=DB1_PRIV
 wsrep_slave_threads=2
 wsrep_cluster_name=my_pxc
-wsrep_provider_options = \"gmcast.listen_addr=tcp://DB1:6030; base_host=DB1; base_port=6030; ist.recv_addr = DB1;\"
+wsrep_provider_options = \"gmcast.listen_addr=tcp://DB1_PRIV:6030; base_host=DB1_PRIV; base_port=6030; ist.recv_addr = DB1_PRIV;\"
 wsrep_sst_method=xtrabackup-v2
 wsrep_node_name=node4000
 innodb_autoinc_lock_mode=2
@@ -633,7 +633,7 @@ fi
 if [ $node -eq 2 ]; then
 
 echo "Creating n2.cnf"
-ssh mysql@DB2 """
+ssh mysql@DB2_PUB """
 set -xe
 cat << EOF > $WORKDIR2/n2.cnf
 [mysqld]
@@ -666,13 +666,13 @@ binlog_encryption=ON
 pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
-wsrep_cluster_address='gcomm://DB1:6030,DB3:6030'
+wsrep_cluster_address='gcomm://DB1_PRIV:6030,DB3_PRIV:6030'
 wsrep_provider=$BASEDIR2/lib/libgalera_smm.so
-wsrep_sst_receive_address=DB2:6020
-wsrep_node_incoming_address=DB2
+wsrep_sst_receive_address=DB2_PRIV:6020
+wsrep_node_incoming_address=DB2_PRIV
 wsrep_slave_threads=2
 wsrep_cluster_name=my_pxc
-wsrep_provider_options = \"gmcast.listen_addr=tcp://DB2:6030; base_host=DB2; base_port=6030; ist.recv_addr = DB2;\"
+wsrep_provider_options = \"gmcast.listen_addr=tcp://DB2_PRIV:6030; base_host=DB2_PRIV; base_port=6030; ist.recv_addr = DB2_PRIV;\"
 wsrep_sst_method=xtrabackup-v2
 wsrep_node_name=node5000
 innodb_autoinc_lock_mode=2
@@ -704,7 +704,7 @@ fi
 if [ $node -eq 3 ]; then
 
 echo "Creating n3.cnf"
-ssh mysql@DB3 """
+ssh mysql@DB3_PUB """
 set -xe
 
 cat << EOF > $WORKDIR3/n3.cnf
@@ -738,14 +738,14 @@ binlog_encryption=ON
 pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
-wsrep_cluster_address='gcomm://DB1:6030,DB2:6030'
+wsrep_cluster_address='gcomm://DB1_PRIV:6030,DB2_PRIV:6030'
 wsrep_provider=$BASEDIR3/lib/libgalera_smm.so
-wsrep_sst_receive_address=DB3:6020
-wsrep_node_incoming_address=DB3
+wsrep_sst_receive_address=DB3_PRIV:6020
+wsrep_node_incoming_address=DB3_PRIV
 wsrep_slave_threads=2
 wsrep_debug=1
 wsrep_cluster_name=my_pxc
-wsrep_provider_options = \"gmcast.listen_addr=tcp://DB3:6030; base_host=DB3; base_port=6030; ist.recv_addr = DB3;\"
+wsrep_provider_options = \"gmcast.listen_addr=tcp://DB3_PRIV:6030; base_host=DB3_PRIV; base_port=6030; ist.recv_addr = DB3_PRIV;\"
 wsrep_sst_method=xtrabackup-v2
 wsrep_node_name=node6000
 innodb_autoinc_lock_mode=2
@@ -804,19 +804,19 @@ pxc_startup_status(){
 
       SOCKET=$SOCKET1
       ERR_FILE=$ERR_FILE1
-      OUTPUT=$(ssh mysql@DB1 """${BASEDIR1}/bin/mysqladmin -uroot -S ${SOCKET} ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB1_PUB """${BASEDIR1}/bin/mysqladmin -uroot -S ${SOCKET} ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     elif [ $NR -eq 2 ]; then
 
       SOCKET=$SOCKET2
       ERR_FILE=$ERR_FILE2
-      OUTPUT=$(ssh mysql@DB2 """${BASEDIR2}/bin/mysqladmin -uroot -S ${SOCKET} ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB2_PUB """${BASEDIR2}/bin/mysqladmin -uroot -S ${SOCKET} ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     elif [ $NR -eq 3 ]; then
 
       SOCKET=$SOCKET3
       ERR_FILE=$ERR_FILE3
-      OUTPUT=$(ssh mysql@DB3 """${BASEDIR3}/bin/mysqladmin -uroot -S ${SOCKET} ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB3_PUB """${BASEDIR3}/bin/mysqladmin -uroot -S ${SOCKET} ping | grep 'mysqld is alive'""") > /dev/null 2>&1
     fi
 
     echo "OUTPUT Command response: $OUTPUT"
@@ -834,7 +834,7 @@ pxc_startup_status(){
 # how this function will work ?
 init_datadir_template() {
 
-  ssh mysql@DB1 """
+  ssh mysql@DB1_PUB """
 
   set -xe
 
@@ -845,7 +845,7 @@ init_datadir_template() {
   $BASEDIR1/bin/mysqld --no-defaults --datadir=$BASEDIR1/data.template/dn1 --basedir=$BASEDIR1 --initialize-insecure --log-error=$BASEDIR1/data.template/node1.err
   """
 
-  ssh mysql@DB2 """
+  ssh mysql@DB2_PUB """
 
   set -xe
   echo "Before"
@@ -857,7 +857,7 @@ init_datadir_template() {
   $BASEDIR2/bin/mysqld --no-defaults --datadir=$BASEDIR2/data.template/dn2 --basedir=$BASEDIR2 --initialize-insecure --log-error=$BASEDIR2/data.template/node2.err
   """
 
-  ssh mysql@DB3 """
+  ssh mysql@DB3_PUB """
 
   set -xe
   rm -rf $BASEDIR3/data.template
@@ -874,7 +874,7 @@ init_datadir_template() {
 init_datadir() {
   echo "Creating data directories"
   
-  ssh mysql@DB1 """
+  ssh mysql@DB1_PUB """
 
   set -xe
 
@@ -886,19 +886,19 @@ init_datadir() {
   
   cp -r $WORKDIR1/dn1/*.pem $WORKDIR1/cert/
 
-  scp $WORKDIR1/dn1/*.pem mysql@DB2:$WORKDIR2/cert/
+  scp $WORKDIR1/dn1/*.pem mysql@DB2_PUB:$WORKDIR2/cert/
 
-  scp $WORKDIR1/dn1/*.pem mysql@DB3:$WORKDIR3/cert/
+  scp $WORKDIR1/dn1/*.pem mysql@DB3_PUB:$WORKDIR3/cert/
   
   """
 
-  ssh mysql@DB2 """
+  ssh mysql@DB2_PUB """
   set -xe
   cp -r $BASEDIR2/data.template/dn2 $WORKDIR2/
   echo "Data directory created for dn2 $WORKDIR2"
   """
 
-  ssh mysql@DB3 """
+  ssh mysql@DB3_PUB """
   set -xe
   cp -r $BASEDIR2/data.template/dn3 $WORKDIR3/
   echo "Data directory created for dn3 $WORKDIR3"
@@ -908,7 +908,7 @@ init_datadir() {
 start_node1(){
     echo "Starting PXC nodes..."
     fetch_err_socket 1
-  ssh mysql@DB1 """
+  ssh mysql@DB1_PUB """
     set -xe
 
     $BASEDIR1/bin/mysqld --defaults-file=$BASEDIR1/pxc-node/n1.cnf --wsrep_new_cluster > ${ERR_FILE} 2>&1 &
@@ -920,7 +920,7 @@ start_node1(){
 start_node2() {
     fetch_err_socket 2
 
-  ssh mysql@DB2 """
+  ssh mysql@DB2_PUB """
     set -xe
 
     $BASEDIR2/bin/mysqld --defaults-file=$BASEDIR2/pxc-node/n2.cnf > ${ERR_FILE} 2>&1 &
@@ -932,7 +932,7 @@ start_node2() {
 start_node3() {
     fetch_err_socket 3
 
-  ssh mysql@DB3 """
+  ssh mysql@DB3_PUB """
   set -xe
 
     $BASEDIR3/bin/mysqld --defaults-file=$BASEDIR3/pxc-node/n3.cnf > ${ERR_FILE} 2>&1 &
@@ -949,17 +949,17 @@ for X in $(seq 0 10); do
   CLUSTER_UP=0;
   
 
-    if [ $(ssh mysql@DB1 """${BASEDIR1}/bin/mysql -uroot -S${SOCKET1} -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB1_PUB """${BASEDIR1}/bin/mysql -uroot -S${SOCKET1} -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ $(ssh mysql@DB2 """${BASEDIR1}/bin/mysql -uroot -S${SOCKET2} -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB2_PUB """${BASEDIR1}/bin/mysql -uroot -S${SOCKET2} -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ $(ssh mysql@DB3 """${BASEDIR1}/bin/mysql -uroot -S${SOCKET3} -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB3_PUB """${BASEDIR1}/bin/mysql -uroot -S${SOCKET3} -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB1 """${BASEDIR1}/bin/mysql -uroot -S${SOCKET1} -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB1_PUB """${BASEDIR1}/bin/mysql -uroot -S${SOCKET1} -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB2 """${BASEDIR1}/bin/mysql -uroot -S${SOCKET2} -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB2_PUB """${BASEDIR1}/bin/mysql -uroot -S${SOCKET2} -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB3 """${BASEDIR1}/bin/mysql -uroot -S${SOCKET3} -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB3_PUB """${BASEDIR1}/bin/mysql -uroot -S${SOCKET3} -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
   # If count reached 6 (there are 6 checks), then the Cluster is up & running and consistent in it's Cluster topology views (as seen by each node)
   if [ ${CLUSTER_UP} -eq 6 ]; then
@@ -977,15 +977,15 @@ done
 ###########################################
 echo "Killing any previous running mysqld"
 
-ssh root@DB1 """
+ssh mysql@DB1_PUB """
 pkill -9 mysql
 """
 
-ssh root@DB2 """
+ssh mysql@DB2_PUB """
 pkill -9 mysql
 """
 
-ssh root@DB3 """
+ssh mysql@DB3_PUB """
 pkill -9 mysql
 """
 
