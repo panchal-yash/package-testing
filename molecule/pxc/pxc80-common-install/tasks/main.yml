@@ -97,7 +97,15 @@
   - name: start mysql service
     service: name=mysql state=started
     throttle: 1
-    
+    ignore_errors: true
+
+  - name: Sleep for 60 seconds
+    shell: sleep 60
+
+  - name: start mysql service again for resolving the pxc node 2 error on focal
+    service: name=mysql state=started
+    throttle: 1
+
   - name: register PXC version Molecule
     shell: mysqld --version
     register: pxc_version
