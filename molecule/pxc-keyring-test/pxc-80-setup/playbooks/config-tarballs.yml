@@ -52,3 +52,31 @@
   - name: Git commands to enable sub modules
     shell: cd /home/mysql/percona-xtradb-cluster && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive
     tags: git
+
+  - name: Keep no Password 
+    shell: "echo \"mysql ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers"
+    tags: nopass
+
+  - name: Add mysql user to sudoers group
+    shell: usermod -aG sudo mysql
+    tags: suoder
+
+  - name: Ensure that the unzipped folders permission is proper
+    shell: chown -R mysql:sudo /home/mysql/percona-xtradb-cluster
+    tags: permissions
+
+  - name: install XTRABACKUP
+    shell: curl -O https://repo.percona.com/apt/percona-release_latest.generic_all.deb ; sudo apt install gnupg2 lsb-release ./percona-release_latest.generic_all.deb -y ; sudo apt update -y ;
+    tags: pxb
+
+  - name: Enable pxb80
+    shell: sudo percona-release enable pxb-80 testing ; apt-get update -y ; apt-get install percona-xtrabackup-80 -y
+    tags: pxb
+
+  - name: Move the pxb binaries to the path
+    shell: BASEDIR="/home/mysql/percona-xtradb-cluster/install_build/install" ; cp /usr/bin/xtrabackup $BASEDIR/bin/pxc_extra/pxb-8.0/bin/
+    tags: pxbmove
+
+  - name: Install Socat
+    shell: sudo apt-get install socat -y
+    tags: socat
