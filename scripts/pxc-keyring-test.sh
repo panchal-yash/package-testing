@@ -886,9 +886,9 @@ init_datadir() {
   
   cp -r $WORKDIR1/dn1/*.pem $WORKDIR1/cert/
 
-  scp $WORKDIR1/dn1/*.pem mysql@DB2_PRIV:$WORKDIR2/cert/
+  scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $WORKDIR1/dn1/*.pem mysql@DB2_PRIV:$WORKDIR2/cert/
 
-  scp $WORKDIR1/dn1/*.pem mysql@DB3_PRIV:$WORKDIR3/cert/
+  scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $WORKDIR1/dn1/*.pem mysql@DB3_PRIV:$WORKDIR3/cert/
   
   """
 
