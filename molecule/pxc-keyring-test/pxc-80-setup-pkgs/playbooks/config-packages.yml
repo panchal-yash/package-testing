@@ -1,0 +1,10 @@
+---
+- name: Move the file to 3 remote 
+  hosts: all
+  become: true
+  become_method: sudo
+  vars:
+      KEY: "{{ lookup('env', 'KEY') }}"
+  tasks:
+  - name: Fetch the vars from file
+    shell: echo "No further things are needed..."

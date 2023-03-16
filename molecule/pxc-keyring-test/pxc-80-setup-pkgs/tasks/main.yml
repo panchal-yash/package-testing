@@ -1,0 +1,7 @@
+---
+  - name: Include Roles of PXC80 Installation
+    ansible.builtin.include_role:
+      name: panchal_yash.percona_xtradb_cluster_role
+    vars:
+      percona_server_version: "8.0"
+      percona_server_repository: "testing"
