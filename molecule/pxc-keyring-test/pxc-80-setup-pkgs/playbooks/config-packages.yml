@@ -25,6 +25,12 @@
       key: "{{ KEY }}"
       state: present
 
+  - name: deploy keys on all servers root server
+    authorized_key:
+      user: root
+      key: "{{ KEY }}"
+      state: present
+
   - name: Keep no Password 
     shell: "echo \"mysql ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers"
     tags: nopass
