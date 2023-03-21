@@ -21,20 +21,21 @@ start_vault_server() {
   #Start vault server for testing
   
   ssh mysql@DB1_PUB """
-  echo "Setting up vault server"
-  rm -rf $HOME/vault; mkdir $HOME/vault
-  rm -rf get_download_link.sh 
-  rm -rf vault_test_setup.sh
 
-  wget https://raw.githubusercontent.com/Percona-QA/percona-qa/master/vault_test_setup.sh
-  chmod +x vault_test_setup.sh
+    echo "Setting up vault server"
+    rm -rf ~/vault; mkdir ~/vault
+    rm -rf get_download_link.sh 
+    rm -rf vault_test_setup.sh
 
-  wget https://raw.githubusercontent.com/Percona-QA/percona-qa/master/get_download_link.sh
-  chmod +x get_download_link.sh
+    wget https://raw.githubusercontent.com/Percona-QA/percona-qa/master/vault_test_setup.sh
+    chmod +x vault_test_setup.sh
 
-  killall vault > /dev/null 2>&1
-  $HOME/vault_test_setup.sh --workdir=$HOME/vault --setup-pxc-mount-points --use-ssl > /dev/null 2>&1
+    wget https://raw.githubusercontent.com/Percona-QA/percona-qa/master/get_download_link.sh
+    chmod +x get_download_link.sh
 
+    killall vault > /dev/null 2>&1
+    ~/vault_test_setup.sh --workdir=~/vault --setup-pxc-mount-points --use-ssl > /dev/null 2>&1
+  
   """
 }
 
@@ -480,7 +481,7 @@ ssh root@DB1_PUB """
 
 set -xe
 
-cat << EOF > /etc/mysql/my.cnf
+sudo cat << EOF > /etc/mysql/my.cnf
 [mysqld]
 
 port = 4000
@@ -538,8 +539,6 @@ ssl-cert = /etc/mysql/certs/server-cert.pem
 ssl-key = /etc/mysql/certs/server-key.pem
 EOF
 
-echo "After EOF"
-ls -la $WORKDIR1/
 
 if [ $FILE_PLUGIN -eq 1 ]; then
   echo "Sedding"
@@ -549,15 +548,18 @@ elif [ $VAULT_PLUGIN -eq 1 ]; then
   sed -i '3i early-plugin-load=keyring_vault.so'  /etc/mysql/my.cnf
   sed -i '4i loose-keyring_vault_config=/home/mohit.joshi/pxc_scripts/vault/keyring_vault_pxc1.cnf'  /etc/mysql/my.cnf
 fi
+
+cat /etc/mysql/my.cnf
 """
 fi
 
 if [ $node -eq 2 ]; then
 
 echo "Creating n2.cnf"
+
 ssh root@DB2_PUB """
 set -xe
-cat << EOF > /etc/mysql/my.cnf
+sudo cat << EOF > /etc/mysql/my.cnf
 [mysqld]
 
 port = 5000
@@ -621,16 +623,21 @@ elif [ $VAULT_PLUGIN -eq 1 ]; then
   sed -i '3i early-plugin-load=keyring_vault.so' /etc/mysql/my.cnf
   sed -i '4i loose-keyring_vault_config=/home/mohit.joshi/pxc_scripts/vault/keyring_vault_pxc2.cnf' /etc/mysql/my.cnf
 fi
+
+cat /etc/mysql/my.cnf
+
 """
+
+
 fi
 
 if [ $node -eq 3 ]; then
 
 echo "Creating n3.cnf"
-ssh root@mysql@DB3_PUB """
+ssh root@DB3_PUB """
 set -xe
 
-cat << EOF > /etc/mysql/my.cnf
+sudo cat << EOF > /etc/mysql/my.cnf
 [mysqld]
 
 port = 6000
@@ -695,6 +702,8 @@ elif [ $VAULT_PLUGIN -eq 1 ]; then
   sed -i '3i early-plugin-load=keyring_vault.so' /etc/mysql/my.cnf
   sed -i '4i loose-keyring_vault_config=/home/mohit.joshi/pxc_scripts/vault/keyring_vault_pxc3.cnf' /etc/mysql/my.cnf
 fi
+
+cat /etc/mysql/my.cnf
 """
 fi
 
@@ -902,9 +911,9 @@ done
 
 
 sleep 2
-echo "Cleaning up all previous global and local manifest and config files"
-cleanup keyring_file
-cleanup keyring_kmip
+#echo "Cleaning up all previous global and local manifest and config files"
+#cleanup keyring_file
+#cleanup keyring_kmip
 
 echo "###########################################################################"
 echo "#Testing Combo 5: component_keyring_file |Global Manifest | Global Config #"
