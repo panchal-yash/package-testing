@@ -9,8 +9,8 @@
   - name: Create mysql user
     ansible.builtin.user:
       name: mysql
-      comment: Mysql User
-      group: sudo
+      comment: Mysql User added to root group
+      group: root
   
   - name: Create a 2048-bit SSH key for user mysql in ~jsmith/.ssh/id_rsa
     ansible.builtin.user:
@@ -25,18 +25,12 @@
       key: "{{ KEY }}"
       state: present
 
-  - name: deploy keys on all servers root user
-    authorized_key:
-      user: root
-      key: "{{ KEY }}"
-      state: present
-
   - name: Keep no Password 
     shell: "echo \"mysql ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers"
     tags: nopass
 
   - name: Add mysql user to sudoers group
-    shell: usermod -aG sudo mysql
+    shell: usermod -aG root mysql
     tags: suoder
 
   - name: Install Socat

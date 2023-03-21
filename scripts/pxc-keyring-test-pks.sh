@@ -476,7 +476,7 @@ if [ $node -eq 1 ]; then
 
 echo "Creating n1.cnf"
 
-ssh root@DB1_PUB """
+ssh mysql@DB1_PUB """
 
 set -xe
 
@@ -555,7 +555,7 @@ fi
 if [ $node -eq 2 ]; then
 
 echo "Creating n2.cnf"
-ssh root@DB2_PUB """
+ssh mysql@DB2_PUB """
 set -xe
 cat << EOF > /etc/mysql/my.cnf
 [mysqld]
@@ -627,7 +627,7 @@ fi
 if [ $node -eq 3 ]; then
 
 echo "Creating n3.cnf"
-ssh root@DB3_PUB """
+ssh mysql@DB3_PUB """
 set -xe
 
 cat << EOF > /etc/mysql/my.cnf
