@@ -19,9 +19,15 @@
       ssh_key_bits: 2048
       ssh_key_file: .ssh/id_rsa
 
-  - name: deploy keys on all servers
+  - name: deploy keys on all servers mysql server
     authorized_key:
       user: mysql
+      key: "{{ KEY }}"
+      state: present
+
+  - name: deploy keys on all servers root user
+    authorized_key:
+      user: root
       key: "{{ KEY }}"
       state: present
 

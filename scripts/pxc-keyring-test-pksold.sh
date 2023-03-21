@@ -9,7 +9,7 @@ set +xe
 
 BASEDIR=/usr/
 
-FILE_PLUGIN=1
+FILE_PLUGIN=0
 VAULT_PLUGIN=0
 
 PXC_START_TIMEOUT=600
@@ -42,21 +42,21 @@ sysbench_run() {
 
 ssh mysql@DB1_PUB """  
   echo "...Creating sysbench user"
-  sudo mysql -uroot -e\"CREATE USER 'sysbench'@'localhost' IDENTIFIED BY 'test'\"
+  mysql -uroot -e\"CREATE USER 'sysbench'@'localhost' IDENTIFIED BY 'test'\"
   echo "Successful"
   echo "...Granting permissions to sysbench user"
-  sudo mysql -uroot -e\"GRANT ALL ON *.* TO 'sysbench'@'localhost'\"
+  mysql -uroot -e\"GRANT ALL ON *.* TO 'sysbench'@'localhost'\"
   echo "Successful"
   echo "...Creating sbtest database"
-  sudo mysql -uroot -e\"DROP DATABASE IF EXISTS sbtest\"
-  sudo mysql -uroot -e\"CREATE DATABASE sbtest ENCRYPTION='Y'\"
+  mysql -uroot -e\"DROP DATABASE IF EXISTS sbtest\"
+  mysql -uroot -e\"CREATE DATABASE sbtest ENCRYPTION='Y'\"
   echo "Successful"
 
   echo "...Preparing sysbench data on Node 1"
-  sudo sysbench /usr/share/sysbench/oltp_insert.lua --mysql-db=sbtest --mysql-user=sysbench --mysql-password=test --db-driver=mysql --threads=5 --tables=50 --table-size=1000 prepare > /dev/null 2>&1
+  sysbench /usr/share/sysbench/oltp_insert.lua --mysql-db=sbtest --mysql-user=sysbench --mysql-password=test --db-driver=mysql --threads=5 --tables=50 --table-size=1000 prepare > /dev/null 2>&1
   echo "Data loaded successfully"
   echo "...Running sysbench load on Node 1 for 30 seconds"
-  sudo sysbench /usr/share/sysbench/oltp_read_write.lua --mysql-db=sbtest --mysql-user=sysbench --mysql-password=test --db-driver=mysql --threads=5 --tables=50 --time=30 --report-interval=1 --events=1870000000 --db-ps-mode=disable run > /dev/null 2>&1
+  sysbench /usr/share/sysbench/oltp_read_write.lua --mysql-db=sbtest --mysql-user=sysbench --mysql-password=test --db-driver=mysql --threads=5 --tables=50 --time=30 --report-interval=1 --events=1870000000 --db-ps-mode=disable run > /dev/null 2>&1
   echo "Sysbench run successful"
 """
 
@@ -67,9 +67,9 @@ ssh mysql@DB1_PUB """
     RAND=$[$RANDOM%50 + 1 ]
   # -N suppresses column names and -s is silent mode
     
-    count_1=$(ssh mysql@DB1_PUB """sudo mysql -uroot -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
-    count_2=$(ssh mysql@DB2_PUB """sudo mysql -uroot -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
-    count_3=$(ssh mysql@DB3_PUB """sudo mysql -uroot -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_1=$(ssh mysql@DB1_PUB """$BASEDIR1/bin/mysql -uroot -S$SOCKET1 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_2=$(ssh mysql@DB2_PUB """$BASEDIR2/bin/mysql -uroot -S$SOCKET2 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_3=$(ssh mysql@DB3_PUB """$BASEDIR3/bin/mysql -uroot -S$SOCKET3 -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
 
   if [ $count_1 -eq $count_2 ]; then
    if [ $count_2 -eq $count_3 ]; then
@@ -476,7 +476,7 @@ if [ $node -eq 1 ]; then
 
 echo "Creating n1.cnf"
 
-ssh root@DB1_PUB """
+ssh mysql@DB1_PUB """
 
 set -xe
 
@@ -519,7 +519,7 @@ wsrep_sst_receive_address=DB1_PRIV:6020
 wsrep_node_incoming_address=DB1_PRIV
 wsrep_slave_threads=2
 wsrep_cluster_name=my_pxc
-wsrep_provider_options = \"gmcast.listen_addr=tcp://DB1_PRIV:6030; base_host=DB1_PRIV; base_port=6030; ist.recv_addr=DB1_PRIV;\"
+wsrep_provider_options = \"gmcast.listen_addr=tcp://DB1_PRIV:6030; base_host=DB1_PRIV; base_port=6030; ist.recv_addr = DB1_PRIV;\"
 wsrep_sst_method=xtrabackup-v2
 wsrep_node_name=node4000
 innodb_autoinc_lock_mode=2
@@ -542,7 +542,6 @@ echo "After EOF"
 ls -la $WORKDIR1/
 
 if [ $FILE_PLUGIN -eq 1 ]; then
-  echo "Sedding"
   sed -i '3i early-plugin-load=keyring_file.so' /etc/mysql/my.cnf
   sed -i '4i keyring_file_data=keyring' /etc/mysql/my.cnf
 elif [ $VAULT_PLUGIN -eq 1 ]; then
@@ -555,7 +554,7 @@ fi
 if [ $node -eq 2 ]; then
 
 echo "Creating n2.cnf"
-ssh root@DB2_PUB """
+ssh mysql@DB2_PUB """
 set -xe
 cat << EOF > /etc/mysql/my.cnf
 [mysqld]
@@ -595,7 +594,7 @@ wsrep_sst_receive_address=DB2_PRIV:6020
 wsrep_node_incoming_address=DB2_PRIV
 wsrep_slave_threads=2
 wsrep_cluster_name=my_pxc
-wsrep_provider_options = \"gmcast.listen_addr=tcp://DB2_PRIV:6030; base_host=DB2_PRIV; base_port=6030; ist.recv_addr=DB2_PRIV;\"
+wsrep_provider_options = \"gmcast.listen_addr=tcp://DB2_PRIV:6030; base_host=DB2_PRIV; base_port=6030; ist.recv_addr = DB2_PRIV;\"
 wsrep_sst_method=xtrabackup-v2
 wsrep_node_name=node5000
 innodb_autoinc_lock_mode=2
@@ -627,7 +626,7 @@ fi
 if [ $node -eq 3 ]; then
 
 echo "Creating n3.cnf"
-ssh root@DB3_PUB """
+ssh mysql@DB3_PUB """
 set -xe
 
 cat << EOF > /etc/mysql/my.cnf
@@ -669,7 +668,7 @@ wsrep_node_incoming_address=DB3_PRIV
 wsrep_slave_threads=2
 wsrep_debug=1
 wsrep_cluster_name=my_pxc
-wsrep_provider_options = \"gmcast.listen_addr=tcp://DB3_PRIV:6030; base_host=DB3_PRIV; base_port=6030; ist.recv_addr=DB3_PRIV;\"
+wsrep_provider_options = \"gmcast.listen_addr=tcp://DB3_PRIV:6030; base_host=DB3_PRIV; base_port=6030; ist.recv_addr = DB3_PRIV;\"
 wsrep_sst_method=xtrabackup-v2
 wsrep_node_name=node6000
 innodb_autoinc_lock_mode=2
@@ -726,15 +725,15 @@ pxc_startup_status(){
     sleep 1
     if [ $NR -eq 1 ]; then
 
-      OUTPUT=$(ssh mysql@DB1_PUB """sudo mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB1_PUB """mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     elif [ $NR -eq 2 ]; then
 
-      OUTPUT=$(ssh mysql@DB2_PUB """sudo mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB2_PUB """mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     elif [ $NR -eq 3 ]; then
 
-      OUTPUT=$(ssh mysql@DB3_PUB """sudo mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB3_PUB """mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     fi
 
@@ -830,7 +829,7 @@ start_node1(){
     
     set -xe
 
-    sudo systemctl start mysql@bootstrap
+    systemctl start mysql@bootstrap
     
   """
   pxc_startup_status 1
@@ -843,7 +842,7 @@ start_node2() {
     
     set -xe
 
-    sudo systemctl start mysql
+    systemctl start mysql
 
   """
     pxc_startup_status 2
@@ -857,7 +856,7 @@ start_node3() {
   
     set -xe
 
-    sudo systemctl start mysql
+    systemctl start mysql
 
   """
     pxc_startup_status 3
@@ -872,17 +871,17 @@ cluster_up_check() {
     CLUSTER_UP=0;
   
 
-    if [ $(ssh mysql@DB1_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB1_PUB """${BASEDIR1}/bin/mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ $(ssh mysql@DB2_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB2_PUB """${BASEDIR1}/bin/mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ $(ssh mysql@DB3_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB3_PUB """${BASEDIR1}/bin/mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB1_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB1_PUB """${BASEDIR1}/bin/mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB2_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB2_PUB """${BASEDIR1}/bin/mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB3_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB3_PUB """${BASEDIR1}/bin/mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
   # If count reached 6 (there are 6 checks), then the Cluster is up & running and consistent in it's Cluster topology views (as seen by each node)
 
