@@ -910,12 +910,23 @@ create_conf 1
 create_conf 2
 create_conf 3
 #init_datadir
-create_global_manifest keyring_file 1
-create_global_manifest keyring_file 2
-create_global_manifest keyring_file 3
-create_global_config keyring_file 1
-create_global_config keyring_file 2
-create_global_config keyring_file 3
+
+#create_global_manifest keyring_file 1
+#create_global_manifest keyring_file 2
+#create_global_manifest keyring_file 3
+#create_global_config keyring_file 1
+#create_global_config keyring_file 2
+#create_global_config keyring_file 3
+
+
+create_local_manifest keyring_file 1
+create_local_manifest keyring_file 2
+create_local_manifest keyring_file 3
+
+create_local_config keyring_file 1
+create_local_config keyring_file 2
+create_local_config keyring_file 3
+
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
 start_node3;MPID3="$!"
