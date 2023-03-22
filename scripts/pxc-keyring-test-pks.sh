@@ -91,17 +91,17 @@ cleanup() {
   echo "Deleting global & local manifest files from all 3 nodes"
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
-      ssh mysql@DB1_PUB """
+      ssh root@DB1_PUB """
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql/mysqld.my || true
       """
     elif [ $i -eq 2 ]; then
-      ssh mysql@DB2_PUB """
+      ssh root@DB2_PUB """
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql/mysqld.my || true
       """
     elif [ $i -eq 3 ]; then
-      ssh mysql@DB3_PUB """
+      ssh root@DB3_PUB """
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql/mysqld.my || true
       """
@@ -111,20 +111,20 @@ cleanup() {
   echo "Deleting global & local config files from all 3 nodes"
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
-      ssh mysql@DB1_PUB """
+      ssh root@DB1_PUB """
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
         rm -rf /var/lib/mysql/component_$component_name.cnf || true
         rm -rf /var/lib/mysql/component_$component_name || true    
       """
 # Added         rm -rf /var/lib/mysql/component_$component_name || true      
     elif [ $i -eq 2 ]; then
-      ssh mysql@DB2_PUB """
+      ssh root@DB2_PUB """
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
         rm -rf /var/lib/mysql/component_$component_name.cnf || true
         rm -rf /var/lib/mysql/component_$component_name || true
       """
     elif [ $i -eq 3 ]; then
-      ssh mysql@DB3_PUB """
+      ssh root@DB3_PUB """
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
         rm -rf /var/lib/mysql/component_$component_name.cnf || true
         rm -rf /var/lib/mysql/component_$component_name || true
@@ -139,21 +139,22 @@ kill_server(){
 
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
-      ssh root@DB1_PUB """
-        systemctl stop mysql@bootstrap
-        systemctl disable mysql@bootstrap
+      ssh mysql@DB1_PUB """
+        sudo systemctl stop mysql@bootstrap
+        sudo systemctl disable mysql@bootstrap
       """
     elif [ $i -eq 2 ]; then
-      ssh root@DB2_PUB """
-        systemctl stop mysql
-        systemctl disable mysql
+      ssh mysql@DB2_PUB """
+        sudo systemctl stop mysql
+        sudo systemctl disable mysql
       """
     elif [ $i -eq 3 ]; then
-      ssh root@DB3_PUB """
-        systemctl stop mysql
-        systemctl disable mysql
+      ssh mysql@DB3_PUB """
+        sudo systemctl stop mysql
+        sudo systemctl disable mysql
       """
     fi
+  done
 
 }
 
@@ -926,15 +927,6 @@ echo "##########################################################################
 create_conf 1
 create_conf 2
 create_conf 3
-#init_datadir
-
-#create_global_manifest keyring_file 1
-#create_global_manifest keyring_file 2
-#create_global_manifest keyring_file 3
-#create_global_config keyring_file 1
-#create_global_config keyring_file 2
-#create_global_config keyring_file 3
-
 
 create_local_manifest keyring_file 1
 create_local_manifest keyring_file 2
@@ -950,6 +942,11 @@ start_node3;MPID3="$!"
 cluster_up_check
 sysbench_run
 
+echo "....................Listing the local manifest and local config files...................."
+
+cat /usr/sbin/mysqld.my
+
+
 start_vault_server
 
 echo "Killing previous running mysqld"
@@ -957,7 +954,46 @@ kill_server
 echo "Cleaning up all previous global and local manifest and config files"
 cleanup keyring_file
 
-exit 1
+
+echo "###########################################################################"
+echo "#Testing Combo 1.1: component_keyring |Global Manifest | Global Config #"
+echo "###########################################################################"
+
+
+create_conf 1
+create_conf 2
+create_conf 3
+
+create_global_manifest keyring_file 1
+create_global_manifest keyring_file 2
+create_global_manifest keyring_file 3
+
+create_global_config keyring_file 1
+create_global_config keyring_file 2
+create_global_config keyring_file 3
+
+start_node1;MPID1="$!"
+start_node2;MPID2="$!"
+start_node3;MPID3="$!"
+cluster_up_check
+
+sysbench_run
+
+
+echo "....................Listing the global manifest and global config files...................."
+
+cat /usr/sbin/mysqld.my
+
+
+
+#start_vault_server
+
+echo "Killing previous running mysqld"
+kill_server
+echo "Cleaning up all previous global and local manifest and config files"
+cleanup keyring_file
+
+
 
 #echo "###########################################################################"
 #echo "#Testing Combo 1: component_keyring_kms |Global Manifest | Global Config #"
