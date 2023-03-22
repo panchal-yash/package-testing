@@ -92,24 +92,18 @@ cleanup() {
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
       ssh mysql@DB1_PUB """
-        BASEDIR=/usr/
-        WORKDIR=$WORKDIR1
-        rm -rf $BASEDIR/bin/mysqld.my || true
-        rm -rf $WORKDIR/dn$i/mysqld.my || true
+        rm -rf /usr/sbin/mysqld.my || true
+        rm -rf /var/lib/mysql/mysqld.my || true
       """
     elif [ $i -eq 2 ]; then
       ssh mysql@DB2_PUB """
-        BASEDIR=$BASEDIR2
-        WORKDIR=$WORKDIR2
-        rm -rf $BASEDIR/bin/mysqld.my || true
-        rm -rf $WORKDIR/dn$i/mysqld.my || true
+        rm -rf /usr/sbin/mysqld.my || true
+        rm -rf /var/lib/mysql/mysqld.my || true
       """
     elif [ $i -eq 3 ]; then
       ssh mysql@DB3_PUB """
-        BASEDIR=$BASEDIR3
-        WORKDIR=$WORKDIR3
-        rm -rf $BASEDIR/bin/mysqld.my || true
-        rm -rf $WORKDIR/dn$i/mysqld.my || true
+        rm -rf /usr/sbin/mysqld.my || true
+        rm -rf /var/lib/mysql/mysqld.my || true
       """
     fi
   done
@@ -118,28 +112,51 @@ cleanup() {
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
       ssh mysql@DB1_PUB """
-        BASEDIR=$BASEDIR1
-        WORKDIR=$WORKDIR1
-        rm -rf $BASEDIR/lib/plugin/component_$component_name.cnf || true
-        rm -rf $WORKDIR/dn$i/component_$component_name.cnf || true
+        rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
+        rm -rf /var/lib/mysql/component_$component_name.cnf || true
+        rm -rf /var/lib/mysql/component_$component_name || true    
       """
+# Added         rm -rf /var/lib/mysql/component_$component_name || true      
     elif [ $i -eq 2 ]; then
       ssh mysql@DB2_PUB """
-        BASEDIR=$BASEDIR2
-        WORKDIR=$WORKDIR2
-        rm -rf $BASEDIR/lib/plugin/component_$component_name.cnf || true
-        rm -rf $WORKDIR/dn$i/component_$component_name.cnf || true
+        rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
+        rm -rf /var/lib/mysql/component_$component_name.cnf || true
+        rm -rf /var/lib/mysql/component_$component_name || true
       """
     elif [ $i -eq 3 ]; then
       ssh mysql@DB3_PUB """
-        BASEDIR=$BASEDIR3
-        WORKDIR=$WORKDIR3
-        rm -rf $BASEDIR/lib/plugin/component_$component_name.cnf || true
-        rm -rf $WORKDIR/dn$i/component_$component_name.cnf || true
+        rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
+        rm -rf /var/lib/mysql/component_$component_name.cnf || true
+        rm -rf /var/lib/mysql/component_$component_name || true
       """
     fi
   done
+
+
 }
+
+kill_server(){
+
+  for i in $(seq 1 3); do
+    if [ $i -eq 1 ]; then
+      ssh root@DB1_PUB """
+        systemctl stop mysql@bootstrap
+        systemctl disable mysql@bootstrap
+      """
+    elif [ $i -eq 2 ]; then
+      ssh root@DB2_PUB """
+        systemctl stop mysql
+        systemctl disable mysql
+      """
+    elif [ $i -eq 3 ]; then
+      ssh root@DB3_PUB """
+        systemctl stop mysql
+        systemctl disable mysql
+      """
+    fi
+
+}
+
 
 create_global_manifest() {
   component_name=$1
@@ -934,11 +951,9 @@ cluster_up_check
 sysbench_run
 
 start_vault_server
-exit 1
 
 echo "Killing previous running mysqld"
 kill_server
-remove_workdir
 echo "Cleaning up all previous global and local manifest and config files"
 cleanup keyring_file
 
