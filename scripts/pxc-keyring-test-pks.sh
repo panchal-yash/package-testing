@@ -155,12 +155,10 @@ create_global_manifest() {
   fi
 
   if [ $node -eq 1 ]; then
-    BASEDIR=$BASEDIR1
     ssh mysql@DB1_PUB """
   set -xe
 
-
-  cat << EOF >${BASEDIR}/bin/mysqld.my
+  cat << EOF > /usr/sbin/mysqld.my
 { 
 \"components\":\"$STRING\"
 }
@@ -168,12 +166,11 @@ EOF
 
     """  
   elif [ $node -eq 2 ]; then
-    BASEDIR=$BASEDIR2
+
     ssh mysql@DB2_PUB """
   set -xe
 
-
-  cat << EOF >${BASEDIR}/bin/mysqld.my
+  cat << EOF >  /usr/sbin/mysqld.my
 { 
 \"components\":\"$STRING\"
 }
@@ -182,12 +179,11 @@ EOF
 
     """
   elif [ $node -eq 3 ]; then
-    BASEDIR=$BASEDIR3
+
     ssh mysql@DB3_PUB """
   set -xe
 
-
-  cat << EOF >${BASEDIR}/bin/mysqld.my
+  cat << EOF >  /usr/sbin/mysqld.my
 { 
 \"components\":\"$STRING\"
 }
@@ -213,17 +209,14 @@ create_local_manifest() {
   if [ $node -eq 1 ]; then
 ssh mysql@DB1_PUB """
   set -xe
-
-    BASEDIR=$BASEDIR1
-    WORKDIR=$WORKDIR1
     echo "Node$node: Creating global manifest file for component: $component_name"
-    cat << EOF >${BASEDIR}/bin/mysqld.my
+    cat << EOF > /usr/sbin/mysqld.my
 {
 \"read_local_manifest\":true
-}component_keyring_file
+}
 EOF
 
-    cat << EOF >${WORKDIR}/dn$node/mysqld.my
+    cat << EOF > /var/lib/mysql/mysqld.my
 {
  \"components\": \"$STRING\"
 }
@@ -233,17 +226,14 @@ EOF
   elif [ $node -eq 2 ]; then
 ssh mysql@DB2_PUB """
   set -xe
-
-    BASEDIR=$BASEDIR2
-    WORKDIR=$WORKDIR2
     echo "Node$node: Creating global manifest file for component: $component_name"
-    cat << EOF >${BASEDIR}/bin/mysqld.my
+    cat << EOF > /usr/sbin/mysqld.my
 {
 \"read_local_manifest\":true
 }
 EOF
 
-    cat << EOF >${WORKDIR}/dn$node/mysqld.my
+    cat << EOF > /var/lib/mysql/mysqld.my
 {
  \"components\": \"$STRING\"
 }
@@ -253,18 +243,14 @@ EOF
   elif [ $node -eq 3 ]; then
 ssh mysql@DB3_PUB """
   set -xe
-
-
-    BASEDIR=$BASEDIR3
-    WORKDIR=$WORKDIR3
     echo "Node$node: Creating global manifest file for component: $component_name"
-    cat << EOF >${BASEDIR}/bin/mysqld.my
+    cat << EOF > /usr/sbin/mysqld.my
 {
 \"read_local_manifest\":true
 }
 EOF
 
-    cat << EOF >${WORKDIR}/dn$node/mysqld.my
+    cat << EOF > /var/lib/mysql/mysqld.my
 {
  \"components\": \"$STRING\"
 }
@@ -289,9 +275,9 @@ ssh mysql@DB1_PUB """
 
   echo "Node$node: Creating global configuration file for component: $component_name"
   if [ "$component_name" = "keyring_file" ]; then
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
- \"path\": \"${WORKDIR}/dn$node/component_keyring_file\",
+ \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
@@ -310,9 +296,9 @@ ssh mysql@DB2_PUB """
 
   echo "Node$node: Creating global configuration file for component: $component_name"
   if [ "$component_name" = "keyring_file" ]; then
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
- \"path\": \"${WORKDIR}/dn$node/component_keyring_file\",
+ \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
@@ -331,9 +317,9 @@ ssh mysql@DB3_PUB """
 
   echo "Node$node: Creating global configuration file for component: $component_name"
   if [ "$component_name" = "keyring_file" ]; then
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
- \"path\": \"${WORKDIR}/dn$node/component_keyring_file\",
+ \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
@@ -356,21 +342,21 @@ create_local_config() {
 ssh mysql@DB1_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
   \"read_local_config\": true
 }
 EOF
   echo "Node$node: Creating local configuration file"
-  cat << EOF >${WORKDIR}/dn$node/component_keyring_file.cnf
+  cat << EOF >/var/lib/mysql/component_keyring_file.cnf
 {
- \"path\": \"${WORKDIR}/dn$node/component_keyring_file\",
+ \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kmip.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
   \"read_local_config\": true
 }
@@ -379,7 +365,7 @@ EOF
     echo "Not Supported"
   elif [ "$component_name" = "keyring_kms" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kms.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_kms.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kms.cnf
 {
   \"read_local_config\": true
 }
@@ -394,21 +380,21 @@ EOF
 ssh mysql@DB2_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
   \"read_local_config\": true
 }
 EOF
   echo "Node$node: Creating local configuration file"
-  cat << EOF >${WORKDIR}/dn$node/component_keyring_file.cnf
+  cat << EOF >/var/lib/mysql/component_keyring_file.cnf
 {
- \"path\": \"${WORKDIR}/dn$node/component_keyring_file\",
+ \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kmip.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
   \"read_local_config\": true
 }
@@ -417,7 +403,7 @@ EOF
     echo "Not Supported"
   elif [ "$component_name" = "keyring_kms" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kms.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_kms.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kms.cnf
 {
   \"read_local_config\": true
 }
@@ -432,21 +418,21 @@ EOF
 ssh mysql@DB3_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
   \"read_local_config\": true
 }
 EOF
   echo "Node$node: Creating local configuration file"
-  cat << EOF >${WORKDIR}/dn$node/component_keyring_file.cnf
+  cat << EOF >/var/lib/mysql/component_keyring_file.cnf
 {
- \"path\": \"${WORKDIR}/dn$node/component_keyring_file\",
+ \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kmip.cnf"
-    cat << EOF >${BASEDIR}/lib/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
   \"read_local_config\": true
 }
@@ -924,12 +910,12 @@ create_conf 1
 create_conf 2
 create_conf 3
 #init_datadir
-#create_global_manifest keyring_file 1
-#create_global_manifest keyring_file 2
-#create_global_manifest keyring_file 3
-#create_global_config keyring_file 1
-#create_global_config keyring_file 2
-#create_global_config keyring_file 3
+create_global_manifest keyring_file 1
+create_global_manifest keyring_file 2
+create_global_manifest keyring_file 3
+create_global_config keyring_file 1
+create_global_config keyring_file 2
+create_global_config keyring_file 3
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
 start_node3;MPID3="$!"
