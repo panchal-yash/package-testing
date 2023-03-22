@@ -155,7 +155,7 @@ create_global_manifest() {
   fi
 
   if [ $node -eq 1 ]; then
-    ssh mysql@DB1_PUB """
+    ssh root@DB1_PUB """
   set -xe
 
   cat << EOF > /usr/sbin/mysqld.my
@@ -167,7 +167,7 @@ EOF
     """  
   elif [ $node -eq 2 ]; then
 
-    ssh mysql@DB2_PUB """
+    ssh root@DB2_PUB """
   set -xe
 
   cat << EOF >  /usr/sbin/mysqld.my
@@ -180,7 +180,7 @@ EOF
     """
   elif [ $node -eq 3 ]; then
 
-    ssh mysql@DB3_PUB """
+    ssh root@DB3_PUB """
   set -xe
 
   cat << EOF >  /usr/sbin/mysqld.my
@@ -207,7 +207,7 @@ create_local_manifest() {
   fi
 
   if [ $node -eq 1 ]; then
-ssh mysql@DB1_PUB """
+ssh root@DB1_PUB """
   set -xe
     echo "Node$node: Creating global manifest file for component: $component_name"
     cat << EOF > /usr/sbin/mysqld.my
@@ -224,7 +224,7 @@ EOF
 
 """
   elif [ $node -eq 2 ]; then
-ssh mysql@DB2_PUB """
+ssh root@DB2_PUB """
   set -xe
     echo "Node$node: Creating global manifest file for component: $component_name"
     cat << EOF > /usr/sbin/mysqld.my
@@ -241,7 +241,7 @@ EOF
 
 """
   elif [ $node -eq 3 ]; then
-ssh mysql@DB3_PUB """
+ssh root@DB3_PUB """
   set -xe
     echo "Node$node: Creating global manifest file for component: $component_name"
     cat << EOF > /usr/sbin/mysqld.my
@@ -269,7 +269,7 @@ create_global_config() {
   if [ $node -eq 1 ]; then
     BASEDIR=$BASEDIR1
     WORKDIR=$WORKDIR1
-ssh mysql@DB1_PUB """
+ssh root@DB1_PUB """
 
   set -xe
 
@@ -291,7 +291,7 @@ EOF
   elif [ $node -eq 2 ]; then
     BASEDIR=$BASEDIR2
     WORKDIR=$WORKDIR2
-ssh mysql@DB2_PUB """
+ssh root@DB2_PUB """
   set -xe
 
   echo "Node$node: Creating global configuration file for component: $component_name"
@@ -312,7 +312,7 @@ EOF
   elif [ $node -eq 3 ]; then
     BASEDIR=$BASEDIR3
     WORKDIR=$WORKDIR3
-ssh mysql@DB3_PUB """
+ssh root@DB3_PUB """
   set -xe
 
   echo "Node$node: Creating global configuration file for component: $component_name"
@@ -339,7 +339,7 @@ create_local_config() {
   if [ $node -eq 1 ]; then
     BASEDIR=$BASEDIR1
     WORKDIR=$WORKDIR1
-ssh mysql@DB1_PUB """
+ssh root@DB1_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
     cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
@@ -377,7 +377,7 @@ EOF
   elif [ $node -eq 2 ]; then
     BASEDIR=$BASEDIR2
     WORKDIR=$WORKDIR2
-ssh mysql@DB2_PUB """
+ssh root@DB2_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
     cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
@@ -415,7 +415,7 @@ EOF
   elif [ $node -eq 3 ]; then
     BASEDIR=$BASEDIR3
     WORKDIR=$WORKDIR3
-ssh mysql@DB3_PUB """
+ssh root@DB3_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
     cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
