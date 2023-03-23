@@ -958,6 +958,9 @@ root@DB3_PUB """
   cat /usr/sbin/mysqld.my
 """
 
+
+exit 1
+
 start_vault_server
 
 echo "Killing previous running mysqld"
@@ -966,7 +969,6 @@ echo "Cleaning up all previous global and local manifest and config files"
 cleanup keyring_file
 
 
-exit 1
 
 echo "###########################################################################"
 echo "#Testing Combo 1.1: component_keyring |Global Manifest | Global Config #"
