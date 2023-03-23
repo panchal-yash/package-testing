@@ -844,7 +844,10 @@ start_node1(){
     set -xe
 
     sudo systemctl start mysql@bootstrap
-    
+    PASSWORD=$(grep -Po \"A temporary password is generated for root@localhost:\\s\\K.*\" /var/log/mysql/error.log)
+    sudo mysql -uroot -p$PASSWORD -e \"ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root' REPLACE '75B=C9a%hcW9';\"
+
+
   """
   pxc_startup_status 1
 }
@@ -943,17 +946,17 @@ cluster_up_check
 sysbench_run
 
 echo "....................Listing the local manifest and local config files...................."
-root@DB1_PUB """
+ssh root@DB1_PUB """
   echo "Check local manifest in VM1"
   cat /usr/sbin/mysqld.my
 """
 
-root@DB2_PUB """
+ssh root@DB2_PUB """
   echo "Check local manifest in VM2"
   cat /usr/sbin/mysqld.my
 """
 
-root@DB3_PUB """
+ssh root@DB3_PUB """
   echo "Check local manifest in VM3"
   cat /usr/sbin/mysqld.my
 """
