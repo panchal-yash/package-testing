@@ -943,9 +943,20 @@ cluster_up_check
 sysbench_run
 
 echo "....................Listing the local manifest and local config files...................."
+root@DB1_PUB """
+  echo "Check local manifest in VM1"
+  cat /usr/sbin/mysqld.my
+"""
 
-cat /usr/sbin/mysqld.my
+root@DB2_PUB """
+  echo "Check local manifest in VM2"
+  cat /usr/sbin/mysqld.my
+"""
 
+root@DB3_PUB """
+  echo "Check local manifest in VM3"
+  cat /usr/sbin/mysqld.my
+"""
 
 start_vault_server
 
@@ -954,6 +965,8 @@ kill_server
 echo "Cleaning up all previous global and local manifest and config files"
 cleanup keyring_file
 
+
+exit 1
 
 echo "###########################################################################"
 echo "#Testing Combo 1.1: component_keyring |Global Manifest | Global Config #"
