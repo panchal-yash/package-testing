@@ -846,6 +846,8 @@ start_node2() {
 
     sudo systemctl enable mysql
     sudo systemctl start mysql
+    sleep 120
+    sudo systemctl restart mysql
 
 
   """
@@ -861,6 +863,8 @@ start_node3() {
 
     sudo systemctl enable mysql
     sudo systemctl start mysql
+    sleep 120
+    sudo systemctl restart mysql
 
   """
     pxc_startup_status 3
