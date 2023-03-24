@@ -9,7 +9,7 @@ set +xe
 
 BASEDIR=/usr/
 
-FILE_PLUGIN=1
+FILE_PLUGIN=0
 VAULT_PLUGIN=0
 
 PXC_START_TIMEOUT=600
@@ -763,33 +763,38 @@ init_datadir_template() {
 
   set -xe
 
-  rm -rf $BASEDIR1/data.template
-  mkdir $BASEDIR1/data.template
-  mkdir -p $BASEDIR1/cert
   echo "Creating datadir template db1"
-  $BASEDIR1/bin/mysqld --no-defaults --datadir=$BASEDIR1/data.template/dn1 --basedir=$BASEDIR1 --initialize-insecure --log-error=$BASEDIR1/data.template/node1.err
+    
+  sudo echo " " > /var/log/mysql/error.log
+  echo "Listing the mysql dir if present..."
+  ls -la /var/lib/
+  sudo mkdir /var/lib/mysql
+  sudo chown mysql:root /var/lib/mysql
+  mysqld --initialize-insecure
   """
 
   ssh mysql@DB2_PUB """
 
   set -xe
-  echo "Before"
-  rm -rf $BASEDIR2/data.template
-  mkdir $BASEDIR2/data.template
-  mkdir -p $BASEDIR2/cert
-  echo "should be empty"
   echo "Creating datadir template db2"
-  $BASEDIR2/bin/mysqld --no-defaults --datadir=$BASEDIR2/data.template/dn2 --basedir=$BASEDIR2 --initialize-insecure --log-error=$BASEDIR2/data.template/node2.err
+  sudo echo " " > /var/log/mysql/error.log
+  echo "Listing the mysql dir if present..."
+  ls -la /var/lib/
+  sudo mkdir /var/lib/mysql
+  sudo chown mysql:root /var/lib/mysql
+  mysqld --initialize-insecure
   """
 
   ssh mysql@DB3_PUB """
 
   set -xe
-  rm -rf $BASEDIR3/data.template
-  mkdir $BASEDIR3/data.template
-  mkdir -p $BASEDIR3/cert
   echo "Creating datadir template  db3"
-  $BASEDIR3/bin/mysqld --no-defaults --datadir=$BASEDIR3/data.template/dn3 --basedir=$BASEDIR3 --initialize-insecure --log-error=$BASEDIR3/data.template/node3.err
+  sudo echo " " > /var/log/mysql/error.log
+  echo "Listing the mysql dir if present..."
+  ls -la /var/lib/
+  sudo mkdir /var/lib/mysql
+  sudo chown mysql:root /var/lib/mysql
+  mysqld --initialize-insecure
   """
 
   echo "Data template created successfully"
@@ -830,36 +835,16 @@ init_datadir() {
   """
 }
 
-start_node1_init(){
-
-  echo "Starting PXC nodes..."
-  ssh mysql@DB1_PUB """
-    
-    set -xe
-
-    sudo systemctl start mysql@bootstrap
-
-
-  """
-  pxc_startup_status 1
-
-
-}
 
 
 start_node1(){
 echo "Starting PXC nodes..."
 
 ssh mysql@DB1_PUB /bin/bash <<'EOF'
+    
     set -xe
 
-    sudo echo " " > /var/log/mysql/error.log
-
     sudo systemctl start mysql@bootstrap
-  
-    PASSWORD=$(grep -Po "A temporary password is generated for root@localhost:\\s\\K.*" /var/log/mysql/error.log) 
-    
-    echo $PASSWORD
 
 EOF
 
@@ -939,7 +924,9 @@ sleep 2
 echo "###########################################################################"
 echo "#Testing Combo 5: component_keyring_file |local Manifest | local Config #"
 echo "###########################################################################" 
-#init_datadir_template # Can be removed after wards as inited in combo 1 
+init_datadir_template 
+
+# Can be removed after wards as inited in combo 1 
 #create_workdir
 create_conf 1
 create_conf 2
@@ -953,7 +940,7 @@ create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
 
-start_node1_init;MPID1="$!"
+start_node1;MPID1="$!"
 start_node2;MPID2="$!"
 start_node3;MPID3="$!"
 cluster_up_check
@@ -988,6 +975,7 @@ echo "##########################################################################
 echo "#Testing Combo 1.1: component_keyring |Global Manifest | Global Config #"
 echo "###########################################################################"
 
+init_datadir_template
 
 create_conf 1
 create_conf 2
