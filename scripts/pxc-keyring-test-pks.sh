@@ -93,17 +93,17 @@ cleanup() {
     if [ $i -eq 1 ]; then
       ssh root@DB1_PUB """
         rm -rf /usr/sbin/mysqld.my || true
-        rm -rf /var/lib/mysql/mysqld.my || true
+        rm -rf /var/lib/mysql
       """
     elif [ $i -eq 2 ]; then
       ssh root@DB2_PUB """
         rm -rf /usr/sbin/mysqld.my || true
-        rm -rf /var/lib/mysql/mysqld.my || true
+        rm -rf /var/lib/mysql
       """
     elif [ $i -eq 3 ]; then
       ssh root@DB3_PUB """
         rm -rf /usr/sbin/mysqld.my || true
-        rm -rf /var/lib/mysql/mysqld.my || true
+        rm -rf /var/lib/mysql
       """
     fi
   done
@@ -113,21 +113,14 @@ cleanup() {
     if [ $i -eq 1 ]; then
       ssh root@DB1_PUB """
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
-        rm -rf /var/lib/mysql/component_$component_name.cnf || true
-        rm -rf /var/lib/mysql/component_$component_name || true    
-      """
-# Added         rm -rf /var/lib/mysql/component_$component_name || true      
+      """   
     elif [ $i -eq 2 ]; then
       ssh root@DB2_PUB """
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
-        rm -rf /var/lib/mysql/component_$component_name.cnf || true
-        rm -rf /var/lib/mysql/component_$component_name || true
       """
     elif [ $i -eq 3 ]; then
       ssh root@DB3_PUB """
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
-        rm -rf /var/lib/mysql/component_$component_name.cnf || true
-        rm -rf /var/lib/mysql/component_$component_name || true
       """
     fi
   done
@@ -837,18 +830,39 @@ init_datadir() {
   """
 }
 
-start_node1(){
+start_node1_init(){
+
   echo "Starting PXC nodes..."
   ssh mysql@DB1_PUB """
     
     set -xe
 
     sudo systemctl start mysql@bootstrap
-    PASSWORD=$(grep -Po \"A temporary password is generated for root@localhost:\\s\\K.*\" /var/log/mysql/error.log)
-    sudo mysql -uroot -p$PASSWORD -e \"ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root' REPLACE '75B=C9a%hcW9';\"
 
 
   """
+  pxc_startup_status 1
+
+
+}
+
+
+start_node1(){
+echo "Starting PXC nodes..."
+
+ssh mysql@DB1_PUB /bin/bash <<'EOF'
+    set -xe
+
+    sudo echo " " > /var/log/mysql/error.log
+
+    sudo systemctl start mysql@bootstrap
+  
+    PASSWORD=$(grep -Po "A temporary password is generated for root@localhost:\\s\\K.*" /var/log/mysql/error.log) 
+    
+    echo $PASSWORD
+
+EOF
+
   pxc_startup_status 1
 }
 
@@ -923,7 +937,7 @@ sleep 2
 #cleanup keyring_kmip
 
 echo "###########################################################################"
-echo "#Testing Combo 5: component_keyring_file |Global Manifest | Global Config #"
+echo "#Testing Combo 5: component_keyring_file |local Manifest | local Config #"
 echo "###########################################################################" 
 #init_datadir_template # Can be removed after wards as inited in combo 1 
 #create_workdir
@@ -939,7 +953,7 @@ create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
 
-start_node1;MPID1="$!"
+start_node1_init;MPID1="$!"
 start_node2;MPID2="$!"
 start_node3;MPID3="$!"
 cluster_up_check
@@ -961,9 +975,6 @@ ssh root@DB3_PUB """
   cat /usr/sbin/mysqld.my
 """
 
-
-exit 1
-
 start_vault_server
 
 echo "Killing previous running mysqld"
@@ -971,7 +982,7 @@ kill_server
 echo "Cleaning up all previous global and local manifest and config files"
 cleanup keyring_file
 
-
+echo "CLEANED"
 
 echo "###########################################################################"
 echo "#Testing Combo 1.1: component_keyring |Global Manifest | Global Config #"
@@ -1002,6 +1013,7 @@ echo "....................Listing the global manifest and global config files...
 
 cat /usr/sbin/mysqld.my
 
+exit 1
 
 
 #start_vault_server
