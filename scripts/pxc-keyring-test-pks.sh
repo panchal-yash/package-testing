@@ -708,28 +708,14 @@ fi
 
 
 # how this function will work ?
-fetch_err_socket() {
-  NR=$1
-  if [ $NR -eq 1 ]; then
-    BASEDIR=$BASEDIR1
-    SOCKET=$SOCKET1
-    ERR_FILE=$ERR_FILE1
-  elif [ $NR -eq 2 ]; then
-    BASEDIR=$BASEDIR2
-    SOCKET=$SOCKET2
-    ERR_FILE=$ERR_FILE2
-  elif [ $NR -eq 3 ]; then
-    BASEDIR=$BASEDIR3
-    SOCKET=$SOCKET3
-    ERR_FILE=$ERR_FILE3
-  fi
-}
+
 # how this function will work ?
 pxc_startup_status(){
   NR=$1
 
   for X in $(seq 0 ${PXC_START_TIMEOUT}); do
     sleep 1
+
     if [ $NR -eq 1 ]; then
 
       OUTPUT=$(ssh mysql@DB1_PUB """sudo mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
@@ -852,13 +838,15 @@ EOF
 }
 
 start_node2() {
-    fetch_err_socket 2
+
 
   ssh mysql@DB2_PUB """
     
     set -xe
 
+    sudo systemctl enable mysql
     sudo systemctl start mysql
+
 
   """
     pxc_startup_status 2
@@ -866,12 +854,12 @@ start_node2() {
 }
 
 start_node3() {
-    fetch_err_socket 3
 
   ssh mysql@DB3_PUB """
   
     set -xe
 
+    sudo systemctl enable mysql
     sudo systemctl start mysql
 
   """
