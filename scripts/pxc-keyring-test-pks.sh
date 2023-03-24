@@ -1021,15 +1021,110 @@ ssh root@DB3_PUB """
   cat /usr/sbin/mysqld.my
 """
 
-exit 1
-
-
 #start_vault_server
 
 echo "Killing previous running mysqld"
 kill_server
 echo "Cleaning up all previous global and local manifest and config files"
 cleanup keyring_file
+
+echo "###########################################################################"
+echo "#Testing Combo 5-Repeat after 1.1 : component_keyring_file |local Manifest | local Config #"
+echo "###########################################################################" 
+init_datadir_template 
+
+# Can be removed after wards as inited in combo 1 
+#create_workdir
+create_conf 1
+create_conf 2
+create_conf 3
+
+create_local_manifest keyring_file 1
+create_local_manifest keyring_file 2
+create_local_manifest keyring_file 3
+
+create_local_config keyring_file 1
+create_local_config keyring_file 2
+create_local_config keyring_file 3
+
+start_node1;MPID1="$!"
+start_node2;MPID2="$!"
+start_node3;MPID3="$!"
+cluster_up_check
+sysbench_run
+
+echo "....................Listing the local manifest and local config files...................."
+ssh root@DB1_PUB """
+  echo "Check local manifest in VM1"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB2_PUB """
+  echo "Check local manifest in VM2"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB3_PUB """
+  echo "Check local manifest in VM3"
+  cat /usr/sbin/mysqld.my
+"""
+
+start_vault_server
+
+echo "Killing previous running mysqld"
+kill_server
+echo "Cleaning up all previous global and local manifest and config files"
+cleanup keyring_file
+
+echo "CLEANED"
+
+
+echo "###########################################################################"
+echo "#Testing Combo 1.1-Repeat: component_keyring |Global Manifest | Global Config #"
+echo "###########################################################################"
+
+init_datadir_template
+
+create_conf 1
+create_conf 2
+create_conf 3
+
+create_global_manifest keyring_file 1
+create_global_manifest keyring_file 2
+create_global_manifest keyring_file 3
+
+create_global_config keyring_file 1
+create_global_config keyring_file 2
+create_global_config keyring_file 3
+
+start_node1;MPID1="$!"
+start_node2;MPID2="$!"
+start_node3;MPID3="$!"
+
+
+cluster_up_check
+
+sysbench_run
+
+
+echo "....................Listing the global manifest and global config files...................."
+
+ssh root@DB1_PUB """
+  echo "Check global manifest in VM1"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB2_PUB """
+  echo "Check global manifest in VM2"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB3_PUB """
+  echo "Check global manifest in VM3"
+  cat /usr/sbin/mysqld.my
+"""
+
+exit 1
 
 
 
