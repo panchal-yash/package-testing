@@ -840,33 +840,46 @@ EOF
 start_node2() {
 
 
-  ssh mysql@DB2_PUB """
+ssh mysql@DB2_PUB /bin/bash <<'EOF'
     
     set -xe
 
     sudo systemctl enable mysql
+    
     sudo systemctl start mysql
+    
+    echo "Waiting for 120 Seconds"
+
     sleep 120
+
+    echo "Restarting the mysql Service"
+
     sudo systemctl restart mysql
 
-
-  """
+EOF
     pxc_startup_status 2
 
 }
 
 start_node3() {
 
-  ssh mysql@DB3_PUB """
+ssh mysql@DB3_PUB /bin/bash <<'EOF'
   
     set -xe
 
     sudo systemctl enable mysql
+
     sudo systemctl start mysql
+    
+    echo "Waiting for 120 Seconds"
+
     sleep 120
+
+    echo "Restarting the mysql Service"
+
     sudo systemctl restart mysql
 
-  """
+EOF
     pxc_startup_status 3
 
 }
@@ -991,7 +1004,20 @@ sysbench_run
 
 echo "....................Listing the global manifest and global config files...................."
 
-cat /usr/sbin/mysqld.my
+ssh root@DB1_PUB """
+  echo "Check global manifest in VM1"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB2_PUB """
+  echo "Check global manifest in VM2"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB3_PUB """
+  echo "Check global manifest in VM3"
+  cat /usr/sbin/mysqld.my
+"""
 
 exit 1
 
