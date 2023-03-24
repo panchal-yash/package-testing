@@ -846,7 +846,7 @@ ssh mysql@DB2_PUB /bin/bash <<'EOF'
 
     sudo systemctl enable mysql
     
-    sudo systemctl start mysql
+    sudo systemctl start mysql || true
     
     echo "Waiting for 120 Seconds"
 
@@ -869,7 +869,7 @@ ssh mysql@DB3_PUB /bin/bash <<'EOF'
 
     sudo systemctl enable mysql
 
-    sudo systemctl start mysql
+    sudo systemctl start mysql || true
     
     echo "Waiting for 120 Seconds"
 
@@ -997,6 +997,8 @@ create_global_config keyring_file 3
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
 start_node3;MPID3="$!"
+
+
 cluster_up_check
 
 sysbench_run
