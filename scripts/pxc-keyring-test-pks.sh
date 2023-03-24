@@ -770,7 +770,7 @@ init_datadir_template() {
   ls -la /var/lib/
   sudo mkdir /var/lib/mysql
   sudo chown mysql:root /var/lib/mysql
-  mysqld --initialize-insecure
+  mysqld --no-defaults --datadir=/var/lib/mysql --basedir=/usr/ --initialize-insecure
   """
 
   ssh mysql@DB2_PUB """
@@ -782,7 +782,7 @@ init_datadir_template() {
   ls -la /var/lib/
   sudo mkdir /var/lib/mysql
   sudo chown mysql:root /var/lib/mysql
-  mysqld --initialize-insecure
+  mysqld --no-defaults --datadir=/var/lib/mysql --basedir=/usr/ --initialize-insecure
   """
 
   ssh mysql@DB3_PUB """
@@ -794,7 +794,7 @@ init_datadir_template() {
   ls -la /var/lib/
   sudo mkdir /var/lib/mysql
   sudo chown mysql:root /var/lib/mysql
-  mysqld --initialize-insecure
+  mysqld --no-defaults --datadir=/var/lib/mysql --basedir=/usr/ --initialize-insecure
   """
 
   echo "Data template created successfully"
