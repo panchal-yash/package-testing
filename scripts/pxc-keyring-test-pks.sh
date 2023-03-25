@@ -820,9 +820,55 @@ init_datadir() {
   echo "Data directory created for dn3 $WORKDIR3"
   """
 }
+#-----------------------
+
+start_node1_init(){
+echo "Starting PXC nodes..."
+
+ssh mysql@DB1_PUB /bin/bash <<'EOF'
+    
+    set -xe
+
+    sudo systemctl start mysql@bootstrap
+
+EOF
+
+  pxc_startup_status 1
+}
+
+start_node2_init() {
 
 
+ssh mysql@DB2_PUB /bin/bash <<'EOF'
+    
+    set -xe
 
+    sudo systemctl enable mysql
+    
+    sudo systemctl start mysql
+
+EOF
+    pxc_startup_status 2
+
+}
+
+start_node3_init() {
+
+ssh mysql@DB3_PUB /bin/bash <<'EOF'
+  
+    set -xe
+
+    sudo systemctl enable mysql
+
+    sudo systemctl start mysql
+
+EOF
+    pxc_startup_status 3
+
+}
+
+
+#-----------------------
 start_node1(){
 echo "Starting PXC nodes..."
 
@@ -945,9 +991,9 @@ create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
 
-start_node1;MPID1="$!"
-start_node2;MPID2="$!"
-start_node3;MPID3="$!"
+start_node1_init;MPID1="$!"
+start_node2_init;MPID2="$!"
+start_node3_init;MPID3="$!"
 cluster_up_check
 sysbench_run
 
