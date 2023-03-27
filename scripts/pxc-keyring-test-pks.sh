@@ -293,7 +293,15 @@ ssh root@DB1_PUB """
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
-    echo "Not Supported"
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
+{
+ \"server_addr\": \"127.0.0.1\",
+ \"server_port\": \"5696\",
+ \"client_ca\": \"/etc/mysql/certs/kmip/client_certificate_john_smith.pem\",
+ \"client_key\": \"/etc/mysql/certs/kmip/client_key_john_smith.pem\",
+ \"server_ca\": \"/etc/mysql/certs/kmip/root_certificate.pem\"
+}
+EOF
   elif [ "$component_name" = "keyring_kms" ]; then
     echo "Not Supported"
   fi  
@@ -314,7 +322,15 @@ ssh root@DB2_PUB """
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
-    echo "Not Supported"
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
+{
+ \"server_addr\": \"127.0.0.1\",
+ \"server_port\": \"5696\",
+ \"client_ca\": \"/etc/mysql/certs/kmip/client_certificate_john_smith.pem\",
+ \"client_key\": \"/etc/mysql/certs/kmip/client_key_john_smith.pem\",
+ \"server_ca\": \"/etc/mysql/certs/kmip/root_certificate.pem\"
+}
+EOF
   elif [ "$component_name" = "keyring_kms" ]; then
     echo "Not Supported"
   fi  
@@ -335,12 +351,60 @@ ssh root@DB3_PUB """
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
-    echo "Not Supported"
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
+{
+ \"server_addr\": \"127.0.0.1\",
+ \"server_port\": \"5696\",
+ \"client_ca\": \"/etc/mysql/certs/kmip/client_certificate_john_smith.pem\",
+ \"client_key\": \"/etc/mysql/certs/kmip/client_key_john_smith.pem\",
+ \"server_ca\": \"/etc/mysql/certs/kmip/root_certificate.pem\"
+}
+EOF
   elif [ "$component_name" = "keyring_kms" ]; then
     echo "Not Supported"
   fi  
 """
   fi
+
+}
+
+setup_kmip_server(){
+
+ssh root@DB1_PUB """
+
+set -xe
+
+cat << EOF >/home/mysql/PyKMIP/etc/pykmip/server.conf
+
+[server]
+hostname=0.0.0.0
+port=5696
+certificate_path=/etc/mysql/certs/kmip/server_certificate.pem
+key_path=/etc/mysql/certs/kmip/server_key.pem
+ca_path=/etc/mysql/certs/kmip/root_certificate.pem
+auth_suite=Basic
+policy_path=/home/mysql/PyKMIP/etc/pykmip/policies
+enable_tls_client_auth=True
+logging_level=DEBUG
+database_path=/home/mysql/PyKMIP/etc/pykmip/pykmip.db
+
+EOF
+
+touch /home/mysql/PyKMIP/etc/pykmip/logfile
+
+
+
+cd /home/mysql/PyKMIP
+
+pykmip-server -f server.conf -l ./pykmip/logfile
+
+sudo python setup.py install
+
+
+"""
+
+
+
 
 }
 
@@ -990,7 +1054,7 @@ create_local_manifest keyring_file 3
 create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
-
+2
 start_node1_init;MPID1="$!"
 start_node2_init;MPID2="$!"
 start_node3_init;MPID3="$!"
@@ -1073,6 +1137,41 @@ echo "Killing previous running mysqld"
 kill_server
 echo "Cleaning up all previous global and local manifest and config files"
 cleanup keyring_file
+
+
+
+
+echo "###########################################################################"
+echo "#Testing Combo 1.1: keyring_kmip |Global Manifest | Global Config #"
+echo "###########################################################################"
+
+init_datadir_template
+
+create_conf 1
+create_conf 2
+create_conf 3
+
+create_global_manifest keyring_kmip 1
+create_global_manifest keyring_kmip 2
+create_global_manifest keyring_kmip 3
+
+create_global_config keyring_kmip 1
+create_global_config keyring_kmip 2
+create_global_config keyring_kmip 3
+
+setup_kmip_server
+
+start_node1;MPID1="$!"
+start_node2;MPID2="$!"
+start_node3;MPID3="$!"
+
+
+cluster_up_check
+
+sysbench_run
+
+
+
 
 echo "###########################################################################"
 echo "#Testing Combo 5-Repeat after 1.1 : component_keyring_file |local Manifest | local Config #"

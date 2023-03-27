@@ -73,3 +73,8 @@
     copy:
       src: ../../../../support-files/certs/
       dest: /etc/mysql/certs/
+
+  - name: copy pxc-kmip certs
+    copy:
+      src: ../../../../support-files/certs/kmip/
+      dest: /etc/mysql/certs/kmip/
