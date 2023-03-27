@@ -370,11 +370,17 @@ EOF
 
 setup_kmip_server(){
 
-ssh root@DB1_PUB """
+ssh root@DB1_PUB <<'SHELL'
 
 set -xe
 
-cat << EOF >/home/mysql/PyKMIP/etc/pykmip/server.conf
+apt-get install git -y
+
+cd /home/mysql/
+
+git clone https://github.com/OpenKMIP/PyKMIP.git
+
+cat << EOF >/home/mysql/PyKMIP/server.conf
 
 [server]
 hostname=0.0.0.0
@@ -390,22 +396,15 @@ database_path=/home/mysql/PyKMIP/etc/pykmip/pykmip.db
 
 EOF
 
-touch /home/mysql/PyKMIP/etc/pykmip/logfile
+touch /home/mysql/PyKMIP/logfile
 
-
-
-cd /home/mysql/PyKMIP
-
-pykmip-server -f server.conf -l ./pykmip/logfile
+cd PyKMIP
 
 sudo python setup.py install
 
+pykmip-server -f server.conf -l logfile
 
-"""
-
-
-
-
+SHELL
 }
 
 create_local_config() {
