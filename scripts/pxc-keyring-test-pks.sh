@@ -389,7 +389,7 @@ certificate_path=/etc/mysql/certs/kmip/server_certificate.pem
 key_path=/etc/mysql/certs/kmip/server_key.pem
 ca_path=/etc/mysql/certs/kmip/root_certificate.pem
 auth_suite=Basic
-policy_path=/home/mysql/PyKMIP
+policy_path=/etc/mysql/certs/kmip
 enable_tls_client_auth=True
 logging_level=DEBUG
 database_path=/home/mysql/PyKMIP/pykmip.db
@@ -402,7 +402,7 @@ cd PyKMIP
 
 sudo python3 setup.py install
 
-pykmip-server -f server.conf -l logfile \&
+tmux new -d 'pykmip-server -f server.conf -l logfile'
 
 SHELL
 }
