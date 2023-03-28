@@ -402,7 +402,7 @@ cd PyKMIP
 
 sudo python3 setup.py install
 
-pykmip-server -f server.conf -l logfile
+pykmip-server -f server.conf -l logfile \&
 
 SHELL
 }
