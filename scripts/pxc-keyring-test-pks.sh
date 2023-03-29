@@ -324,7 +324,7 @@ EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
- \"server_addr\": \"127.0.0.1\",
+ \"server_addr\": \"DB1_PRIV\",
  \"server_port\": \"5696\",
  \"client_ca\": \"/etc/mysql/certs/kmip/client_certificate_john_smith.pem\",
  \"client_key\": \"/etc/mysql/certs/kmip/client_key_john_smith.pem\",
@@ -353,7 +353,7 @@ EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
- \"server_addr\": \"127.0.0.1\",
+ \"server_addr\": \"DB1_PRIV\",
  \"server_port\": \"5696\",
  \"client_ca\": \"/etc/mysql/certs/kmip/client_certificate_john_smith.pem\",
  \"client_key\": \"/etc/mysql/certs/kmip/client_key_john_smith.pem\",
@@ -957,7 +957,6 @@ EOF
 }
 
 start_node2() {
-
 
 ssh mysql@DB2_PUB /bin/bash <<'EOF'
     
