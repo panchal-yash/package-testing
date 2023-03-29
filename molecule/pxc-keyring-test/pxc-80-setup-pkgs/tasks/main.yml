@@ -74,7 +74,7 @@
       src: ../../../../support-files/certs/
       dest: /etc/mysql/certs/
 
-  - name: copy pxc-kmip certs and policy
-    copy:
-      src: ../../../../support-files/certs/kmip/
-      dest: /etc/mysql/certs/kmip/
+  - name: Create KMIP Cert directory
+    ansible.builtin.file:
+      path: /etc/mysql/certs/kmip
+      state: directory

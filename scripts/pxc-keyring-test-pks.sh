@@ -388,7 +388,7 @@ port=5696
 certificate_path=/etc/mysql/certs/kmip/server_certificate.pem
 key_path=/etc/mysql/certs/kmip/server_key.pem
 ca_path=/etc/mysql/certs/kmip/root_certificate.pem
-auth_suite=Basic
+auth_suite=TLS1.2
 policy_path=/etc/mysql/certs/kmip
 enable_tls_client_auth=True
 logging_level=DEBUG
@@ -401,6 +401,16 @@ touch /home/mysql/PyKMIP/logfile
 cd PyKMIP
 
 sudo python3 setup.py install
+
+cd bin
+
+python3 create_certificates.py
+
+scp -o StrictHostKeyChecking=no -r *.pem root@DB1_PRIV:/etc/mysql/certs/kmip/
+scp -o StrictHostKeyChecking=no -r *.pem root@DB2_PRIV:/etc/mysql/certs/kmip/
+scp -o StrictHostKeyChecking=no -r *.pem root@DB3_PRIV:/etc/mysql/certs/kmip/
+
+cd ..
 
 tmux new -d 'pykmip-server -f server.conf -l logfile'
 
