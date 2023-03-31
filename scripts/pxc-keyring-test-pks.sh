@@ -1062,7 +1062,7 @@ create_local_manifest keyring_file 3
 create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
-2
+
 start_node1_init;MPID1="$!"
 start_node2_init;MPID2="$!"
 start_node3_init;MPID3="$!"
