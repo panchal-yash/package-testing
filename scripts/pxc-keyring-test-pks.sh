@@ -398,6 +398,12 @@ EOF
 
 touch /home/mysql/PyKMIP/logfile
 
+apt-get install python3-pip -y
+
+sudo pip3 install SQLAlchemy==1.4.46
+
+pip3 show sqlalchemy
+
 cd PyKMIP
 
 sudo python3 setup.py install
