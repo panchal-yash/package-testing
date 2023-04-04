@@ -82,7 +82,7 @@
                 }
             }}"
             wait: true
-            spot_price: "0.0100"
+            spot_price: "0.0110"
             spot_type: "one-time"
             assign_public_ip: true
             exact_count: 1
