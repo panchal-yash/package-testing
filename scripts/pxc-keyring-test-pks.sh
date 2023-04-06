@@ -92,18 +92,21 @@ cleanup() {
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
       ssh root@DB1_PUB """
+        set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 2 ]; then
       ssh root@DB2_PUB """
+        set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 3 ]; then
       ssh root@DB3_PUB """
+        set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
         echo '--------------END--------------' >> /var/log/mysql/error.log
