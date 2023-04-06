@@ -155,6 +155,18 @@ kill_server(){
 }
 
 
+kill_kmip_server(){
+
+      ssh mysql@DB1_PUB """
+        set -xe
+
+        sudo killall pykmip-server
+        sudo rm -rf /home/mysql/PyKMIP
+        
+      """
+
+}
+
 create_global_manifest() {
   component_name=$1
   node=$2
@@ -1186,6 +1198,29 @@ start_node3;MPID3="$!"
 cluster_up_check
 
 sysbench_run
+
+echo "....................Listing the global manifest and global config files...................."
+
+ssh root@DB1_PUB """
+  echo "Check global manifest in VM1"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB2_PUB """
+  echo "Check global manifest in VM2"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB3_PUB """
+  echo "Check global manifest in VM3"
+  cat /usr/sbin/mysqld.my
+"""
+
+echo "Killing previous running mysqld"
+kill_server
+kill_kmip_server
+echo "Cleaning up all previous global and local manifest and config files"
+cleanup keyring_kmip
 
 
 
