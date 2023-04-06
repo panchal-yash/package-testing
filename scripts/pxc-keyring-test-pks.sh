@@ -94,19 +94,19 @@ cleanup() {
       ssh root@DB1_PUB """
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        echo '' > /var/log/mysql/error.log
+        echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 2 ]; then
       ssh root@DB2_PUB """
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        echo '' > /var/log/mysql/error.log
+        echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 3 ]; then
       ssh root@DB3_PUB """
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        echo '' > /var/log/mysql/error.log
+        echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     fi
   done
