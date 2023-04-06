@@ -848,14 +848,11 @@ init_datadir_template() {
   ssh mysql@DB1_PUB """
 
   set -xe
-
   echo "Creating datadir template db1"
-    
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
-  ls -la /var/lib/
-  sudo mkdir /var/lib/mysql
-  sudo chown mysql:root /var/lib/mysql
+  sudo mkdir /var/lib/mysql-data-dir
+  sudo chown mysql:root /var/lib/mysql-data-dir
   mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
   """
 
@@ -865,9 +862,8 @@ init_datadir_template() {
   echo "Creating datadir template db2"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
-  ls -la /var/lib/
-  sudo mkdir /var/lib/mysql
-  sudo chown mysql:root /var/lib/mysql
+  sudo mkdir /var/lib/mysql-data-dir
+  sudo chown mysql:root /var/lib/mysql-data-dir
   mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
   """
 
@@ -877,9 +873,8 @@ init_datadir_template() {
   echo "Creating datadir template  db3"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
-  ls -la /var/lib/
-  sudo mkdir /var/lib/mysql
-  sudo chown mysql:root /var/lib/mysql
+  sudo mkdir /var/lib/mysql-data-dir
+  sudo chown mysql:root /var/lib/mysql-data-dir
   mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
   """
 
@@ -893,14 +888,14 @@ init_datadir() {
   ssh mysql@DB1_PUB  """
     set -xe
     echo "Copy data dir template files to /var/lib/ for Node1"
-    cp -ar /var/lib/mysql-data-dir /var/lib/mysql
+    sudo cp -ar /var/lib/mysql-data-dir /var/lib/mysql
     sudo chown mysql:root /var/lib/mysql
   """
 
   ssh mysql@DB2_PUB  """
     set -xe
     echo "Copy data dir template files to /var/lib/ for Node2"
-    cp -ar /var/lib/mysql-data-dir /var/lib/mysql
+    sudo cp -ar /var/lib/mysql-data-dir /var/lib/mysql
     sudo chown mysql:root /var/lib/mysql
   """
 
@@ -908,7 +903,7 @@ init_datadir() {
   ssh mysql@DB3_PUB """
     set -xe
     echo "Copy data dir template files to /var/lib/ for Node3"
-    cp -ar /var/lib/mysql-data-dir /var/lib/mysql
+    sudo cp -ar /var/lib/mysql-data-dir /var/lib/mysql
     sudo chown mysql:root /var/lib/mysql
   """
 
