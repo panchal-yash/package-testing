@@ -118,14 +118,17 @@ cleanup() {
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
       ssh root@DB1_PUB """
+        set -xe
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
       """   
     elif [ $i -eq 2 ]; then
       ssh root@DB2_PUB """
+        set -xe
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
       """
     elif [ $i -eq 3 ]; then
       ssh root@DB3_PUB """
+        set -xe
         rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
       """
     fi
@@ -853,7 +856,7 @@ init_datadir_template() {
   ls -la /var/lib/
   sudo mkdir /var/lib/mysql
   sudo chown mysql:root /var/lib/mysql
-  mysqld --no-defaults --datadir=/var/lib/mysql --basedir=/usr/ --initialize-insecure
+  mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
   """
 
   ssh mysql@DB2_PUB """
@@ -865,7 +868,7 @@ init_datadir_template() {
   ls -la /var/lib/
   sudo mkdir /var/lib/mysql
   sudo chown mysql:root /var/lib/mysql
-  mysqld --no-defaults --datadir=/var/lib/mysql --basedir=/usr/ --initialize-insecure
+  mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
   """
 
   ssh mysql@DB3_PUB """
@@ -877,7 +880,7 @@ init_datadir_template() {
   ls -la /var/lib/
   sudo mkdir /var/lib/mysql
   sudo chown mysql:root /var/lib/mysql
-  mysqld --no-defaults --datadir=/var/lib/mysql --basedir=/usr/ --initialize-insecure
+  mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
   """
 
   echo "Data template created successfully"
@@ -885,37 +888,33 @@ init_datadir_template() {
 
 # how this function will work ?
 init_datadir() {
-  echo "Creating data directories"
+  echo "Creating data directories [Copying them from the /var/lib/mysql-data-dir location]"
   
-  ssh mysql@DB1_PUB """
-
-  set -xe
-
-  echo "Data directory creating for dn1 on node 1"
-
-  cp -r $BASEDIR1/data.template/dn1 $WORKDIR1/
-  
-  echo "Data directory created $WORKDIR1"
-  
-  cp -r $WORKDIR1/dn1/*.pem $WORKDIR1/cert/
-
-  scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $WORKDIR1/dn1/*.pem mysql@DB2_PRIV:$WORKDIR2/cert/
-
-  scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $WORKDIR1/dn1/*.pem mysql@DB3_PRIV:$WORKDIR3/cert/
-  
+  ssh mysql@DB1_PUB  """
+    set -xe
+    echo "Copy data dir template files to /var/lib/ for Node1"
+    cp -ar /var/lib/mysql-data-dir /var/lib/mysql
+    sudo chown mysql:root /var/lib/mysql
   """
 
-  ssh mysql@DB2_PUB """
-  set -xe
-  cp -r $BASEDIR2/data.template/dn2 $WORKDIR2/
-  echo "Data directory created for dn2 $WORKDIR2"
+  ssh mysql@DB2_PUB  """
+    set -xe
+    echo "Copy data dir template files to /var/lib/ for Node2"
+    cp -ar /var/lib/mysql-data-dir /var/lib/mysql
+    sudo chown mysql:root /var/lib/mysql
   """
+
 
   ssh mysql@DB3_PUB """
-  set -xe
-  cp -r $BASEDIR2/data.template/dn3 $WORKDIR3/
-  echo "Data directory created for dn3 $WORKDIR3"
+    set -xe
+    echo "Copy data dir template files to /var/lib/ for Node3"
+    cp -ar /var/lib/mysql-data-dir /var/lib/mysql
+    sudo chown mysql:root /var/lib/mysql
   """
+
+  echo "Data template copied successfully"
+
+
 }
 #-----------------------
 
@@ -1122,7 +1121,7 @@ echo "##########################################################################
 echo "#Testing Combo 1.1: component_keyring |Global Manifest | Global Config #"
 echo "###########################################################################"
 
-init_datadir_template
+init_datadir
 
 create_conf 1
 create_conf 2
@@ -1177,7 +1176,7 @@ echo "##########################################################################
 echo "#Testing Combo 1.1: keyring_kmip |Global Manifest | Global Config #"
 echo "###########################################################################"
 
-init_datadir_template
+init_datadir
 
 create_conf 1
 create_conf 2
@@ -1231,7 +1230,7 @@ cleanup keyring_kmip
 echo "###########################################################################"
 echo "#Testing Combo 5-Repeat after 1.1 : component_keyring_file |local Manifest | local Config #"
 echo "###########################################################################" 
-init_datadir_template 
+init_datadir 
 
 # Can be removed after wards as inited in combo 1 
 #create_workdir
@@ -1283,7 +1282,7 @@ echo "##########################################################################
 echo "#Testing Combo 1.1-Repeat: component_keyring |Global Manifest | Global Config #"
 echo "###########################################################################"
 
-init_datadir_template
+init_datadir
 
 create_conf 1
 create_conf 2
