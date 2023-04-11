@@ -988,6 +988,8 @@ ssh mysql@DB2_PUB /bin/bash <<'EOF'
 
     sleep 120
 
+    echo "-----------------------------------------------RESTARTING MYSQL-----------------------------------------------" >> /var/log/mysql/error.log
+
     echo "Restarting the mysql Service"
 
     sudo systemctl restart mysql
@@ -1010,6 +1012,8 @@ ssh mysql@DB3_PUB /bin/bash <<'EOF'
     echo "Waiting for 120 Seconds"
 
     sleep 120
+
+    echo "-----------------------------------------------RESTARTING MYSQL-----------------------------------------------" >> /var/log/mysql/error.log
 
     echo "Restarting the mysql Service"
 
