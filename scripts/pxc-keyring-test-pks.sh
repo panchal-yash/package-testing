@@ -1322,63 +1322,88 @@ ssh root@DB3_PUB """
   cat /usr/sbin/mysqld.my
 """
 
+
+
+
+echo "###########################################################################"
+echo "#Testing Combo 1: component_keyring_kms |Global Manifest | Global Config #"
+echo "###########################################################################"
+init_datadir
+
+create_conf 1
+create_conf 2
+create_conf 3
+
+create_global_manifest keyring_kms 1
+create_local_manifest keyring_kms 2
+create_global_manifest keyring_kms 3
+
+create_global_config keyring_kms 1
+create_global_config keyring_kms 2
+create_global_config keyring_kms 3
+
+start_node1;MPID1="$!"
+start_node2;MPID2="$!"
+start_node3;MPID3="$!"
+
+cluster_up_check
+
+sysbench_run
+
+echo "....................Listing the global manifest and global config files...................."
+
+ssh root@DB1_PUB """
+  echo "Check global manifest in VM1"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB2_PUB """
+  echo "Check global manifest in VM2"
+  cat /usr/sbin/mysqld.my
+"""
+
+ssh root@DB3_PUB """
+  echo "Check global manifest in VM3"
+  cat /usr/sbin/mysqld.my
+"""
+
+
+
+echo "Killing previous running mysqld"
+kill_server
+remove_workdir
+echo "Cleaning up all previous global and local manifest and config files"
+cleanup keyring_kms
+
+exit 1
+echo "###########################################################################"
+echo "#Testing Combo 2: component_keyring_kms | Global Manifest | Local Config #"
+echo "###########################################################################"
+create_workdir
+create_conf 1
+create_conf 2
+create_conf 3
+init_datadir
+create_global_manifest keyring_kms 1
+create_global_manifest keyring_kms 2
+create_global_manifest keyring_kms 3
+create_local_config keyring_kms 1
+create_local_config keyring_kms 2
+create_local_config keyring_kms 3
+start_node1;MPID1="$!"
+start_node2;MPID2="$!"
+start_node3;MPID3="$!"
+cluster_up_check
+sysbench_run
+echo "Killing previous running mysqld"
+kill_server
+remove_workdir
+echo "Cleaning up all previous global and local manifest and config files"
+cleanup keyring_kms
+
+
 exit 1
 
-
-
-#echo "###########################################################################"
-#echo "#Testing Combo 1: component_keyring_kms |Global Manifest | Global Config #"
-#echo "###########################################################################"
-#init_datadir_template
-#create_workdir
-#create_conf 1
-#create_conf 2
-#create_conf 3
-#init_datadir
-#create_global_manifest keyring_kms 1
-#create_local_manifest keyring_kms 2
-#create_global_manifest keyring_kms 3
-#create_global_config keyring_kms 1
-#create_global_config keyring_kms 2
-#create_global_config keyring_kms 3
-#start_node1;MPID1="$!"
-#start_node2;MPID2="$!"
-#start_node3;MPID3="$!"
-#cluster_up_check
-#sysbench_run
-#
-#echo "Killing previous running mysqld"
-#kill_server
-#remove_workdir
-#echo "Cleaning up all previous global and local manifest and config files"
-#cleanup keyring_kms
-#
-#exit 1
-#echo "###########################################################################"
-#echo "#Testing Combo 2: component_keyring_kms | Global Manifest | Local Config #"
-#echo "###########################################################################"
-#create_workdir
-#create_conf 1
-#create_conf 2
-#create_conf 3
-#init_datadir
-#create_global_manifest keyring_kms 1
-#create_global_manifest keyring_kms 2
-#create_global_manifest keyring_kms 3
-#create_local_config keyring_kms 1
-#create_local_config keyring_kms 2
-#create_local_config keyring_kms 3
-#start_node1;MPID1="$!"
-#start_node2;MPID2="$!"
-#start_node3;MPID3="$!"
-#cluster_up_check
-#sysbench_run
-
-#echo "Killing previous running mysqld"
-#kill_server
-#remove_workdir
-#echo "Cleaning up all previous global and local manifest and config files"
-#cleanup keyring_kms
 
 #echo "###########################################################################"
 #echo "#Testing Combo 3: component_keyring_kms | Local Manifest | Global Config #"
