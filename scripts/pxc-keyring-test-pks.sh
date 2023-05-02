@@ -1095,7 +1095,7 @@ create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
 
-write_log_error COMBO_5_COMPONENT_KEYRING_FILE_LOCAL_MANIFEST_LOCAL_CONFIG
+write_log_error ===================COMBO_5_COMPONENT_KEYRING_FILE_LOCAL_MANIFEST_LOCAL_CONFIG===================
 
 start_node1_init;MPID1="$!"
 start_node2_init;MPID2="$!"
@@ -1146,7 +1146,7 @@ create_global_config keyring_file 1
 create_global_config keyring_file 2
 create_global_config keyring_file 3
 
-write_log_error COMBO_1_1_COMPONENT_KEYRING_GLOBAL_MANIFEST_GLOBAL_CONFIG
+write_log_error ===================COMBO_1_1_COMPONENT_KEYRING_GLOBAL_MANIFEST_GLOBAL_CONFIG===================
 
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
@@ -1202,6 +1202,8 @@ create_global_manifest keyring_kmip 3
 create_global_config keyring_kmip 1
 create_global_config keyring_kmip 2
 create_global_config keyring_kmip 3
+
+write_log_error ===================COMBO_1_1_KEYRING_KMIP_GLOBAL_MANIFEST_GLOBAL_CONFIG===================
 
 setup_kmip_server
 
@@ -1259,6 +1261,8 @@ create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
 
+write_log_error ===================COMBO_5_COMPONENT_KEYRING_FILE_LOCAL_MANIFEST_LOCAL_CONFIG===================
+
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
 start_node3;MPID3="$!"
@@ -1309,6 +1313,8 @@ create_global_config keyring_file 1
 create_global_config keyring_file 2
 create_global_config keyring_file 3
 
+write_log_error ===================COMBO_1_1_COMPONENT_KEYRING_GLOBAL_MANIFEST_GLOBAL_CONFIG===================
+
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
 start_node3;MPID3="$!"
@@ -1355,6 +1361,8 @@ create_global_manifest keyring_kms 3
 create_global_config keyring_kms 1
 create_global_config keyring_kms 2
 create_global_config keyring_kms 3
+
+write_log_error ===================COMBO_1_COMPONENT_KEYRING_KMS_GLOBAL_MANIFEST_GLOBAL_CONFIG===================
 
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
