@@ -1024,6 +1024,16 @@ EOF
 
 }
 
+write_log_error(){
+
+ssh mysql@DB1_PUB "echo "$2" >> /var/log/mysql/error.log"
+ssh mysql@DB2_PUB "echo "$2" >> /var/log/mysql/error.log"
+ssh mysql@DB3_PUB "echo "$2" >> /var/log/mysql/error.log"
+
+}
+
+
+
 cluster_up_check() {
   echo "Checking 3 node PXC Cluster startup..."
   for X in $(seq 0 10); do
@@ -1085,6 +1095,8 @@ create_local_config keyring_file 1
 create_local_config keyring_file 2
 create_local_config keyring_file 3
 
+write_log_error COMBO_5_COMPONENT_KEYRING_FILE_LOCAL_MANIFEST_LOCAL_CONFIG
+
 start_node1_init;MPID1="$!"
 start_node2_init;MPID2="$!"
 start_node3_init;MPID3="$!"
@@ -1133,6 +1145,8 @@ create_global_manifest keyring_file 3
 create_global_config keyring_file 1
 create_global_config keyring_file 2
 create_global_config keyring_file 3
+
+write_log_error COMBO_1_1_COMPONENT_KEYRING_GLOBAL_MANIFEST_GLOBAL_CONFIG
 
 start_node1;MPID1="$!"
 start_node2;MPID2="$!"
