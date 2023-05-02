@@ -1026,9 +1026,9 @@ EOF
 
 write_log_error(){
 
-ssh mysql@DB1_PUB "echo "$2" >> /var/log/mysql/error.log"
-ssh mysql@DB2_PUB "echo "$2" >> /var/log/mysql/error.log"
-ssh mysql@DB3_PUB "echo "$2" >> /var/log/mysql/error.log"
+ssh mysql@DB1_PUB "echo "$1" >> /var/log/mysql/error.log"
+ssh mysql@DB2_PUB "echo "$1" >> /var/log/mysql/error.log"
+ssh mysql@DB3_PUB "echo "$1" >> /var/log/mysql/error.log"
 
 }
 
