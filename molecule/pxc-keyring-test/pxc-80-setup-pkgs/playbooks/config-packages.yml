@@ -56,8 +56,8 @@
 
   - name: add the value to path
     lineinfile: >
-      dest=/etc/environment
-      state=present
-      backrefs=yes
-      regexp='PATH=(["]*)((?!.*?{{extra_path}}).*?)(["]*)$'
-      line="PATH=\1\2:{{extra_path}}\3"
+     dest=/etc/environment
+     state=present
+     backrefs=yes
+     regexp='PATH=(["]*)((?!.*?{{extra_path}}).*?)(["]*)$'
+     line="PATH=\1\2:{{extra_path}}\3"

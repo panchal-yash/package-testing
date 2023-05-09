@@ -849,7 +849,7 @@ ssh mysql@DB1_PUB /bin/bash <<'EOF'
 
   set -xe  
   echo $PATH
-  whereis mysqld
+  export PATH=$PATH:/usr/sbin
   echo "Creating datadir template db1"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
@@ -863,7 +863,7 @@ ssh mysql@DB2_PUB /bin/bash <<'EOF'
 
   set -xe
   echo $PATH
-  whereis mysqld
+  export PATH=$PATH:/usr/sbin
   echo "Creating datadir template db2"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
@@ -876,15 +876,14 @@ EOF
 ssh mysql@DB3_PUB /bin/bash <<'EOF'
 
   set -xe
-  echo $PATH
-
+  export PATH=$PATH:/usr/sbin
   echo "Creating datadir template  db3"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
   sudo mkdir /var/lib/mysql-data-dir
   sudo chown mysql:root /var/lib/mysql-data-dir
   mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
-  
+
 EOF
 
   echo "Data template created successfully"
