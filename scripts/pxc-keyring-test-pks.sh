@@ -845,10 +845,9 @@ pxc_startup_status(){
 # how this function will work ?
 init_datadir_template() {
 
-  ssh mysql@DB1_PUB """
+ssh mysql@DB1_PUB /bin/bash <<'EOF'
 
-  set -xe
-  
+  set -xe  
   echo $PATH
   whereis mysqld
   echo "Creating datadir template db1"
@@ -857,9 +856,10 @@ init_datadir_template() {
   sudo mkdir /var/lib/mysql-data-dir
   sudo chown mysql:root /var/lib/mysql-data-dir
   mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
-  """
+  
+EOF
 
-  ssh mysql@DB2_PUB """
+ssh mysql@DB2_PUB /bin/bash <<'EOF'
 
   set -xe
   echo $PATH
@@ -870,9 +870,10 @@ init_datadir_template() {
   sudo mkdir /var/lib/mysql-data-dir
   sudo chown mysql:root /var/lib/mysql-data-dir
   mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
-  """
 
-  ssh mysql@DB3_PUB """
+EOF
+
+ssh mysql@DB3_PUB /bin/bash <<'EOF'
 
   set -xe
   echo $PATH
@@ -883,7 +884,8 @@ init_datadir_template() {
   sudo mkdir /var/lib/mysql-data-dir
   sudo chown mysql:root /var/lib/mysql-data-dir
   mysqld --no-defaults --datadir=/var/lib/mysql-data-dir --basedir=/usr/ --initialize-insecure
-  """
+  
+EOF
 
   echo "Data template created successfully"
 }
