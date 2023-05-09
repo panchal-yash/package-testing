@@ -850,7 +850,7 @@ init_datadir_template() {
   set -xe
   
   echo $PATH
-
+  whereis mysqld
   echo "Creating datadir template db1"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
@@ -863,7 +863,7 @@ init_datadir_template() {
 
   set -xe
   echo $PATH
-
+  whereis mysqld
   echo "Creating datadir template db2"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."

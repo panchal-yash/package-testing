@@ -5,6 +5,7 @@
   become_method: sudo
   vars:
       KEY: "{{ lookup('env', 'KEY') }}"
+      extra_path: /usr/sbin
   tasks:
   - name: Create mysql user
     ansible.builtin.user:
@@ -52,3 +53,11 @@
 
   - name: Fetch the vars from file
     shell: echo "No further things are needed..."
+
+  - name: add the value to path
+    lineinfile: >
+      dest=/etc/environment
+      state=present
+      backrefs=yes
+      regexp='PATH=(["]*)((?!.*?{{extra_path}}).*?)(["]*)$'
+      line="PATH=\1\2:{{extra_path}}\3"
