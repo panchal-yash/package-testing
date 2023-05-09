@@ -848,6 +848,9 @@ init_datadir_template() {
   ssh mysql@DB1_PUB """
 
   set -xe
+  
+  echo $PATH
+
   echo "Creating datadir template db1"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
@@ -859,6 +862,8 @@ init_datadir_template() {
   ssh mysql@DB2_PUB """
 
   set -xe
+  echo $PATH
+
   echo "Creating datadir template db2"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
@@ -870,6 +875,8 @@ init_datadir_template() {
   ssh mysql@DB3_PUB """
 
   set -xe
+  echo $PATH
+
   echo "Creating datadir template  db3"
   sudo echo " " > /var/log/mysql/error.log
   echo "Listing the mysql dir if present..."
