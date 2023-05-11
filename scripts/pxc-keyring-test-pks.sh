@@ -834,15 +834,15 @@ pxc_startup_status(){
 
     if [ $NR -eq 1 ]; then
 
-      OUTPUT=$(ssh mysql@DB1_PUB """sudo mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB1_PUB """sudo mysqladmin -uroot -S /var/run/mysqld/mysqld.sock ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     elif [ $NR -eq 2 ]; then
 
-      OUTPUT=$(ssh mysql@DB2_PUB """sudo mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB2_PUB """sudo mysqladmin -uroot -S /var/run/mysqld/mysqld.sock ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     elif [ $NR -eq 3 ]; then
 
-      OUTPUT=$(ssh mysql@DB3_PUB """sudo mysqladmin -uroot ping | grep 'mysqld is alive'""") > /dev/null 2>&1
+      OUTPUT=$(ssh mysql@DB3_PUB """sudo mysqladmin -uroot -S /var/run/mysqld/mysqld.sock ping | grep 'mysqld is alive'""") > /dev/null 2>&1
 
     fi
 
@@ -1107,6 +1107,9 @@ init_datadir_template
 
 # Can be removed after wards as inited in combo 1 
 #create_workdir
+
+cleanup keyring_file
+
 init_datadir
 create_conf 1
 create_conf 2
