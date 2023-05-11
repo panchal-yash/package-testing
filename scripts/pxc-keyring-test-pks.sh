@@ -1107,6 +1107,7 @@ init_datadir_template
 
 # Can be removed after wards as inited in combo 1 
 #create_workdir
+init_datadir
 create_conf 1
 create_conf 2
 create_conf 3
