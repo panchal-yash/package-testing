@@ -15,20 +15,6 @@ VAULT_PLUGIN=0
 PXC_START_TIMEOUT=600
 
 
-if [ $(cat /etc/os-release  | grep debian | wc -l) -eq 1 ]
-then
-
-MYSQL_LIB_PATH=/usr/lib/mysql
-
-elif [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]
-then
-MYSQL_LIB_PATH=/usr/lib64/mysql
-
-fi
-
-echo "Path of libs $MYSQL_LIB_PATH"
-
-
 
 # Confusion regarding the vault part: I think it should be in any one server (preferably on bootstrap ?)
 start_vault_server() {
@@ -133,17 +119,17 @@ cleanup() {
     if [ $i -eq 1 ]; then
       ssh root@DB1_PUB """
         set -xe
-        rm -rf $MYSQL_LIB_PATH/plugin/component_$component_name.cnf || true
+        rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
       """   
     elif [ $i -eq 2 ]; then
       ssh root@DB2_PUB """
         set -xe
-        rm -rf $MYSQL_LIB_PATH/plugin/component_$component_name.cnf || true
+        rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
       """
     elif [ $i -eq 3 ]; then
       ssh root@DB3_PUB """
         set -xe
-        rm -rf $MYSQL_LIB_PATH/plugin/component_$component_name.cnf || true
+        rm -rf /usr/lib/mysql/plugin/component_$component_name.cnf || true
       """
     fi
   done
@@ -321,14 +307,14 @@ ssh root@DB1_PUB """
 
   echo "Node$node: Creating global configuration file for component: $component_name"
   if [ "$component_name" = "keyring_file" ]; then
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
  \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
  \"server_addr\": \"127.0.0.1\",
  \"server_port\": \"5696\",
@@ -350,14 +336,14 @@ ssh root@DB2_PUB """
 
   echo "Node$node: Creating global configuration file for component: $component_name"
   if [ "$component_name" = "keyring_file" ]; then
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
  \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
  \"server_addr\": \"DB1_PRIV\",
  \"server_port\": \"5696\",
@@ -379,14 +365,14 @@ ssh root@DB3_PUB """
 
   echo "Node$node: Creating global configuration file for component: $component_name"
   if [ "$component_name" = "keyring_file" ]; then
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
  \"path\": \"/var/lib/mysql/component_keyring_file\",
  \"read_only\": false
 }
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
  \"server_addr\": \"DB1_PRIV\",
  \"server_port\": \"5696\",
@@ -467,7 +453,7 @@ create_local_config() {
 ssh root@DB1_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
   \"read_local_config\": true
 }
@@ -481,7 +467,7 @@ EOF
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kmip.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
   \"read_local_config\": true
 }
@@ -490,7 +476,7 @@ EOF
     echo "Not Supported"
   elif [ "$component_name" = "keyring_kms" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kms.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kms.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kms.cnf
 {
   \"read_local_config\": true
 }
@@ -505,7 +491,7 @@ EOF
 ssh root@DB2_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
   \"read_local_config\": true
 }
@@ -519,7 +505,7 @@ EOF
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kmip.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
   \"read_local_config\": true
 }
@@ -528,7 +514,7 @@ EOF
     echo "Not Supported"
   elif [ "$component_name" = "keyring_kms" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kms.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kms.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kms.cnf
 {
   \"read_local_config\": true
 }
@@ -543,7 +529,7 @@ EOF
 ssh root@DB3_PUB """
   if [ "$component_name" = "keyring_file" ]; then
     echo "Node$node: Creating global configuration file component_keyring_file.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_file.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_file.cnf
 {
   \"read_local_config\": true
 }
@@ -557,7 +543,7 @@ EOF
 EOF
   elif [ "$component_name" = "keyring_kmip" ]; then
     echo "Node$node: Creating global configuration file component_keyring_kmip.cnf"
-    cat << EOF >$MYSQL_LIB_PATH/plugin/component_keyring_kmip.cnf
+    cat << EOF >/usr/lib/mysql/plugin/component_keyring_kmip.cnf
 {
   \"read_local_config\": true
 }
@@ -603,7 +589,7 @@ core-file
 # file paths
 basedir=/usr/
 datadir=/var/lib/mysql
-plugin_dir=$MYSQL_LIB_PATH/plugin/
+plugin_dir=/usr/lib/mysql/plugin/
 log-error=/var/log/mysql/error.log
 general_log=1
 general_log_file=/var/log/mysql/general.log
@@ -681,7 +667,7 @@ core-file
 # file paths
 basedir=/usr/
 datadir=/var/lib/mysql
-plugin_dir=$MYSQL_LIB_PATH/plugin/
+plugin_dir=/usr/lib/mysql/plugin/
 log-error=/var/log/mysql/error.log
 general_log=1
 general_log_file=/var/log/mysql/general.log
@@ -759,7 +745,7 @@ core-file
 # file paths
 basedir=/usr/
 datadir=/var/lib/mysql
-plugin_dir=$MYSQL_LIB_PATH/plugin/
+plugin_dir=/usr/lib/mysql/plugin/
 log-error=/var/log/mysql/error.log
 general_log=1
 general_log_file=/var/log/mysql/general.log
