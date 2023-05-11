@@ -69,6 +69,7 @@
           - rsync
           - acl
           - net-tools
+          - tmux
       retries: 60
       delay: 10
       register: result

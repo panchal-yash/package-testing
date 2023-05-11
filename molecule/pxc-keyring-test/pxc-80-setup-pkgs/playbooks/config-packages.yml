@@ -47,9 +47,14 @@
     shell: usermod -aG root mysql
     tags: suoder
 
-  - name: Install Socat
+  - name: Install Socat Debian
     shell: sudo apt-get install socat -y
     tags: socat
+    when: (ansible_os_family == "Debian")
+
+  - name: Install Socat Redhat
+    shell: sudo yum install socat -y
+    when: (ansible_os_family == "RedHat")
 
   - name: Fetch the vars from file
     shell: echo "No further things are needed..."

@@ -78,13 +78,3 @@
     ansible.builtin.file:
       path: /etc/mysql/certs/kmip
       state: directory
-
-  - name: install tmux deb packages
-    apt:
-      name: "{{ packages }}"
-      update_cache: yes
-    vars:
-      packages:
-      - tmux
-    when: 
-    - "'pxc1' in inventory_hostname"
