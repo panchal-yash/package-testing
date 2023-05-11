@@ -66,3 +66,29 @@
      backrefs=yes
      regexp='PATH=(["]*)((?!.*?{{extra_path}}).*?)(["]*)$'
      line="PATH=\1\2:{{extra_path}}\3"
+
+  - name: Create mysql log directory centos
+    ansible.builtin.file:
+      path: /var/log/mysql
+      state: directory
+      owner: mysql
+      group: root
+    when: ansible_os_family == "RedHat"
+
+  - name: Create mysql general log file for centos
+    copy:
+      content: ""
+      dest: /var/log/mysql/general.log
+      force: false
+      group: root
+      owner: mysql
+    when: ansible_os_family == "RedHat"
+
+  - name: Create mysql error log file for centos
+    copy:
+      content: ""
+      dest: /var/log/mysql/error.log
+      force: false
+      group: root
+      owner: mysql
+    when: ansible_os_family == "RedHat"
