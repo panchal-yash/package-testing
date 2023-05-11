@@ -19,14 +19,16 @@ if [ $(cat /etc/os-release  | grep debian | wc -l) -eq 1 ]
 then
 
 MYSQL_LIB_PATH=/usr/lib/mysql
+MYSQL_GALERA_LIBPATH=/usr/lib/galera4
+
 
 elif [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]
 then
 MYSQL_LIB_PATH=/usr/lib64/mysql
-
+MYSQL_GALERA_LIBPATH=/usr/lib64/galera4
 fi
 
-echo "Path of libs $MYSQL_LIB_PATH"
+echo "Path of libs MYSQL: $MYSQL_LIB_PATH GALERA4: $MYSQL_GALERA_LIBPATH"
 
 
 
@@ -626,7 +628,7 @@ pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
 wsrep_cluster_address='gcomm://DB2_PRIV:6030,DB3_PRIV:6030'
-wsrep_provider=/usr/lib/galera4/libgalera_smm.so
+wsrep_provider=$MYSQL_GALERA_LIBPATH/libgalera_smm.so
 wsrep_sst_receive_address=DB1_PRIV:6020
 wsrep_node_incoming_address=DB1_PRIV
 wsrep_slave_threads=2
@@ -703,7 +705,7 @@ pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
 wsrep_cluster_address='gcomm://DB1_PRIV:6030,DB3_PRIV:6030'
-wsrep_provider=/usr/lib/galera4/libgalera_smm.so
+wsrep_provider=$MYSQL_GALERA_LIBPATH/libgalera_smm.so
 wsrep_sst_receive_address=DB2_PRIV:6020
 wsrep_node_incoming_address=DB2_PRIV
 wsrep_slave_threads=2
@@ -781,7 +783,7 @@ pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
 wsrep_cluster_address='gcomm://DB1_PRIV:6030,DB2_PRIV:6030'
-wsrep_provider=/usr/lib/galera4/libgalera_smm.so
+wsrep_provider=$MYSQL_GALERA_LIBPATH/libgalera_smm.so
 wsrep_sst_receive_address=DB3_PRIV:6020
 wsrep_node_incoming_address=DB3_PRIV
 wsrep_slave_threads=2
