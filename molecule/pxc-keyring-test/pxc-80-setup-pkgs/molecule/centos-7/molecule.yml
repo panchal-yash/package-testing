@@ -12,7 +12,7 @@ platforms:
     vpc_subnet_id: subnet-0430e63d7cdbcd237
     instance_type: t2.small
     ssh_user: centos
-    root_device_name: /dev/xvda
+    root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
   - name: pxc2-80-centos-7-install-keyring-test
@@ -21,7 +21,7 @@ platforms:
     vpc_subnet_id: subnet-0430e63d7cdbcd237
     instance_type: t2.small
     ssh_user: centos
-    root_device_name: /dev/xvda
+    root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
   - name: pxc3-80-centos-7-install-keyring-test
@@ -30,7 +30,7 @@ platforms:
     vpc_subnet_id: subnet-0430e63d7cdbcd237
     instance_type: t2.small
     ssh_user: centos
-    root_device_name: /dev/xvda
+    root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
 provisioner:
