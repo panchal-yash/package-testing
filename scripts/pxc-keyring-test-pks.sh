@@ -111,6 +111,7 @@ cleanup() {
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my* ; else echo "Skipping as not RHEL" ;  fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 2 ]; then
@@ -118,6 +119,7 @@ cleanup() {
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my* ; else echo "Skipping as not RHEL" ;  fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 3 ]; then
@@ -125,6 +127,7 @@ cleanup() {
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my* ; else echo "Skipping as not RHEL" ;  fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     fi
