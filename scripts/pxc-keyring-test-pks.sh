@@ -70,14 +70,14 @@ sysbench_run() {
 
 ssh mysql@DB1_PUB """  
   echo "...Creating sysbench user"
-  sudo mysql -uroot -e\"CREATE USER 'sysbench'@'localhost' IDENTIFIED BY 'test'\"
+  sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"CREATE USER 'sysbench'@'localhost' IDENTIFIED BY 'test'\"
   echo "Successful"
   echo "...Granting permissions to sysbench user"
-  sudo mysql -uroot -e\"GRANT ALL ON *.* TO 'sysbench'@'localhost'\"
+  sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"GRANT ALL ON *.* TO 'sysbench'@'localhost'\"
   echo "Successful"
   echo "...Creating sbtest database"
-  sudo mysql -uroot -e\"DROP DATABASE IF EXISTS sbtest\"
-  sudo mysql -uroot -e\"CREATE DATABASE sbtest ENCRYPTION='Y'\"
+  sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"DROP DATABASE IF EXISTS sbtest\"
+  sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"CREATE DATABASE sbtest ENCRYPTION='Y'\"
   echo "Successful"
 
   echo "...Preparing sysbench data on Node 1"
@@ -95,9 +95,9 @@ ssh mysql@DB1_PUB """
     RAND=$[$RANDOM%50 + 1 ]
   # -N suppresses column names and -s is silent mode
     
-    count_1=$(ssh mysql@DB1_PUB """sudo mysql -uroot -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
-    count_2=$(ssh mysql@DB2_PUB """sudo mysql -uroot -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
-    count_3=$(ssh mysql@DB3_PUB """sudo mysql -uroot -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_1=$(ssh mysql@DB1_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_2=$(ssh mysql@DB2_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
+    count_3=$(ssh mysql@DB3_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -Ns -e\"SELECT count(*) FROM sbtest.sbtest$RAND\" """)
 
   if [ $count_1 -eq $count_2 ]; then
    if [ $count_2 -eq $count_3 ]; then
