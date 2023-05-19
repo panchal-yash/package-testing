@@ -8,7 +8,7 @@ driver:
 platforms:
   - name: pxc1-80-ol-8-install-keyring-test
     region: us-west-2
-    image: ami-000b99c02c2b64925
+    image: ami-07ec38a03db614220
     vpc_subnet_id: subnet-0430e63d7cdbcd237
     instance_type: t2.small
     ssh_user: ec2-user
@@ -17,7 +17,7 @@ platforms:
       iit-billing-tag: jenkins-pxc-worker
   - name: pxc2-80-ol-8-install-keyring-test
     region: us-west-2
-    image: ami-000b99c02c2b64925
+    image: ami-07ec38a03db614220
     vpc_subnet_id: subnet-0430e63d7cdbcd237
     instance_type: t2.small
     ssh_user: ec2-user
@@ -26,7 +26,7 @@ platforms:
       iit-billing-tag: jenkins-pxc-worker
   - name: pxc3-80-ol-8-install-keyring-test
     region: us-west-2
-    image: ami-000b99c02c2b64925
+    image: ami-07ec38a03db614220
     vpc_subnet_id: subnet-0430e63d7cdbcd237
     instance_type: t2.small
     ssh_user: ec2-user
