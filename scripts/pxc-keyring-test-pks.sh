@@ -1086,7 +1086,16 @@ cluster_up_check() {
   
     sleep 1
     CLUSTER_UP=0;
-  
+
+    echo "Node1: " 
+    ssh mysql@DB1_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
+
+    echo "Node2: " 
+    ssh mysql@DB2_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
+    
+    echo "Node3: " 
+    ssh mysql@DB3_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
+    
 
     if [ $(ssh mysql@DB1_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
