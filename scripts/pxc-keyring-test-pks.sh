@@ -21,12 +21,23 @@ then
 MYSQL_LIB_PATH=/usr/lib/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib/galera4
 
-
 elif [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]
 then
 MYSQL_LIB_PATH=/usr/lib64/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib64/galera4
+
+elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]
+then
+MYSQL_LIB_PATH=/usr/lib64/mysql
+MYSQL_GALERA_LIBPATH=/usr/lib64/galera4
+
+else 
+
+echo "Not supported OS"
+
 fi
+
+
 
 echo "Path of libs MYSQL: $MYSQL_LIB_PATH GALERA4: $MYSQL_GALERA_LIBPATH"
 
@@ -111,7 +122,7 @@ cleanup() {
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; else echo "Skipping as not RHEL" ;  fi
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; else echo "None of RHEL or FEDORA" ; fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 2 ]; then
@@ -119,7 +130,7 @@ cleanup() {
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; else echo "Skipping as not RHEL" ;  fi
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; else echo "None of RHEL or FEDORA" ; fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     elif [ $i -eq 3 ]; then
@@ -127,7 +138,7 @@ cleanup() {
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; else echo "Skipping as not RHEL" ;  fi
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; else echo "None of RHEL or FEDORA" ; fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
       """
     fi
@@ -963,7 +974,7 @@ ssh mysql@DB2_PUB /bin/bash <<'EOF'
 
     sudo systemctl enable mysql
     
-    sudo systemctl start mysql
+    sudo systemctl start mysql || true
 
     if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "REDHAT detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "FEDORA detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; else echo "Skipping as none of FEDORA or RHEL" ; fi
 
