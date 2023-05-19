@@ -1088,26 +1088,26 @@ cluster_up_check() {
     CLUSTER_UP=0;
 
     echo "Node1: " 
-    ssh mysql@DB1_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
+    ssh mysql@DB1_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
 
     echo "Node2: " 
-    ssh mysql@DB2_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
+    ssh mysql@DB2_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
     
     echo "Node3: " 
-    ssh mysql@DB3_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
+    ssh mysql@DB3_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}'
     
 
-    if [ $(ssh mysql@DB1_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB1_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ $(ssh mysql@DB2_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB2_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ $(ssh mysql@DB3_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ $(ssh mysql@DB3_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_cluster_size'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_cluster" """ | awk '{print$2}') -eq 3 ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB1_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB1_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB2_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB2_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
-    if [ "$(ssh mysql@DB3_PUB """sudo mysql -uroot -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
+    if [ "$(ssh mysql@DB3_PUB """sudo mysql -uroot -S /var/run/mysqld/mysqld.sock -e\"show global status like 'wsrep_local_state_comment'\" | sed 's/[| \t]\+/\t/g' | grep "wsrep_local" """ | awk '{print$2}')" == "Synced" ]; then CLUSTER_UP=$[ ${CLUSTER_UP} + 1]; fi
 
   # If count reached 6 (there are 6 checks), then the Cluster is up & running and consistent in it's Cluster topology views (as seen by each node)
 
