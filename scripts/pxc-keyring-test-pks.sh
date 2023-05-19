@@ -963,9 +963,9 @@ ssh mysql@DB2_PUB /bin/bash <<'EOF'
 
     sudo systemctl enable mysql
     
-    sudo systemctl start mysql || true
+    sudo systemctl start mysql
 
-    if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "REDHAT detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; else echo "Skipping as not RHEL" ;  fi
+    if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "REDHAT detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "FEDORA detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; else echo "Skipping as none of FEDORA or RHEL" ; fi
 
 EOF
     pxc_startup_status 2
@@ -982,7 +982,7 @@ ssh mysql@DB3_PUB /bin/bash <<'EOF'
 
     sudo systemctl start mysql || true
 
-    if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "REDHAT detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; else echo "Skipping as not RHEL" ;  fi
+    if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "REDHAT detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "FEDORA detected will wait for 120 seconds and restart." ; sleep 120 ; sudo systemctl restart mysql ; else echo "Skipping as none of FEDORA or RHEL" ; fi
 
 EOF
 
