@@ -15,19 +15,26 @@ VAULT_PLUGIN=0
 PXC_START_TIMEOUT=600
 
 
-if [ $(cat /etc/os-release  | grep debian | wc -l) -eq 1 ]
+SSH_EOF=$(ssh root@DB1_PUB """cat /etc/os-release""")
+echo $SSH_EOF
+
+
+if [ $(echo $SSH_EOF  | grep debian | wc -l) -eq 1 ]
 then
 
+echo "Debian"
 MYSQL_LIB_PATH=/usr/lib/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib/galera4
 
-elif [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]
+elif [ $(echo $SSH_EOF  | grep rhel | wc -l) -eq 1 ]
 then
+echo "RHEL"
 MYSQL_LIB_PATH=/usr/lib64/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib64/galera4
 
-elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]
+elif [ $(echo $SSH_EOF  | grep fedora | wc -l) -eq 1 ]
 then
+echo "FEDOROA"
 MYSQL_LIB_PATH=/usr/lib64/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib64/galera4
 
