@@ -456,32 +456,6 @@ ssh root@DB1_PUB <<'SHELL'
 
 set -xe
 
-if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
-then 
-
-echo "Install git and python3 for RHEL" ; 
-yum install git -y ; 
-yum install python3-pip -y
-
-elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
-then 
-
-echo "Install git and python3  for fedora" ; 
-yum install git -y ; 
-yum install python3-pip -y
-
-elif [ $(cat /etc/os-release  | grep debian | wc -l) -eq 1 ];
-then
-
-echo "Install git and python3  for debian" ; 
-apt-get install git -y
-apt-get install python3-pip -y
-
-else 
-echo "Not supported OS" ; 
-
-fi
-
 cd /home/mysql/
 
 git clone https://github.com/OpenKMIP/PyKMIP.git
