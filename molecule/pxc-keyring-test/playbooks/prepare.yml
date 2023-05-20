@@ -106,6 +106,7 @@
           - git
           - python3-pip
           - "@Development tools"
+          - python3-devel
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
     - name: install needed packages for running tests with yum on RHEL8
@@ -122,6 +123,7 @@
         - git
         - python3-pip
         - "@Development tools"
+        - python3-devel
       when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version|int == 8 or ansible_distribution_major_version|int == 9)
 
     - name: disable firewalld for OL8
