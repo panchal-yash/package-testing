@@ -125,29 +125,53 @@ cleanup() {
   echo "Deleting global & local manifest files from all 3 nodes"
   for i in $(seq 1 3); do
     if [ $i -eq 1 ]; then
-      ssh root@DB1_PUB """
+      ssh root@DB1_PUB <<'DB1'
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; else echo "None of RHEL or FEDORA" ; fi
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
+        then 
+          echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; 
+        elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
+        then 
+          echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; 
+        else 
+          echo "None of RHEL or FEDORA" ; 
+        fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
-      """
+DB1
     elif [ $i -eq 2 ]; then
-      ssh root@DB2_PUB """
+      ssh root@DB2_PUB <<'DB2'
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; else echo "None of RHEL or FEDORA" ; fi
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
+        then 
+          echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; 
+        elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
+        then 
+          echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; 
+        else 
+          echo "None of RHEL or FEDORA" ; 
+        fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
-      """
+DB2
     elif [ $i -eq 3 ]; then
-      ssh root@DB3_PUB """
+      ssh root@DB3_PUB <<'DB3'
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; then echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; then echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; else echo "None of RHEL or FEDORA" ; fi
+        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
+        then 
+          echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; 
+        elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
+        then 
+          echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; 
+        else 
+          echo "None of RHEL or FEDORA" ; 
+        fi
         echo '--------------END--------------' >> /var/log/mysql/error.log
-      """
+DB3
     fi
   done
 
