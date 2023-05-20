@@ -425,7 +425,31 @@ ssh root@DB1_PUB <<'SHELL'
 
 set -xe
 
+if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
+then 
+
+echo "Install git and python3 for RHEL" ; 
+yum install git -y ; 
+yum install python3-pip -y
+
+elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
+then 
+
+echo "Install git and python3  for fedora" ; 
+yum install git -y ; 
+yum install python3-pip -y
+
+elif [ $(cat /etc/os-release  | grep debian | wc -l) -eq 1 ];
+then
+
+echo "Install git and python3  for debian" ; 
 apt-get install git -y
+apt-get install python3-pip -y
+
+else 
+echo "Not supported OS" ; 
+
+fi
 
 cd /home/mysql/
 
@@ -448,8 +472,6 @@ database_path=/home/mysql/PyKMIP/pykmip.db
 EOF
 
 touch /home/mysql/PyKMIP/logfile
-
-apt-get install python3-pip -y
 
 sudo pip3 install SQLAlchemy==1.4.46
 
