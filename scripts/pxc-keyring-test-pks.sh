@@ -482,11 +482,17 @@ pip3 install --upgrade pip
 
 sudo pip3 install SQLAlchemy==1.4.46
 
+sudo pip3 install urllib3==1.26.15
+
+sudo pip3 install setuptools_rust
+
 pip3 show sqlalchemy
 
 cd PyKMIP
 
 sudo python3 setup.py install
+
+export PATH=$PATH:/usr/local/bin/
 
 cd bin
 
