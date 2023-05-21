@@ -492,9 +492,16 @@ then
 
 echo "Detected Bullseye"
 
+elif [ $(cat /etc/os-release  | grep -o focal | uniq | wc -l) -eq 1 ]
+then
+
+echo "Detected Ubuntu Focal"
+
+sudo pip3 install pykmip==0.10.0
+
 else
 
-echo "Not buster or bullseye so installing required packages"
+echo "Not buster,bullseye or Ubuntu Focal so installing required packages"
 sudo pip3 install urllib3==1.26.15
 sudo pip3 install setuptools_rust
 
