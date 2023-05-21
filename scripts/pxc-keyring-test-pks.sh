@@ -478,6 +478,8 @@ EOF
 
 touch /home/mysql/PyKMIP/logfile
 
+pip3 install --upgrade pip
+
 sudo pip3 install SQLAlchemy==1.4.46
 
 pip3 show sqlalchemy
