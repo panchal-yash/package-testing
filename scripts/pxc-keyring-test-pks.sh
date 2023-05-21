@@ -482,9 +482,23 @@ pip3 install --upgrade pip
 
 sudo pip3 install SQLAlchemy==1.4.46
 
-sudo pip3 install urllib3==1.26.15
+if [ $(cat /etc/os-release  | grep -o buster | uniq | wc -l) -eq 1 ]
+then
 
+echo "Detected Buster"
+
+elif [ $(cat /etc/os-release  | grep -o bullseye | uniq | wc -l) -eq 1 ]
+then
+
+echo "Detected Bullseye"
+
+else
+
+echo "Not buster or bullseye so installing required packages"
+sudo pip3 install urllib3==1.26.15
 sudo pip3 install setuptools_rust
+
+fi
 
 pip3 show sqlalchemy
 
