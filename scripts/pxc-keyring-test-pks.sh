@@ -520,6 +520,10 @@ cd ..
 
 tmux new -d 'pykmip-server -f server.conf -l logfile'
 
+sleep 120
+
+ps -aux | grep pykmip
+
 SHELL
 }
 
