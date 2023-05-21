@@ -74,6 +74,7 @@
           - git
           - python3-pip
           - build-essential
+          - psmisc
       retries: 60
       delay: 10
       register: result
@@ -107,6 +108,7 @@
           - python3-pip
           - "@Development tools"
           - python3-devel
+          - psmisc
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
     - name: install needed packages for running tests with yum on RHEL8
@@ -115,15 +117,16 @@
         state: latest
       vars:
         packages:
-        - unzip
-        - wget
-        - net-tools
-        - tmux
-        - socat
-        - git
-        - python3-pip
-        - "@Development tools"
-        - python3-devel
+          - unzip
+          - wget
+          - net-tools
+          - tmux
+          - socat
+          - git
+          - python3-pip
+          - "@Development tools"
+          - python3-devel
+          - psmisc
       when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version|int == 8 or ansible_distribution_major_version|int == 9)
 
     - name: disable firewalld for OL8
