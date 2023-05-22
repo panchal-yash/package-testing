@@ -129,10 +129,10 @@ cleanup() {
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
+        if [ $(cat /etc/os-release  | grep -o rhel | uniq | wc -l) -eq 1 ]; 
         then 
           echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; 
-        elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
+        elif [ $(cat /etc/os-release  | grep -o fedora | uniq | wc -l) -eq 1 ]; 
         then 
           echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; 
         else 
@@ -145,10 +145,10 @@ DB1
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
+        if [ $(cat /etc/os-release  | grep -o rhel | uniq | wc -l) -eq 1 ]; 
         then 
           echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; 
-        elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
+        elif [ $(cat /etc/os-release  | grep -o fedora | uniq | wc -l) -eq 1 ]; 
         then 
           echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; 
         else 
@@ -161,10 +161,10 @@ DB2
         set -xe
         rm -rf /usr/sbin/mysqld.my || true
         rm -rf /var/lib/mysql
-        if [ $(cat /etc/os-release  | grep rhel | wc -l) -eq 1 ]; 
+        if [ $(cat /etc/os-release  | grep -o rhel | uniq | wc -l) -eq 1 ]; 
         then 
           echo "Removing the my.cnf in redhat" ; rm -rf /etc/my.cnf* ; 
-        elif [ $(cat /etc/os-release  | grep fedora | wc -l) -eq 1 ]; 
+        elif [ $(cat /etc/os-release  | grep -o fedora | uniq | wc -l) -eq 1 ]; 
         then 
           echo "Removing the my.cnf in fedora" ; rm -rf /etc/my.cnf* ; 
         else 
@@ -496,8 +496,6 @@ elif [ $(cat /etc/os-release  | grep -o focal | uniq | wc -l) -eq 1 ]
 then
 
 echo "Detected Ubuntu Focal"
-
-sudo pip3 install pykmip==0.10.0
 
 else
 
