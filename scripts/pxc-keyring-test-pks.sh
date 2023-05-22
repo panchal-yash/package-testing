@@ -1035,8 +1035,22 @@ ssh mysql@DB2_PUB /bin/bash <<'EOF'
     sudo systemctl start mysql || true
 
     sleep 120 
-    
-    sudo systemctl restart mysql 
+
+    if [ $(systemctl status mysql | grep -o running | uniq | wc -l) -eq 1 ]; 
+    then
+
+          echo "=====================================NODE 2 STARTED Successfully using 'systemctl start mysql' INIT==================================================="
+
+    else
+
+          echo "=====================================NODE 2 FAILED TO Start using 'systemctl start mysql' INIT==================================================="
+          cat -n /var/log/mysql/error.log
+          
+          echo "=====================================RESTARTING THE NODE 2 using 'systemctl restart mysql' INIT==================================================="
+          sudo systemctl restart mysql 
+
+    fi
+
 
 EOF
     pxc_startup_status 2
@@ -1055,7 +1069,22 @@ ssh mysql@DB3_PUB /bin/bash <<'EOF'
 
     sleep 120 
     
-    sudo systemctl restart mysql 
+    if [ $(systemctl status mysql | grep -o running | uniq | wc -l) -eq 1 ]; 
+    then
+
+          echo "=====================================NODE 3 STARTED Successfully using 'systemctl start mysql' INIT==================================================="
+
+    else
+
+          echo "=====================================NODE 3 FAILED TO Start using 'systemctl start mysql' INIT==================================================="
+          cat -n /var/log/mysql/error.log
+          
+          echo "=====================================RESTARTING THE NODE 3 using 'systemctl restart mysql'==================================================="
+          sudo systemctl restart mysql 
+
+    fi
+
+
 
 EOF
 
