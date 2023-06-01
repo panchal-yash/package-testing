@@ -695,7 +695,7 @@ gtid_mode=ON
 enforce_gtid_consistency=ON
 master_verify_checksum=on
 binlog_checksum=CRC32
-binlog_encryption=ON
+binlog_encryption=OFF
 pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
@@ -772,7 +772,7 @@ gtid_mode=ON
 enforce_gtid_consistency=ON
 master_verify_checksum=on
 binlog_checksum=CRC32
-binlog_encryption=ON
+binlog_encryption=OFF
 pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
@@ -850,7 +850,7 @@ gtid_mode=ON
 enforce_gtid_consistency=ON
 master_verify_checksum=on
 binlog_checksum=CRC32
-binlog_encryption=ON
+binlog_encryption=OFF
 pxc_encrypt_cluster_traffic=ON
 
 # wsrep variables
