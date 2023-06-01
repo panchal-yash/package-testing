@@ -1009,7 +1009,7 @@ init_datadir() {
 }
 #-----------------------
 
-start_node1_init(){
+start_node1(){
 echo "Starting PXC nodes..."
 
 ssh mysql@DB1_PUB /bin/bash <<'EOF'
@@ -1023,7 +1023,7 @@ EOF
   pxc_startup_status 1
 }
 
-start_node2_init() {
+start_node2() {
 
 
 ssh mysql@DB2_PUB /bin/bash <<'EOF'
@@ -1057,7 +1057,7 @@ EOF
 
 }
 
-start_node3_init() {
+start_node3() {
 
 ssh mysql@DB3_PUB /bin/bash <<'EOF'
   
@@ -1097,69 +1097,71 @@ EOF
 
 
 #-----------------------
-start_node1(){
-echo "Starting PXC nodes..."
 
-ssh mysql@DB1_PUB /bin/bash <<'EOF'
-    
-    set -xe
 
-    sudo systemctl start mysql@bootstrap
-
-EOF
-
-  pxc_startup_status 1
-}
-
-start_node2() {
-
-ssh mysql@DB2_PUB /bin/bash <<'EOF'
-    
-    set -xe
-
-    sudo systemctl enable mysql
-    
-    sudo systemctl start mysql || true
-    
-    echo "Waiting for 120 Seconds"
-
-    sleep 120
-
-    echo "-----------------------------------------------RESTARTING MYSQL-----------------------------------------------" >> /var/log/mysql/error.log
-
-    echo "Restarting the mysql Service"
-
-    sudo systemctl restart mysql
-
-EOF
-    pxc_startup_status 2
-
-}
-
-start_node3() {
-
-ssh mysql@DB3_PUB /bin/bash <<'EOF'
-  
-    set -xe
-
-    sudo systemctl enable mysql
-
-    sudo systemctl start mysql || true
-    
-    echo "Waiting for 120 Seconds"
-
-    sleep 120
-
-    echo "-----------------------------------------------RESTARTING MYSQL-----------------------------------------------" >> /var/log/mysql/error.log
-
-    echo "Restarting the mysql Service"
-
-    sudo systemctl restart mysql
-
-EOF
-    pxc_startup_status 3
-
-}
+#start_node1(){
+#echo "Starting PXC nodes..."
+#
+#ssh mysql@DB1_PUB /bin/bash <<'EOF'
+#    
+#    set -xe
+#
+#    sudo systemctl start mysql@bootstrap
+#
+#EOF
+#
+#  pxc_startup_status 1
+#}
+#
+#start_node2() {
+#
+#ssh mysql@DB2_PUB /bin/bash <<'EOF'
+#    
+#    set -xe
+#
+#    sudo systemctl enable mysql
+#    
+#    sudo systemctl start mysql || true
+#    
+#    echo "Waiting for 120 Seconds"
+#
+#    sleep 120
+#
+#    echo "-----------------------------------------------RESTARTING MYSQL-----------------------------------------------" >> /var/log/mysql/error.log
+#
+#    echo "Restarting the mysql Service"
+#
+#    sudo systemctl restart mysql
+#
+#EOF
+#    pxc_startup_status 2
+#
+#}
+#
+#start_node3() {
+#
+#ssh mysql@DB3_PUB /bin/bash <<'EOF'
+#  
+#    set -xe
+#
+#    sudo systemctl enable mysql
+#
+#    sudo systemctl start mysql || true
+#    
+#    echo "Waiting for 120 Seconds"
+#
+#    sleep 120
+#
+#    echo "-----------------------------------------------RESTARTING MYSQL-----------------------------------------------" >> /var/log/mysql/error.log
+#
+#    echo "Restarting the mysql Service"
+#
+#    sudo systemctl restart mysql
+#
+#EOF
+#    pxc_startup_status 3
+#
+#}
 
 write_log_error(){
 
@@ -1247,9 +1249,9 @@ create_local_config keyring_file 3
 
 write_log_error ===================COMBO_5_COMPONENT_KEYRING_FILE_LOCAL_MANIFEST_LOCAL_CONFIG===================
 
-start_node1_init;MPID1="$!"
-start_node2_init;MPID2="$!"
-start_node3_init;MPID3="$!"
+start_node1;MPID1="$!"
+start_node2;MPID2="$!"
+start_node3;MPID3="$!"
 cluster_up_check
 sysbench_run
 
