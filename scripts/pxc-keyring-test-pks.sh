@@ -25,18 +25,24 @@ then
 echo "Debian"
 MYSQL_LIB_PATH=/usr/lib/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib/galera4
+CHAR_SETS_DIR=/usr/share/mysql
+LC_MSG_DIR=/usr/share/mysql
 
 elif [ $(echo $SSH_EOF  | grep rhel | wc -l) -eq 1 ]
 then
 echo "RHEL"
 MYSQL_LIB_PATH=/usr/lib64/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib64/galera4
+CHAR_SETS_DIR=/usr/share/percona-xtradb-cluster
+LC_MSG_DIR=/usr/share/percona-xtradb-cluster
 
 elif [ $(echo $SSH_EOF  | grep fedora | wc -l) -eq 1 ]
 then
 echo "FEDOROA"
 MYSQL_LIB_PATH=/usr/lib64/mysql
 MYSQL_GALERA_LIBPATH=/usr/lib64/galera4
+CHAR_SETS_DIR=/usr/share/percona-xtradb-cluster
+LC_MSG_DIR=/usr/share/percona-xtradb-cluster
 
 else 
 
@@ -47,7 +53,7 @@ fi
 
 
 echo "Path of libs MYSQL: $MYSQL_LIB_PATH GALERA4: $MYSQL_GALERA_LIBPATH"
-
+echo "Path of CHAR SETS: $CHAR_SETS_DIR LC_MSG_DIR: $LC_MSG_DIR"
 
 
 # Confusion regarding the vault part: I think it should be in any one server (preferably on bootstrap ?)
@@ -684,8 +690,8 @@ general_log_file=/var/log/mysql/general.log
 slow_query_log=1
 slow_query_log_file=/var/log/mysql/slow.log
 socket=/var/run/mysqld/mysqld.sock
-character-sets-dir=/usr/share/mysql/charsets
-lc-messages-dir=/usr/share/mysql/
+character-sets-dir=$CHAR_SETS_DIR/charsets
+lc-messages-dir=$LC_MSG_DIR/
 pid-file=/var/run/mysqld/mysqld.pid
 
 # pxc variables
@@ -762,8 +768,8 @@ general_log_file=/var/log/mysql/general.log
 slow_query_log=1
 slow_query_log_file=/var/log/mysql/slow.log
 socket=/var/run/mysqld/mysqld.sock
-character-sets-dir=/usr/share/mysql/charsets
-lc-messages-dir=/usr/share/mysql/
+character-sets-dir=$CHAR_SETS_DIR/charsets
+lc-messages-dir=$LC_MSG_DIR/
 pid-file=/var/run/mysqld/mysqld.pid
 
 # pxc variables
@@ -840,8 +846,8 @@ general_log_file=/var/log/mysql/general.log
 slow_query_log=1
 slow_query_log_file=/var/log/mysql/slow.log
 socket=/var/run/mysqld/mysqld.sock
-character-sets-dir=/usr/share/mysql/charsets
-lc-messages-dir=/usr/share/mysql/
+character-sets-dir=$CHAR_SETS_DIR/charsets
+lc-messages-dir=$LC_MSG_DIR/
 pid-file=/var/run/mysqld/mysqld.pid
 
 # pxc variables
