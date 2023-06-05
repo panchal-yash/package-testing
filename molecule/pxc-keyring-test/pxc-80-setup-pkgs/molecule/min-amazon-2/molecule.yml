@@ -15,6 +15,7 @@ platforms:
     root_device_name: /dev/xvda
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
+      job-name: pxc-keyring-test-job
   - name: pxc2-80-min-amazon-2-install-keyring-test
     region: us-west-2
     image: ami-0f9f005c313373218
@@ -24,6 +25,7 @@ platforms:
     root_device_name: /dev/xvda
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
+      job-name: pxc-keyring-test-job
   - name: pxc3-80-min-amazon-2-install-keyring-test
     region: us-west-2
     image: ami-0f9f005c313373218
@@ -33,6 +35,7 @@ platforms:
     root_device_name: /dev/xvda
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
+      job-name: pxc-keyring-test-job
 provisioner:
   name: ansible
   playbooks:

@@ -15,6 +15,7 @@ platforms:
     root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
+      job-name: pxc-keyring-test-job
   - name: pxc2-80-ubuntu-jammy-install-keyring-test
     region: us-west-2
     image: ami-0fcf52bcf5db7b003
@@ -24,6 +25,7 @@ platforms:
     root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pxc-worker
+      job-name: pxc-keyring-test-job
   - name: pxc3-80-ubuntu-jammy-install-keyring-test
     region: us-west-2
     image: ami-0fcf52bcf5db7b003
