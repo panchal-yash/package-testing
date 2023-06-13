@@ -13,15 +13,16 @@ checkec2(){
 
 
 
-    #
-    days="3"
-    for region in "${awsRegions[@]}"
-    do
-    #
-    #
-            servers=$(checkec2 "$region" "$days" | yq 'length')
-    
-            echo "----------------"$region"--has--"$servers" running since past "$days"-----------------"
-            checkec2 "$region" "$days"
-            echo "-------------------------------------------------------------------------------------"
-    done
+#
+days="3"
+for region in "${awsRegions[@]}"
+do
+#
+#
+servers=$(checkec2 "$region" "$days" | yq 'length')
+
+echo "----------------$region has $servers running since past $days-----------------"
+checkec2 "$region" "$days"
+echo "-------------------------------------------------------------------------------------"
+
+done
