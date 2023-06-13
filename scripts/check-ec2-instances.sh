@@ -26,7 +26,7 @@ checkec2 "$region" "$days"  >> OUTPUT.txt
 echo "-------------------------------------------------------------------------------------"  >> OUTPUT.txt
 
 
-echo "Region $region has $servers running servers since past $days" >> overview.txt
+echo "Region $region has $servers running servers since past $days days" >> overview.txt
 
 
 done
