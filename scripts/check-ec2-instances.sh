@@ -19,7 +19,7 @@ for region in "${awsRegions[@]}"
 do
 #
 #
-servers=$(checkec2 "$region" "$days" | yq 'length')
+servers=$(checkec2 "$region" "$days" | /opt/yq 'length')
 
 echo "----------------$region has $servers running since past $days-----------------"
 checkec2 "$region" "$days"
