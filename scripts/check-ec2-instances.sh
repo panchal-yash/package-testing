@@ -21,7 +21,7 @@ do
 #
 servers=$(checkec2 "$region" "$days" | /opt/yq 'length')
 DateTime=$(date +%Y-%m-%d-%H-%M)
-File=$(echo "$DateTime+.log")
+File=$(echo "$DateTime.log")
 
 echo $File
 
