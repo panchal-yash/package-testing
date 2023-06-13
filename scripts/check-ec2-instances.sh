@@ -23,6 +23,8 @@ servers=$(checkec2 "$region" "$days" | /opt/yq 'length')
 DateTime=$(date +%Y-%m-%d-%H-%M)
 File=$(echo "$DateTime+.log")
 
+echo $File
+
 echo "----------------$region has $servers running since past $days Days-----------------" >> $File
 checkec2 "$region" "$days"  >> $File
 echo "-------------------------------------------------------------------------------------"  >> $File
