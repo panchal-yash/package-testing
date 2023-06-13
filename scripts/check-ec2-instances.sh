@@ -21,7 +21,7 @@ checkec2(){
     #
             servers=$(checkec2 "$region" "$days" | yq 'length')
     
-            echo "----------------"$region"--has--"$servers" running since past "$days-----------------"
+            echo "----------------"$region"--has--"$servers" running since past "$days"-----------------"
             checkec2 "$region" "$days"
             echo "-------------------------------------------------------------------------------------"
     done
