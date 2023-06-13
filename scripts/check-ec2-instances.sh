@@ -20,9 +20,10 @@ do
 #
 #
 servers=$(checkec2 "$region" "$days" | /opt/yq 'length')
+DateTime=$(date +%Y-%m-%d-%H-%M)
 
-echo "----------------$region has $servers running since past $days Days-----------------"
-checkec2 "$region" "$days"
-echo "-------------------------------------------------------------------------------------"
+echo "----------------$region has $servers running since past $days Days-----------------" >> $DateTime
+checkec2 "$region" "$days"  >> $DateTime
+echo "-------------------------------------------------------------------------------------"  >> $DateTime
 
 done
