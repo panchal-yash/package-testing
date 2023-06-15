@@ -7,7 +7,8 @@ awsRegions=("us-west-1" "us-west-2" "us-east-1" "us-east-2" "eu-west-1" "eu-west
 checkec2(){
           threshold_date=$(date -d "$2 day ago" +%Y-%m-%d)
 
-            aws ec2 describe-instances     --filters "Name=instance-state-name,Values=running"     --query "Reservations[].Instances[?LaunchTime<='${threshold_date}'].[Tags[?Key=='Name'].Value[], InstanceId, LaunchTime]" --output yaml --region $1 | sed -e 's/\- \[\]//g' -e '/^$/d'
+           aws ec2 describe-instances --filters "Name=instance-state-name,Values=running"     --query "Reservations[].Instances[?LaunchTime<='${threshold_date}'].[Tags[?Key=='Name'].Value[],Tags[?Key=='job-name'].Value[], InstanceId, LaunchTime]" --output yaml --region us-west-1 | sed -e 's/\- \[\]//g' -e '/^$/d'
+
     }
 
 
