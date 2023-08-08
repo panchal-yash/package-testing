@@ -76,6 +76,11 @@
 
   - name: start pykmip server
     shell: nohup /usr/local/bin/pykmip-server -f /package-testing/kmip/server.conf -l /pykmip_server.log 2>&1 &
+    when: ansible_os_family != "Debian" and ansible_distribution_release != "jammy"
+
+  - name: start pykmip server Jammy
+    shell: "nohup /usr/local/bin/pykmip-server -f /package-testing/kmip/server.conf -l /pykmip_server.log 2>&1 &"
+    when: ansible_os_family == "Debian" and ansible_distribution_release == "jammy"
 
   - name: copy the global manifest for mysql
     copy:
