@@ -134,10 +134,9 @@
     - rm -rf /package-testing
     - rm -f master.zip
     - wget --no-check-certificate -O package-testing-pxb-8.1-mj-branch.zip https://github.com/panchal-yash/package-testing/archive/refs/heads/pxb-8.1-mj-branch.zip
-    - mv package-testing-pxb-8.1-mj-branch.zip master.zip
-    - unzip master.zip
-    - rm -f master.zip
-    - mv package-testing-master /package-testing
+    - unzip package-testing-pxb-8.1-mj-branch.zip
+    - rm -f package-testing-pxb-8.1-mj-branch.zip
+    - mv package-testing-pxb-8.1-mj-branch /package-testing
     when: lookup('env', 'USE_LOCAL_PKG_TEST') == "" or lookup('env', 'USE_LOCAL_PKG_TEST') == "0"
 
   - name: install latest bats from github
