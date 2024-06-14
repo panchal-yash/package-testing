@@ -184,6 +184,13 @@
       - percona-mysql-shell
     when: ansible_os_family == "RedHat"
 
+  - name: enable the major  pxb-80 testing
+    command: percona-release enable-only pxb-80 testing
+
+  - name: install Percona XtraBackup pxb-80 packages
+    include_tasks: ../../../tasks/install_pxb80.yml
+
+
   - name: start mysql service
     service: name=mysql state=started enabled=yes
 
