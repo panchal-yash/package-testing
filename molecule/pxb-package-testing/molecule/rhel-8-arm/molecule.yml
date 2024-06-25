@@ -4,7 +4,7 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: rhel8-arm-${BUILD_NUMBER}-${JOB_NAME}-TEST
+  - name: rhel8-arm-TEST
     region: us-west-2
     image:  ami-0bb199dd39edd7d71
     vpc_subnet_id: subnet-03136d8c244f56036
