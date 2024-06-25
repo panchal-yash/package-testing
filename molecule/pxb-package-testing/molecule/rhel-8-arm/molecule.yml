@@ -13,7 +13,6 @@ platforms:
     root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: pxb-package-testing
-      job-name: ${JOB_NAME}
 provisioner:
   name: ansible
   log: True
