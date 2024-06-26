@@ -16,6 +16,10 @@
     debug:
       msg: "{{ lookup('env', 'server_to_test') }}"
 
+  - name: Current Directory of playbook
+    debug:
+      msg: "{{ playbook_dir }}"
+
   - name: include tasks for test env setup
     include_tasks: ../tasks/test_prep.yml
 
@@ -42,6 +46,14 @@
   - name: Set pxb_version_major_minor variable
     set_fact:
       pxb_version_major_minor: "{{ pxb_version_major_minor.stdout }}"
+
+  - name: Print the Versions PS
+    debug:
+      msg: "PS version is {{ major_release_version }}"
+
+  - name: Print the versions PXB
+    debug:
+      msg: "PXB version is {{ pxb_version_major }}.{{ pxb_version_major_minor }}"
 
   - name: Extract values using shell command for repo name used for innovation/lts release
     shell: grep 'PS_INN_LTS_REPO=' ../VERSIONS | cut -d'=' -f2 | tr -d '"'
