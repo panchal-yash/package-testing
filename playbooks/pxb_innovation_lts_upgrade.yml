@@ -60,6 +60,10 @@
     set_fact:
       pxb_inn_lts_repo_name: "{{ pxb_inn_lts_repo_name.stdout }}"
 
+  - name: debug
+    debug:
+      msg: "pxb_version_major_minor: {{ pxb_version_major_minor }} major_release_version: {{ major_release_version }} ps_inn_lts_repo_name:{{ ps_inn_lts_repo_name }} pxb_inn_lts_repo_name:{{ pxb_inn_lts_repo_name }}"
+
   - name: VERSION in testing repo
     shell: curl -s https://repo.percona.com/pxb-8x-innovation/apt/pool/testing/p/ | grep -oP '"\K[^"]+' | grep percona-xtrabackup | sed -e 's|</a.*||' -e 's/\///g' -e 's/>//g' | grep -v '^$'~ | uniq | sort -t '-' -k 3 -nr | head -n 1 | sed '-e s/percona-xtrabackup-//g' |  sed -E 's/(.)(.)/\1.\2/'
     register: pxb_version_testing
