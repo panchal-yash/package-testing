@@ -1,6 +1,11 @@
 
 # MS-INSTALL START
 
+  - name: PRINT VARIABLES
+    debug:
+      msg: "VER {{ pxb_version_major }} MAJ MIN{{ pxb_version_major_minor }} "
+    when: lookup('env', 'server_to_test') == "ms_innovation_lts"
+
   - name: install yum-utils for rhel
     yum:
       name: yum-utils

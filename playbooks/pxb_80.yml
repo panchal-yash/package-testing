@@ -40,8 +40,65 @@
 #  - name: install Percona Toolkit new deb packages
 #    include_tasks: ../tasks/install_pt.yml
 
+
+## INSTALL PS
   - name: install Percona Server 8.0 packages
     include_tasks: ../tasks/install_ps80.yml
+    when:
+      - lookup('env', 'server_to_test') == "ps_innovation_lts"
+
+# INSTALL MS 
+
+  - name: Extract PXB major and minor version number using shell commands
+    shell: cat /package-testing/VERSIONS | grep 'PXB80_VER' | cut -d'=' -f2 | sed 's/"//g'
+    register: pxb_version_major_minor_register
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+
+  - name: Extract PXB major version number using shell commands
+    shell: cat /package-testing/VERSIONS | grep PXB80_VER | awk -F'[=".]' '{print $3"."$4}'
+    register: pxb_version_major_register
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+
+  - name: Extract version number using shell commands
+    shell: cat /package-testing/VERSIONS | grep -oP 'PXB80_VER="\K(\d+)\.(\d+)' | tr -d '.'
+    register: major_release_version_register
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+
+  - name: Set major_release_version variable
+    set_fact:
+      major_release_version_reg: "{{ major_release_version_register.stdout }}"
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+
+  - name: Set pxb_version_major variable
+    set_fact:
+      pxb_version_major_reg: "{{ pxb_version_major_register.stdout }}"
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+
+  - name: Set pxb_version_major_minor variable
+    set_fact:
+      pxb_version_major_minor_reg: "{{ pxb_version_major_minor_register.stdout }}"
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+
+  - name: DEBUG  PXB version number
+    debug:
+      msg: "PXB version number is {{ pxb_version_major_reg }} {{ pxb_version_major_minor_reg }}"
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+
+###
+  - name: install MYSQL MS Server {{ pxb_version_major_reg }} packages
+    include_tasks: ../tasks/install_ms_innovation_lts.yml
+    vars:
+      pxb_version_major: "{{ pxb_version_major_reg }}"
+      pxb_version_major_minor: "{{ pxb_version_major_minor_reg }}.0"
+    when:
+      - lookup('env', 'server_to_test') == "ms_innovation_lts"
 
   - name: install Percona XtraBackup 8.0 packages
     include_tasks: ../tasks/install_pxb80.yml
