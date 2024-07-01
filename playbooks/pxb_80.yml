@@ -53,43 +53,43 @@
     shell: cat /package-testing/VERSIONS | grep 'PXB80_VER' | cut -d'=' -f2 | sed 's/"//g'
     register: pxb_version_major_minor_register
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" or lookup('env', 'server_to_test') == "ms-80"
 
   - name: Extract PXB major version number using shell commands
     shell: cat /package-testing/VERSIONS | grep PXB80_VER | awk -F'[=".]' '{print $3"."$4}'
     register: pxb_version_major_register
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" or lookup('env', 'server_to_test') == "ms-80"
 
   - name: Extract version number using shell commands
     shell: cat /package-testing/VERSIONS | grep -oP 'PXB80_VER="\K(\d+)\.(\d+)' | tr -d '.'
     register: major_release_version_register
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" or lookup('env', 'server_to_test') == "ms-80"
 
   - name: Set major_release_version variable
     set_fact:
       major_release_version_reg: "{{ major_release_version_register.stdout }}"
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" or lookup('env', 'server_to_test') == "ms-80"
 
   - name: Set pxb_version_major variable
     set_fact:
       pxb_version_major_reg: "{{ pxb_version_major_register.stdout }}"
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" or lookup('env', 'server_to_test') == "ms-80"
 
   - name: Set pxb_version_major_minor variable
     set_fact:
       pxb_version_major_minor_reg: "{{ pxb_version_major_minor_register.stdout }}"
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" or lookup('env', 'server_to_test') == "ms-80"
 
   - name: DEBUG  PXB version number
     debug:
       msg: "PXB version number is {{ pxb_version_major_reg }} {{ pxb_version_major_minor_reg }}"
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" or lookup('env', 'server_to_test') == "ms-80"
 
 ###
   - name: install MYSQL MS Server {{ pxb_version_major_reg }} packages
@@ -98,7 +98,15 @@
       pxb_version_major: "{{ pxb_version_major_reg }}"
       pxb_version_major_minor: "{{ pxb_version_major_minor_reg }}.0"
     when:
-      - lookup('env', 'server_to_test') == "ms_innovation_lts"
+      - lookup('env', 'server_to_test') == "ms_innovation_lts" 
+      
+  - name: install MYSQL MS Server {{ pxb_version_major_reg }} packages
+    include_tasks: ../tasks/install_ms_innovation_lts.yml
+    vars:
+      pxb_version_major: "{{ pxb_version_major_reg }}"
+      pxb_version_major_minor: "{{ pxb_version_major_minor_reg }}"
+    when:
+      - lookup('env', 'server_to_test') == "ms-80"
 
   - name: install Percona XtraBackup 8.0 packages
     include_tasks: ../tasks/install_pxb80.yml
@@ -198,3 +206,5 @@
 
   - name: check if process is stopped after package removal
     command: /package-testing/check_running.sh mysql stopped
+    when:
+      - lookup('env', 'server_to_test') != "ms-80"
