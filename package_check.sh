@@ -140,8 +140,8 @@ if [[ ${product} = "ps56" || ${product} = "ps57" ]] || [[ ${product} =~ ^ps8[0-9
         rpm_num_pkgs="7"
         rpm_opt_package="percona-server-rocksdb${pro_suf}"
       else
-        rpm_num_pkgs="8"
-        rpm_opt_package="percona-server-rocksdb percona-server-shared-compat"
+        rpm_num_pkgs="7"
+        rpm_opt_package="percona-server-rocksdb"
       fi
     fi
     if [[ ${product} =~ ^ps8[0-9]{1}$ ]]; then
