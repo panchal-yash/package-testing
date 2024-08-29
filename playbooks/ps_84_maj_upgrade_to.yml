@@ -12,7 +12,7 @@
 - hosts: all
   become: true
   become_method: sudo
-  vars:
+  vars: 
     major_upgrade: true
     install_mysql_shell: "{{ lookup('env', 'install_mysql_shell', default='') }}"
     gnupg_home: /root/.gnupg
