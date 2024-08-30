@@ -35,17 +35,8 @@
               dest=/package-testing/scripts/ps_keyring_plugins_test/keyring_vault_test.cnf
               mode=0664 owner=root group=root
 
-  - name: include tasks for enabling test repo
-    include_tasks: ../tasks/enable_testing_repo.yml
-    when: lookup('env', 'install_repo') == "testing" or lookup('env', 'install_repo') == ""
-
   - name: include tasks for enabling main repo
     include_tasks: ../tasks/enable_main_repo.yml
-    when: lookup('env', 'install_repo') == "main"
-
-  - name: include tasks for enabling experimental repo
-    include_tasks: ../tasks/enable_experimental_repo.yml
-    when: lookup('env', 'install_repo') == "experimental"
 
   - name: download and extract world database
     command: "{{ item }}"
@@ -54,11 +45,6 @@
 
   - name: include tasks for enabling PS 8 main repo
     include_tasks: ../tasks/enable_ps8_main_repo.yml
-    when: lookup('env', 'install_repo') == "main"
-
-  - name: include tasks for enabling PS 8 test repo
-    include_tasks: ../tasks/enable_ps8_testing_repo.yml
-    when: lookup('env', 'install_repo') == "testing" or lookup('env', 'install_repo') == ""
 
   - name: append include for RedHat
     lineinfile:
@@ -66,12 +52,11 @@
         line: '!includedir /etc/my.cnf.d'
     when: ansible_os_family == "RedHat"
 
-
   - name: install Percona Server 8.0 packages
     include_tasks: ../tasks/install_ps80.yml
 
   - name: Enable PXB 80 repo
-    command: percona-release enable-only pxb-80 testing
+    command: percona-release enable-only pxb-80 release
 
   - name: install PXB 8.0 packages
     include_tasks: ../tasks/install_pxb80.yml
@@ -86,7 +71,7 @@
     include_tasks: ../tasks/install_pxb80.yml
     when: lookup('env', 'install_repo') != "experimental"
 
-  - name: list installed packages
+  - name: list installed packages ps80 
     include_tasks: ../tasks/list_installed_packages.yml
 
   - name: start mysql service with service command
@@ -111,36 +96,6 @@
         line: '!includedir /etc/my.cnf.d'
     when: ansible_os_family == "RedHat"
 
-  - name: install percona-mysql-shell package
-    include_tasks: ../tasks/install_pshell.yml
-    when: install_mysql_shell == "yes" or install_mysql_shell == ""
-
-  - name: Handle check that Percona Server version is correct
-    block: 
-      - name: Run the version_check.sh script {{ pro }}
-        shell: /package-testing/version_check.sh ps80 {{ pro }} > version-check.log 2>&1
-
-      - name: Log check for warnings in the previous stage
-        command: /package-testing/scripts/log-warning-check.sh version-check.log
-        when: (lookup('env', 'check_warnings') == "yes")
-
-    rescue:
-      - name: Fetch the output of the version_check.sh logfile on the script failure
-        command: cat "version-check.log"
-        register: versioncheckoutput
-
-      - name: Display the fetched output of the version_check.log logfile
-        debug:
-          msg: "Version check output: {{ versioncheckoutput.stdout }}"
-
-      - name: Fail the task due to previous issues
-        fail:
-          msg: Failing the further tasks due to issues in the previous task.
-
-  - name: check that Percona Server {{ pro }} package versions are correct 8.0 
-    command: /package-testing/package_check.sh ps80 {{ pro }}
-
-#
   - name: disable all percona repos
     command: percona-release disable all
 
@@ -186,7 +141,9 @@
       msg: "Path exists and is a directory and is not empty"
     when: p.stat.isdir is defined and p.stat.isdir and p.stat.size > 1000000
 
-#
+  - name: include tasks for enabling PS 84 test repo
+    include_tasks: ../tasks/enable_ps84_testing_repo.yml
+    when: lookup('env', 'install_repo') == "testing" or lookup('env', 'install_repo') == ""
 
   - name: install Percona Server 8.4 packages
     include_tasks: ../tasks/install_ps84.yml
