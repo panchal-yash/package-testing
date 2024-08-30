@@ -52,113 +52,95 @@
     with_items:
     - wget --no-check-certificate -P /package-testing https://raw.githubusercontent.com/Percona-QA/percona-qa/master/sample_db/world.sql
 
-### install PS5.7 without TokuDB as PS8.4 do not support TokuDB
-  - name: install Percona Server 5.7 packages
-    include_tasks: ../tasks/install_ps57.yml
-    vars:
-      packages:
-      - percona-server-server-5.7
-      - percona-server-test-5.7
-      - percona-server-5.7-dbg
-      - percona-server-source-5.7
-      - percona-server-rocksdb-5.7
-    when: ansible_os_family == "Debian"
+  - name: include tasks for enabling PS 8 main repo
+    include_tasks: ../tasks/enable_ps8_main_repo.yml
+    when: lookup('env', 'install_repo') == "main"
 
-### install PS5.7 without TokuDB as PS8.4 do not support TokuDB
-  - name: install Percona Server 5.7 packages
-    include_tasks: ../tasks/install_ps57.yml
-    vars:
-      packages:
-      - Percona-Server-server-57
-      - Percona-Server-test-57
-      - Percona-Server-57-debuginfo
-      - Percona-Server-devel-57
-      - Percona-Server-rocksdb-57
-      - Percona-Server-shared-57
-      - Percona-Server-client-57
+  - name: include tasks for enabling PS 8 test repo
+    include_tasks: ../tasks/enable_ps8_testing_repo.yml
+    when: lookup('env', 'install_repo') == "testing" or lookup('env', 'install_repo') == ""
+
+  - name: append include for RedHat
+    lineinfile:
+        path: /etc/my.cnf
+        line: '!includedir /etc/my.cnf.d'
     when: ansible_os_family == "RedHat"
 
-# Disable Percona Toolkit installation till its supported in OL9 and Jammy
-#  - name: install Percona Toolkit new deb packages
-#    include_tasks: ../tasks/install_pt.yml
 
-  - name: install sysbench packages
+  - name: install Percona Server 8.0 packages
+    include_tasks: ../tasks/install_ps80.yml
+
+  - name: Enable PXB 80 repo
+    command: percona-release enable-only pxb-80 testing
+
+  - name: install PXB 8.0 packages
+    include_tasks: ../tasks/install_pxb80.yml
+
+  - name: install sysbench new deb packages
     include_tasks: ../tasks/install_sysbench.yml
-    when: lookup('env', 'install_repo') != "experimental"
+    when:
+      - lookup('env', 'install_repo') != "experimental"
+      - ansible_distribution_release != "noble"
 
-  - name: install Percona XtraBackup 2.4 packages
-    include_tasks: ../tasks/install_pxb24.yml
+  - name: install Percona XtraBackup 8.0 packages
+    include_tasks: ../tasks/install_pxb80.yml
+    when: lookup('env', 'install_repo') != "experimental"
 
   - name: list installed packages
     include_tasks: ../tasks/list_installed_packages.yml
 
-  - name: start mysql service
-    service: name=mysql state=started
+  - name: start mysql service with service command
+    command: service mysql start
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "6"
+
+  - name: start mysql service with systemctl command
+    command: systemctl start mysql
+    when: (ansible_distribution == "Amazon") or (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7)
 
   - name: set root password on centos
     command: /package-testing/setpass_57.sh
     when: ansible_os_family == "RedHat"
 
-  - name: copy .my.cnf with credentials on centos
-    template: src=../templates/my_57.j2
-              dest=/root/.my.cnf
-              mode=0640 owner=root group=root
-    when: ansible_os_family == "RedHat"
-
-  - name: disable selinux on centos7
+  - name: disable selinux on centos7 for TokuDB to work
     shell: setenforce 0 || true
     when: ansible_os_family == "RedHat"
 
-  - name: restart mysql service
-    service: name=mysql state=restarted
-
-#  - name: check that Percona Server version is correct
-#    command: /package-testing/version_check.sh ps57
-
-#  - name: check that Percona Server package versions are correct
-#    command: /package-testing/package_check.sh ps57
-#    environment:
-#      ps57_tokudb: "no"
-
-# - name: check that Percona Toolkit version is correct
-#   command: /package-testing/version_check.sh pt
-#   when: lookup('env', 'install_repo') != "experimental"
-
-# - name: check that sysbench version is correct
-#   command: /package-testing/version_check.sh sysbench
-#   when: lookup('env', 'install_repo') != "experimental"
-
-  - name: check that Percona XtraBackup version is correct
-    command: /package-testing/version_check.sh pxb24
-    when: lookup('env', 'install_repo') != "experimental"
-
-  - name: check that Percona XtraBackup package versions are correct
-    command: /package-testing/package_check.sh pxb24
-    when: lookup('env', 'install_repo') != "experimental"
-
-  - name: install 3rd party packages with apt
-    apt:
-      name: "{{ packages }}"
-    vars:
-      packages:
-      - rsyslog-mysql
-    when: ansible_os_family == "Debian"
-
-  - name: install 3rd party packages with yum
-    yum:
-      name: "{{ packages }}"
-    vars:
-      packages:
-      - rsyslog-mysql
+  - name: append include for RedHat
+    lineinfile:
+        path: /etc/my.cnf
+        line: '!includedir /etc/my.cnf.d'
     when: ansible_os_family == "RedHat"
 
-  - name: start mysql service
-    service: name=mysql state=started
+  - name: install percona-mysql-shell package
+    include_tasks: ../tasks/install_pshell.yml
+    when: install_mysql_shell == "yes" or install_mysql_shell == ""
 
-# temporary commented out until BLD-906 is fixed
-# - name: check that mysqladmin shutdown works correctly
-#   command: /package-testing/madmin_check.sh
+  - name: Handle check that Percona Server version is correct
+    block: 
+      - name: Run the version_check.sh script {{ pro }}
+        shell: /package-testing/version_check.sh ps80 {{ pro }} > version-check.log 2>&1
 
+      - name: Log check for warnings in the previous stage
+        command: /package-testing/scripts/log-warning-check.sh version-check.log
+        when: (lookup('env', 'check_warnings') == "yes")
+
+    rescue:
+      - name: Fetch the output of the version_check.sh logfile on the script failure
+        command: cat "version-check.log"
+        register: versioncheckoutput
+
+      - name: Display the fetched output of the version_check.log logfile
+        debug:
+          msg: "Version check output: {{ versioncheckoutput.stdout }}"
+
+      - name: Fail the task due to previous issues
+        fail:
+          msg: Failing the further tasks due to issues in the previous task.
+
+  - name: check that Percona Server {{ pro }} package versions are correct 8.0 
+    command: /package-testing/package_check.sh ps80 {{ pro }}
+
+#
   - name: disable all percona repos
     command: percona-release disable all
 
@@ -173,8 +155,24 @@
       remote_src: yes
     when: mycnf.stat.exists and ansible_os_family == "RedHat"
 
-  - name: remove PS 5.7 packages
-    include_tasks: ../tasks/remove_ps57.yml
+  - name: remove Percona Server deb packages
+    apt:
+      name: "{{ packages }}"
+      update_cache: no
+      state: absent
+    vars:
+      packages:
+      - percona-server*
+    when: ansible_os_family == "Debian"
+
+  - name: remove Percona Server rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: absent
+    vars:
+     packages:
+      - percona-server*
+    when: ansible_os_family == "RedHat"
 
   - name: check if process is stopped after package removal
     command: /package-testing/check_running.sh mysql stopped
@@ -187,38 +185,8 @@
     fail:
       msg: "Path exists and is a directory and is not empty"
     when: p.stat.isdir is defined and p.stat.isdir and p.stat.size > 1000000
-### end of PS 5.7 install
 
-  - name: copy config file to original location
-    copy:
-      src: /etc/my.cnf.backup
-      dest: /etc/my.cnf
-      remote_src: yes
-      force: yes
-    when: (ansible_distribution == "Amazon") or (ansible_os_family == "RedHat" and ansible_distribution_major_version >= "7")
-
-  - name: restore percona-server.conf.d and mysql.cnf.d
-    shell: |
-      mv /etc/percona-server.conf.d_backup-* /etc/percona-server.conf.d
-      mv /etc/my.cnf.d_backup-* /etc/my.cnf.d
-    when: (ansible_distribution == "Amazon") or (ansible_os_family == "RedHat" and ansible_distribution_major_version >= "7")
-
-  - name: remove PXB 2.4 packages
-    include_tasks: ../tasks/remove_pxb24.yml
-
-  - name: include tasks for enabling PS 8 main repo
-    include_tasks: ../tasks/enable_ps8_main_repo.yml
-    when: lookup('env', 'install_repo') == "main"
-
-  - name: include tasks for enabling PS 8 test repo
-    include_tasks: ../tasks/enable_ps8_testing_repo.yml
-    when: lookup('env', 'install_repo') == "testing" or lookup('env', 'install_repo') == ""
-
-  - name: append include for RedHat
-    lineinfile:
-        path: /etc/my.cnf
-        line: '!includedir /etc/my.cnf.d'
-    when: ansible_os_family == "RedHat"
+#
 
   - name: install Percona Server 8.4 packages
     include_tasks: ../tasks/install_ps84.yml
