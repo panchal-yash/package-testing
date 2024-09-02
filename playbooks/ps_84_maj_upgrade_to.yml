@@ -30,6 +30,10 @@
   - name: include tasks for local vault setup
     include_tasks: ../tasks/setup_local_vault.yml
 
+  - name: include tasks for locale setup
+    include_tasks: ../tasks/add_locale.yml
+    when: ansible_os_family == "Debian"
+
   - name: setup config file for keyring vault
     template: src=../scripts/ps_keyring_plugins_test/keyring_vault_test_v2.j2
               dest=/package-testing/scripts/ps_keyring_plugins_test/keyring_vault_test.cnf

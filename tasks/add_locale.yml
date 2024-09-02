@@ -1,0 +1,9 @@
+- name: Set LANG as default locale
+  command: localectl set-locale LANG=en_US.UTF-8
+
+- name: Set LC_ALL manually in environment
+  lineinfile:
+    path: /etc/environment
+    regexp: '^LC_ALL='
+    line: 'LC_ALL=en_US.UTF-8'
+    state: present
