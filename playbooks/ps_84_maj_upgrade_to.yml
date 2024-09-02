@@ -58,7 +58,7 @@
         path: /etc/my.cnf
         line: '!includedir /etc/my.cnf.d'
     when: ansible_os_family == "RedHat"
-    
+
   - name: Enable PXB 80 repo
     command: percona-release enable-only pxb-80 release
 
@@ -156,6 +156,9 @@
     include_tasks: ../tasks/install_pshell.yml
     when: install_mysql_shell == "yes" or install_mysql_shell == ""
 
+  - name: Remove PXB 8.0 packages
+    include_tasks: ../tasks/remove_pxb80.yml 
+    
   - name: Enable PXB 84 repo
     command: percona-release enable-only pxb-84-lts testing
 
