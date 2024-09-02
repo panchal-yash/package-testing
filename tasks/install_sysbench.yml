@@ -16,5 +16,4 @@
   vars:
     packages:
     - sysbench
-    - sysbench-tpcc
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "9"
+  when: ansible_os_family == "RedHat"
