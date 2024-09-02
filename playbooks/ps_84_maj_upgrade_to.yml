@@ -50,15 +50,15 @@
   - name: include tasks for enabling PS 8 main repo
     include_tasks: ../tasks/enable_ps8_main_repo.yml
 
+  - name: install Percona Server 8.0 packages
+    include_tasks: ../tasks/install_ps80.yml
+
   - name: append include for RedHat
     lineinfile:
         path: /etc/my.cnf
         line: '!includedir /etc/my.cnf.d'
     when: ansible_os_family == "RedHat"
-
-  - name: install Percona Server 8.0 packages
-    include_tasks: ../tasks/install_ps80.yml
-
+    
   - name: Enable PXB 80 repo
     command: percona-release enable-only pxb-80 release
 
