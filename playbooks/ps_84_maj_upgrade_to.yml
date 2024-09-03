@@ -153,6 +153,10 @@
     command: yum remove mariadb* -y
     when: ansible_facts['distribution'] == "OracleLinux" and ansible_distribution_major_version == "8"
 
+  - name: Remove Mysql in case of ol9
+    command: yum remove mysql* -y
+    when: ansible_facts['distribution'] == "OracleLinux" and ansible_distribution_major_version == "9"
+
   - name: install Percona Server 8.4 packages
     include_tasks: ../tasks/install_ps84.yml
 
