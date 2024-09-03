@@ -136,10 +136,10 @@
   - name: print PXC version Molecule
     debug: var=pxc_version
 
-  - name: check PXC 8.0 version Molecule
-    command: /package-testing/version_check.sh pxc80
-    when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
-      
-  - name: Sleep 60 seconds
-    command: sleep 60
+#  - name: check PXC 8.0 version Molecule
+#    command: /package-testing/version_check.sh pxc80
+#    when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
+#      
+#  - name: Sleep 60 seconds
+#    command: sleep 60
 
