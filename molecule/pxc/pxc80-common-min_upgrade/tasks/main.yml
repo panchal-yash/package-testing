@@ -41,6 +41,11 @@
     shell: setsebool -P mysql_connect_any 1
     when: ((ansible_os_family == "RedHat") and (ansible_distribution != "Amazon"))
 
+  - name: disable se-linux
+    selinux:
+      state: disabled
+    when: ansible_os_family == "RedHat"
+    
   - name: flush iptables
     iptables:
       flush: yes

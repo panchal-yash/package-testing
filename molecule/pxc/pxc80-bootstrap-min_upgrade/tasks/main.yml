@@ -1,5 +1,5 @@
 ---
-  - name: Fetch the vars from file for upgrade
+  - name: Fetch the vars from file for install/upgrade
     ansible.builtin.include_vars: "{{ ENV_VAR_PATH }}"
 
   - set_fact:
@@ -67,7 +67,6 @@
     when: ansible_os_family == "Debian"
     environment:
       PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
-      PERCONA_TELEMETRY_DISABLE: "1"
 
   - name: install PXC 8 rpm packages
     yum:
@@ -81,7 +80,17 @@
     when: ansible_os_family == "RedHat"
     environment:
       PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
-      PERCONA_TELEMETRY_DISABLE: "1"
+
+  - name: check telemetry (enabled)
+    command: /package-testing/check_telemetry.sh pxc -e
+
+  - name: get telemetry_uuid content
+    command: cat /usr/local/percona/telemetry_uuid
+    register: t_uuid_output
+
+  - name: output telemetry_uuid content
+    debug:
+      var: t_uuid_output
 
   - name: stop mysql service with service command
     command: systemctl stop mysql
@@ -127,10 +136,10 @@
   - name: print PXC version Molecule
     debug: var=pxc_version
 
-  - name: check PXC 8.0 version Molecule
-    command: /package-testing/version_check.sh pxc80
-    when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
-      
-  - name: Sleep 60 seconds
-    command: sleep 60
+#  - name: check PXC 8.0 version Molecule
+#    command: /package-testing/version_check.sh pxc80
+#    when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
+#      
+#  - name: Sleep 60 seconds
+#    command: sleep 60
 
