@@ -80,6 +80,7 @@
     when: ansible_os_family == "RedHat"
     environment:
       PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
+      PERCONA_TELEMETRY_DISABLE: "1"
 
   - name: check telemetry (enabled)
     command: /package-testing/check_telemetry.sh pxc -e
