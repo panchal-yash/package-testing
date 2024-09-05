@@ -41,6 +41,22 @@
     shell: setsebool -P mysql_connect_any 1
     when: ((ansible_os_family == "RedHat") and (ansible_distribution != "Amazon"))
 
+  - name: install qpress package on Redhat/CentOS
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - qpress
+    when: ansible_os_family == "RedHat"
+
+  - name: install qpress package on Ubuntu/Debian
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - qpress
+    when: ansible_os_family == "Debian"
+    
   - name: flush iptables
     iptables:
       flush: yes

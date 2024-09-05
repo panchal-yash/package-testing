@@ -163,6 +163,15 @@
         state: stopped
       when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version|int == 8 or ansible_distribution_major_version|int == 9)
 
+    - name: allow all users to connect to mysql
+      shell: setsebool -P mysql_connect_any 1
+      when: ansible_os_family == "RedHat"
+
+    - name: disable se-linux
+      selinux:
+        state: disabled
+      when: ansible_os_family == "RedHat"
+
     - name: Setup SSH keys CentOS
       authorized_key:
         user: centos
