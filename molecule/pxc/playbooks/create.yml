@@ -251,9 +251,9 @@
           'address': "{{ item.instances[0].public_ip_address }}",
           'user': "{{ item.instances[0].tags.ssh_user }}",
           'port': "{{ ssh_port }}",
-          'identity_file': "{{ keypair_path }}-{{ item.instances[0].region }}",
+          'identity_file': "{{ keypair_path }}-{{ item.region|default(default_region) }}",
           'instance_id': "{{ item.instances[0].id }}",
-          'region': "{{ item.instances[0].region }}",
+          'region': "{{ item.region|default(default_region) }}",
         }
       with_items: "{{ ec2_jobs.results }}"
       register: instance_config_dict
