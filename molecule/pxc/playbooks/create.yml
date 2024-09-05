@@ -8,7 +8,7 @@
     ssh_user: ubuntu
     ssh_port: 22
     default_region: "{{ lookup('env', 'AWS_DEFAULT_REGION') | default('us-east-1', true) }}"
-    security_group_name_prefix: molecule
+    security_group_name_prefix: molecule-pxc-package-testing
     security_group_description: Security group for testing Molecule
     security_group_rules:
       - proto: tcp
