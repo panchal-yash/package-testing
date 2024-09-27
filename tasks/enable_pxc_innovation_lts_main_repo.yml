@@ -14,8 +14,8 @@
     yum: name=https://repo.percona.com/yum/percona-release-latest.noarch.rpm
     when: ansible_os_family == "RedHat"
 
-  - name: enable main repo pxc-8x-innovation
-    command: percona-release enable-only pxc-8x-innovation release
+  - name: enable main repo pxc-84-lts 
+    command: percona-release enable-only pxc-84-lts release
 
   - name: add the main tools repo
     command: percona-release enable tools release
