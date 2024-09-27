@@ -10,7 +10,7 @@ platforms:
     region: us-west-1
     image: ami-093939e1f4317142c
     vpc_subnet_id: subnet-04a8ad1b1d4da874c
-    instance_type: t2.large
+    instance_type: c6g.large
     ssh_user: admin
     root_device_name: /dev/xvda
     instance_tags:
@@ -20,7 +20,7 @@ platforms:
     region: us-west-1
     image: ami-093939e1f4317142c
     vpc_subnet_id: subnet-04a8ad1b1d4da874c
-    instance_type: t2.large
+    instance_type: c6g.large
     ssh_user: admin
     root_device_name: /dev/xvda
     instance_tags:
