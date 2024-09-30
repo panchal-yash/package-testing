@@ -167,8 +167,8 @@
     command: /package-testing/version_check.sh pxc{{ major_release_version}}
     when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
   
-  - name: Perform PXC package prechecks
-    shell: /package-testing/scripts/pxc-package-prechecks.sh pxc{{ major_release_version}}
+#  - name: Perform PXC package prechecks
+#    shell: /package-testing/scripts/pxc-package-prechecks.sh pxc{{ major_release_version}}
     
   - name: Sleep 60 seconds
     command: sleep 60

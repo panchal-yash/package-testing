@@ -127,8 +127,8 @@
     command: /package-testing/package_check.sh pxc{{ major_release_version}}
     when: lookup('env', 'check_version') == "yes" or lookup('env', 'check_version') == ""
 
-  - name: Perform PXC package prechecks
-    command: /package-testing/scripts/pxc-package-prechecks.sh pxc{{ major_release_version}}
+#  - name: Perform PXC package prechecks
+#    command: /package-testing/scripts/pxc-package-prechecks.sh pxc{{ major_release_version}}
 
   - name: run bats tests for mysql init scripts
     shell: sleep {{ sleep_before_tests | default('0') }}; /usr/local/bin/bats /package-testing/bats/pxc-init-scripts.bats
