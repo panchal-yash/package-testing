@@ -10,8 +10,9 @@
       deb: https://repo.percona.com/apt/percona-release_latest.generic_all.deb
     when: ansible_os_family == "Debian"
 
-  - name: add the Percona yum repos for CentOS
-    yum: name=https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+  - name: add the Percona yum repos for RHEL
+    yum: 
+      name: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
     when: ansible_os_family == "RedHat"
 
   - name: enable main repo pxc-84-lts 
