@@ -71,6 +71,11 @@
       flush: yes
     when: ansible_os_family == "RedHat"
 
+# resolving qpress error
+  - name: enable the pdpxc-80 main repo for qpress in noble
+    command: percona-release enable pdpxc-8.0 release
+    when: ansible_distribution_release == "noble"
+
   - name: install PXC {{ major_release_version}} deb packages
     apt:
       name: "{{ packages }}"
