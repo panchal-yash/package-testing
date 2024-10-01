@@ -18,6 +18,12 @@ platforms:
       job-name: ${JOB_NAME}
 provisioner:
   name: ansible
+  log: true
+  options:
+    vvv: True
+  config_options:
+    defaults:
+      verbosity: 3
   playbooks:
     create: ../../../playbooks/create_noble.yml
     destroy: ../../../playbooks/destroy_noble.yml
