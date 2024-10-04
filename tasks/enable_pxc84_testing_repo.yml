@@ -16,7 +16,7 @@
     when: ansible_os_family == "RedHat"
 
   - name: change the default repo to testing
-    command: percona-release enable-only pxc-84 testing
+    command: percona-release enable-only pxc-84-lts testing
 
   - name: add the testing tools repo
     command: percona-release enable tools release

@@ -16,7 +16,7 @@
     when: ansible_os_family == "RedHat"
 
   - name: enable main repo
-    command: percona-release enable-only pxc-84 release
+    command: percona-release enable-only pxc-84-lts release
 
   - name: add the main tools repo
     command: percona-release enable tools release
