@@ -55,7 +55,7 @@
       - percona-xtradb-cluster-full
       - percona-xtradb-cluster-source
       - percona-toolkit
-      - percona-xtrabackup-80
+      - percona-xtrabackup-84
     when: ansible_os_family == "Debian"
     environment:
       PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
@@ -69,7 +69,7 @@
       packages:
       - percona-xtradb-cluster-full
       - percona-toolkit
-      - percona-xtrabackup-80
+      - percona-xtrabackup-84
     when: 
       - ansible_os_family == "RedHat" 
       - ansible_architecture == "x86_64"
@@ -84,7 +84,7 @@
     vars:
       packages:
       - percona-xtradb-cluster-full
-      - percona-xtrabackup-80
+      - percona-xtrabackup-84
     when: 
       - ansible_os_family == "RedHat"
       - ansible_architecture == "aarch64"

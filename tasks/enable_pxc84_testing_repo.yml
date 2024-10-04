@@ -21,6 +21,9 @@
   - name: add the testing tools repo
     command: percona-release enable tools release
 
+  - name: enable pxb 84 repo
+    command: percona-release enable pxb-84-lts testing
+
   - name: clean and update yum cache
     shell: |
       yum clean all
